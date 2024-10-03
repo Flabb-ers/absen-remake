@@ -28,7 +28,7 @@ class PresensiController extends Controller
             $pertemuan = Absen::where('jadwals_id', $jadwal->id)->max('pertemuan');
             $pertemuanCounts[$jadwal->id] = $pertemuan ?? 0;
         }
-        return view('pages.data-presensi.index', compact('jadwals', 'pertemuanCounts'));
+        return view('pages.dosen.data-presensi.index', compact('jadwals', 'pertemuanCounts'));
     }
 
 
@@ -41,7 +41,7 @@ class PresensiController extends Controller
         $pertemuan = $pertemuan ? $pertemuan + 1 : 1;
         $mahasiswas = Mahasiswa::where('kelas_id', $jadwal->kelas->id)->get();
         $tahun = TahunAkademik::where('status',1)->first();
-        return view('pages.data-presensi.presensi', compact('jadwal', 'mahasiswas', 'pertemuan','tahun'));
+        return view('pages.dosen.data-presensi.presensi', compact('jadwal', 'mahasiswas', 'pertemuan','tahun'));
     }
 
     /**
@@ -50,8 +50,6 @@ class PresensiController extends Controller
 
     public function store(Request $request)
     {
-
-        // dd($request);
         DB::beginTransaction();
         try {
             foreach ($request->mahasiswas_id as $mahasiswaId) {
@@ -83,17 +81,9 @@ class PresensiController extends Controller
                 'hadir' => $request->jumlahHadir,
             ]);
 
-            // Kontrak::create([
-            //     'tahun'=>$request->tahun,
-            //     'pertemuan' => $request->pertemuan,
-            //     'matkuls_id' => $request->matkuls_id,
-            //     'kelas_id' => $request->kelas_id,
-            //     'materi' => $request->materiKontrak,
-            //     'pustaka' => $request->pustakaKontrak,
-            // ]);
 
             DB::commit();
-            return redirect()->route('data-presensi.index')->with('success', 'Data berhasil disimpan');
+            return redirect()->back()->with('success', 'Data berhasil disimpan');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Data gagal disimpan: ' . $e->getMessage());
@@ -111,12 +101,6 @@ class PresensiController extends Controller
             ->where('matkuls_id', $matkuls_id)
             ->first();
 
-
-        // $kontrak = Kontrak::where('pertemuan', $id)
-        //     ->where('kelas_id', $kelas_id)
-        //     ->where('matkuls_id', $matkuls_id)
-        //     ->first();
-
         $absens = Absen::with('prodi', 'matkul')
             ->where('pertemuan', $id)
             ->where('kelas_id', $kelas_id)
@@ -125,7 +109,7 @@ class PresensiController extends Controller
 
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)->get();
 
-        return view('pages.data-presensi.edit', compact('resume',  'absens', 'mahasiswas', 'id'));
+        return view('pages.dosen.data-presensi.edit', compact('resume',  'absens', 'mahasiswas', 'id'));
     }
 
 
@@ -168,32 +152,9 @@ class PresensiController extends Controller
             ]);
         }
 
-        $kontrak = Kontrak::where('kelas_id', $request->kelas_id)
-            ->where('matkuls_id', $request->matkuls_id)
-            ->where('pertemuan', $request->pertemuan)
-            ->first();
-
-        if ($kontrak) {
-            $kontrak->update([
-                'materi' => $request->materiKontrak,
-                'pustaka' => $request->pustakaKontrak,
-            ]);
-        }
-
         return redirect()->route('data-presensi.index')
             ->with('success', 'Data presensi berhasil diperbarui.');
     }
-
-
-    // public function rekap1to7($matkuls_id,$kelas_id) {
-    //     $absens = Absen::with('dosen','kelas','matkul','prodi','mahasiswa')->where('matkuls_id',$matkuls_id)
-    //             ->where('kelas_id',$kelas_id)
-    //             ->get();
-
-    //     $tahunAkademik = TahunAkademik::first();
-        
-    //     return view('pages.data-presensi.rekap-presensi',compact('absens','tahunAkademik'));
-    // }
 
     public function rekap1to7($matkuls_id, $kelas_id) {
         $absens = Absen::with('dosen', 'kelas', 'matkul', 'prodi', 'mahasiswa')
@@ -204,7 +165,7 @@ class PresensiController extends Controller
     
         $tahunAkademik = TahunAkademik::first();
         
-        return view('pages.data-presensi.rekap.presensi1-7', compact('absens', 'tahunAkademik'));
+        return view('pages.dosen.data-presensi.rekap.presensi1-7', compact('absens', 'tahunAkademik'));
     }
     
     public function rekap8to14($matkuls_id, $kelas_id) {
@@ -214,11 +175,11 @@ class PresensiController extends Controller
             ->whereIn('pertemuan', [8, 9, 10, 11, 12, 13, 14])
             ->get();
     
-        return view('pages.data-presensi.rekap.presensi8-14', compact('absens'));
+        return view('pages.dosen.data-presensi.rekap.presensi8-14', compact('absens'));
     }
 
     public function berita1to7($matkuls_id, $kelas_id) {
-        $beritas = Resume::with('dosen', 'matkul', 'kelas')
+        $beritas = Resume::with('dosen', 'matkul', 'kelas.prodi')
             ->where('matkuls_id', $matkuls_id)
             ->where('kelas_id', $kelas_id)
             ->whereBetween('pertemuan', [1, 7]) 
@@ -229,11 +190,11 @@ class PresensiController extends Controller
             $sem = ($semester->semester % 2 == 0) ? "GENAP" : "GANJIL";
         }
     
-        return view('pages.data-presensi.rekap.berita', compact('beritas', 'sem'));
+        return view('pages.dosen.data-presensi.rekap.berita', compact('beritas', 'sem'));
     }
     
     public function berita8to14($matkuls_id, $kelas_id) {
-        $beritas = Resume::with('dosen', 'matkul', 'kelas')
+        $beritas = Resume::with('dosen', 'matkul', 'kelas.prodi')
             ->where('matkuls_id', $matkuls_id)
             ->where('kelas_id', $kelas_id)
             ->whereBetween('pertemuan', [8, 14])
@@ -244,7 +205,7 @@ class PresensiController extends Controller
             $sem = ($semester->semester % 2 == 0) ? "GENAP" : "GANJIL";
         }
     
-        return view('pages.data-presensi.rekap.berita', compact('beritas', 'sem'));
+        return view('pages.dosen.data-presensi.rekap.berita', compact('beritas', 'sem'));
     }
     
 }

@@ -2,8 +2,6 @@
 
 use App\Http\Controllers\PresensiController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\AbsenController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\ProdiController;
@@ -13,6 +11,7 @@ use App\Http\Controllers\MatkulController;
 use App\Http\Controllers\KaprodiController;
 use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\DirekturController;
+use App\Http\Controllers\KontrakController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\TahunAkademikController;
@@ -51,7 +50,11 @@ Route::prefix('/presensi')->group(function () {
         Route::resource('/data-kaprodi', KaprodiController::class);
         Route::resource('/data-wadir', WadirController::class);
     });
+
+    // MAHASISWA
     Route::resource('/data-mahasiswa', MahasiswaController::class);
+
+    // JADWAL
     Route::resource('/jadwal-mengajar', JadwalController::class);
 
     // ABSEN
@@ -66,4 +69,7 @@ Route::prefix('/presensi')->group(function () {
     Route::get('/data-presensi/rekap/berita-acara-perkuliahan/8-14/{matkuls_id}/{kelas_id}',[PresensiController::class,'berita8to14']);
 
     // KONTRAK
+    Route::resource('/data-kontrak', KontrakController::class);
+    Route::get('/data-kontrak/isi-kontrak/{id}', [KontrakController::class,'create']);
+    Route::get('/data-kontrak/rekap/{matkuls_id}/{kelas_id}/{jadwals_id}', [KontrakController::class,'rekap']);
 });

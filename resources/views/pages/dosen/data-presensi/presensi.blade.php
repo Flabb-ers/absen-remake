@@ -2,11 +2,10 @@
 
 <style>
     input[readonly] {
-    background-color: #e9ecef; 
-    color: #6c757d; 
-    cursor: not-allowed;
-}
-
+        background-color: #e9ecef;
+        color: #6c757d;
+        cursor: not-allowed;
+    }
 </style>
 @section('container')
     <div class="main-panel">
@@ -25,7 +24,7 @@
                                                     {{ $jadwal->matkul->nama_matkul }}</li>
                                             </div>
                                             <div class="col offset-md-4 ">
-                                                <li>Program Studi : 
+                                                <li>Program Studi :
                                                     {{ $jadwal->kelas->prodi->nama_prodi }}</li>
                                             </div>
                                         </div>
@@ -108,12 +107,13 @@
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="jumlahTidakHadir">Tidak Hadir</label>
-                                                <input type="number" id="jumlahTidakHadir" class="form-control form-control-sm"
-                                                    name="jumlahTidakHadir" readonly value="0">
+                                                <input type="number" id="jumlahTidakHadir"
+                                                    class="form-control form-control-sm" name="jumlahTidakHadir" readonly
+                                                    value="0">
                                             </div>
                                         </div>
                                     </div>
-{{-- 
+                                    {{-- 
                                     <h5 class="text-center mb-3">KONTRAK PERKULIAHAN</h5>
                                     <div class="row">
                                         <div class="col-md-6">
@@ -147,7 +147,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const jumlahHadirInput = document.getElementById('jumlahHadir');
             const jumlahTidakHadirInput = document.getElementById('jumlahTidakHadir');
-
+    
             const updateCounts = () => {
                 let jumlahHadir = 0;
                 let jumlahTidakHadir = 0;
@@ -159,15 +159,15 @@
                         jumlahTidakHadir++;
                     }
                 });
-
+    
                 jumlahHadirInput.value = jumlahHadir;
                 jumlahTidakHadirInput.value = jumlahTidakHadir;
             };
-
+    
             document.querySelectorAll('input[type="radio"]').forEach(radio => {
                 radio.addEventListener('change', updateCounts);
             });
-
+    
             const setAllToH = () => {
                 document.querySelectorAll('input[type="radio"]').forEach(radio => {
                     if (radio.value === 'H') {
@@ -176,17 +176,22 @@
                 });
                 updateCounts();
             };
-
+    
             document.getElementById('hadirSemua').addEventListener('click', setAllToH);
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
+    
+            // Penanganan session alert menggunakan SweetAlert yang tidak bisa ditutup selain dengan tombol
             @if (session('success'))
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
                     text: '{{ session('success') }}',
                     showConfirmButton: true,
+                    allowOutsideClick: false,
+                    confirmButtonText: 'Isi Kontrak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `/presensi/data-kontrak/isi-kontrak/{{ $jadwal->id }}`; 
+                    }
                 });
             @elseif (session('error'))
                 Swal.fire({
@@ -194,8 +199,11 @@
                     title: 'Gagal!',
                     text: '{{ session('error') }}',
                     showConfirmButton: true,
+                    allowOutsideClick: false,
                 });
             @endif
         });
     </script>
+    
+
 @endsection

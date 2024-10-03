@@ -59,20 +59,20 @@
                                             <div class="dropdown-menu  w-100" aria-labelledby="dropdownMenuSizeButton1">
                                                 <li>
                                                     <a href="/presensi/data-presensi/rekap/berita-acara-perkuliahan/1-7/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
-                                                        class="dropdown-item">
+                                                        class="dropdown-item text-center">
                                                         <span class="mdi mdi-file-document-outline"></span> Pertemuan 1 - 7
                                                     </a>
                                                 </li>
                                                 @if (($pertemuanCounts[$jadwal->id] ?? 0) >= 8)
                                                     <li>
                                                         <a href="/presensi/data-presensi/rekap/berita-acara-perkuliahan/8-14/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
-                                                            class="dropdown-item">
+                                                            class="dropdown-item text-center">
                                                             <span class="mdi mdi-file-document-outline"></span> Pertemuan 8 - 14
                                                         </a>
                                                     </li>
                                                 @else
                                                     <li>
-                                                        <a class="dropdown-item disabled">
+                                                        <a class="dropdown-item disabled text-center">
                                                             <span class="mdi mdi-file-document-outline"></span> Pertemuan 8 - 14
                                                         </a>
                                                     </li>
@@ -91,20 +91,20 @@
                                             <div class="dropdown-menu  w-100" aria-labelledby="dropdownMenuSizeButton2">
                                                 <li>
                                                     <a href="/presensi/data-presensi/rekap/1-7/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
-                                                        class="dropdown-item">
+                                                        class="dropdown-item text-center">
                                                         <span class="mdi mdi-file-document-outline"></span> Pertemuan 1 - 7
                                                     </a>
                                                 </li>
                                                 @if (($pertemuanCounts[$jadwal->id] ?? 0) >= 8)
                                                     <li>
                                                         <a href="/presensi/data-presensi/rekap/8-14/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
-                                                            class="dropdown-item">
+                                                            class="dropdown-item text-center">
                                                             <span class="mdi mdi-file-document-outline"></span> Pertemuan 8 - 14
                                                         </a>
                                                     </li>
                                                 @else
                                                     <li>
-                                                        <a class="dropdown-item disabled">
+                                                        <a class="dropdown-item disabled text-center">
                                                             <span class="mdi mdi-file-document-outline"></span> Pertemuan 8 - 14
                                                         </a>
                                                     </li>

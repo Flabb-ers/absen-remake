@@ -63,7 +63,6 @@ class SemesterController extends Controller
 
     public function gantiStatus(Request $request)
     {
-        // Validasi input
         $request->validate([
             'semester' => 'required|in:genap,ganjil',
         ]);

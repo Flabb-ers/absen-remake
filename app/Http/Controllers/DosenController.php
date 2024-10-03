@@ -98,36 +98,21 @@ class DosenController extends Controller
             'status.required' => 'Status harus dipilih',
         ]);
 
-        if ($dosen->nama !== $request->nama) {
-            $dosen->nama = $request->nama;
-        }
-
-        if ($dosen->nidn !== $request->nidn) {
-            $dosen->nidn = $request->nidn;
-        }
-
-        if ($dosen->jenis_kelamin !== $request->jenis_kelamin) {
-            $dosen->jenis_kelamin = $request->jenis_kelamin;
-        }
-
-        if ($dosen->no_telephone !== $request->no_telephone) {
-            $dosen->no_telephone = $request->no_telephone;
-        }
-
-        if ($dosen->agama !== $request->agama) {
-            $dosen->agama = $request->agama;
-        }
-
-        if ($dosen->tanggal_lahir !== $request->tanggal_lahir) {
-            $dosen->tanggal_lahir = $request->tanggal_lahir;
-        }
-
-        if ($dosen->tempat_lahir !== $request->tempat_lahir) {
-            $dosen->tempat_lahir = $request->tempat_lahir;
-        }
-
-        if ($dosen->email !== $request->email) {
-            $dosen->email = $request->email;
+        $kolomUpdate = [
+            'nama',
+            'nidn',
+            'jenis_kelamin',
+            'no_telephone',
+            'agama',
+            'tanggal_lahir',
+            'tempat_lahir',
+            'email'
+        ];
+        
+        foreach ($kolomUpdate as $kolom) {
+            if ($dosen->$kolom !== $request->$kolom) {
+                $dosen->$kolom = $request->$kolom;
+            }
         }
 
         $dosen->status = $request->status;
