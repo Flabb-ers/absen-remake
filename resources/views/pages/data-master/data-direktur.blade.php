@@ -307,7 +307,7 @@
                         $('#editForm')[0].reset();
                         Swal.fire({
                             icon: 'success',
-                            title: 'Direktur berhasil diperbarui',
+                            title: 'Success!',
                             text: response.success,
                             confirmButtonText: 'Oke'
                         }).then(() => {

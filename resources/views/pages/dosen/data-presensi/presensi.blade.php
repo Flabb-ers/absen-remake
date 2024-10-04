@@ -72,7 +72,7 @@
                                                     <div class="col col-md-2">
                                                         <div class="form-check">
                                                             <label class="form-check-label">
-                                                                <input type="radio" class="form-check-input"
+                                                                <input type="radio" required class="form-check-input"
                                                                     name="status[{{ $mahasiswa->id }}]"
                                                                     value="{{ $value }}"
                                                                     data-mahasiswa-id="{{ $mahasiswa->id }}">

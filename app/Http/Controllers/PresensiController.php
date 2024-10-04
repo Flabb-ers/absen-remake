@@ -190,7 +190,7 @@ class PresensiController extends Controller
             $sem = ($semester->semester % 2 == 0) ? "GENAP" : "GANJIL";
         }
     
-        return view('pages.dosen.data-presensi.rekap.berita', compact('beritas', 'sem'));
+        return view('pages.dosen.data-presensi.rekap.berita1-7', compact('beritas', 'sem'));
     }
     
     public function berita8to14($matkuls_id, $kelas_id) {
@@ -205,7 +205,7 @@ class PresensiController extends Controller
             $sem = ($semester->semester % 2 == 0) ? "GENAP" : "GANJIL";
         }
     
-        return view('pages.dosen.data-presensi.rekap.berita', compact('beritas', 'sem'));
+        return view('pages.dosen.data-presensi.rekap.berita8-14', compact('beritas', 'sem'));
     }
     
 }

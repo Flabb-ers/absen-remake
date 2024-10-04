@@ -91,13 +91,13 @@ class KontrakController extends Controller
 
     public function rekap($matkuls_id,$kelas_id,$jadwals_id){
 
-        $kontrak = Kontrak::with('matkul','kelas.semester','kelas.prodi')
+        $kontraks = Kontrak::with('matkul','kelas.semester','kelas.prodi')
                 ->where('matkuls_id',$matkuls_id)
                 ->where('kelas_id',$kelas_id)
                 ->where('jadwals_id',$jadwals_id)
                 ->get();
 
-        return view('pages.dosen.data-kontrak.rekap',compact('kontrak'));
+        return view('pages.dosen.data-kontrak.rekap',compact('kontraks'));
     }
 
     /**
@@ -105,6 +105,5 @@ class KontrakController extends Controller
      */
     public function destroy(Kontrak $kontrak)
     {
-        //
     }
 }

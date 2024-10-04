@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,12 +20,13 @@
         table {
             margin: 0 auto;
             border-collapse: collapse;
-            width: 100%; 
+            width: 100%;
             max-width: 720px;
             display: block;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid black;
             text-align: center;
             white-space: nowrap;
@@ -35,13 +37,14 @@
             padding: 5px;
         }
 
-        th:first-child, td:first-child {
+        th:first-child,
+        td:first-child {
             padding: 0;
         }
 
         .header-info {
             display: flex;
-            justify-content: space-between; 
+            justify-content: space-between;
             margin-top: 20px;
             margin-bottom: 10px;
             width: 100%;
@@ -68,7 +71,7 @@
         }
 
         .signature-box.right {
-            text-align: left; 
+            text-align: left;
             margin-right: 20px;
         }
 
@@ -92,7 +95,9 @@
         }
 
         @media (max-width: 600px) {
-            th, td {
+
+            th,
+            td {
                 font-size: 8px;
                 width: auto;
             }
@@ -107,32 +112,43 @@
                 margin-bottom: 20px;
             }
         }
+
+        @page {
+            size: A4 portrait;
+            margin: 30px;
+        }
     </style>
+    <script>
+        window.onload = function () {
+            window.print(); 
+        };
+    </script>
 </head>
 
 <body>
     <div class="container">
         <div style="text-align: center">
             <h3>POLITEKNIK SAWUNGGALIH AJI</h3>
-            <h4 style="margin-top:-20px">PRESENSI MAHASISWA SEMESTER {{ $absens->first()->kelas->semester->semester }}</h4>
+            <h4 style="margin-top:-20px">PRESENSI MAHASISWA SEMESTER {{ $absens->first()->kelas->semester->semester }}
+            </h4>
             <h5 style="margin-top:-18px;margin-bottom:60px">TAHUN AKADEMIK {{ $absens->first()->tahun }}</h5>
         </div>
         <div class="header-info">
             <div>
                 <h5 style="display: inline-block; width: 150px;">Mata Kuliah</h5>
-                <h5 style="display: inline-block; margin-right: 5px;margin-left:-80px">:</h5> 
+                <h5 style="display: inline-block; margin-right: 5px;margin-left:-80px">:</h5>
                 <h5 style="display: inline-block;">{{ $absens->first()->matkul->nama_matkul }}</h5>
-                <br> 
+                <br>
                 <h5 style="display: inline-block; width: 150px;">Dosen</h5>
                 <h5 style="display: inline-block; margin-right: 5px; margin-left:-80px">:</h5>
                 <h5 style="display: inline-block;">{{ $absens->first()->dosen->nama }}</h5>
             </div>
             <div style="text-align: left;">
                 <h5 style="display: inline-block; width: 150px;">Program Studi</h5>
-                <h5 style="display: inline-block; margin-right: 5px;margin-left:-80px">:</h5> 
+                <h5 style="display: inline-block; margin-right: 5px;margin-left:-80px">:</h5>
                 <h5 style="display: inline-block;">{{ $absens->first()->prodi->nama_prodi }}</h5>
-                
-                <br>    
+
+                <br>
                 <h5 style="display: inline-block; width: 150px;">Kelas</h5>
                 <h5 style="display: inline-block; margin-right: 5px;margin-left:-80px">:</h5>
                 <h5 style="display: inline-block;">{{ $absens->first()->kelas->nama_kelas }}</h5>
@@ -164,33 +180,33 @@
                         foreach ($absens as $absen) {
                             if ($absen->pertemuan == $i) {
                                 $tanggal = date('d/m/Y', strtotime($absen->tanggal));
-                                break; 
+                                break;
                             }
                         }
                     @endphp
-                    <td>{{ $tanggal ?: '-' }}</td>
+                    <td>{{ $tanggal ?:''}}</td>
                 @endfor
             </tr>
-        
+
             @php
                 $absenGroupedByMahasiswa = [];
                 foreach ($absens as $absen) {
                     $absenGroupedByMahasiswa[$absen->mahasiswas_id][] = $absen;
                 }
-        
+
                 $jumlahHadirPerKolom = array_fill(1, 7, 0);
             @endphp
-        
+
             @foreach ($absenGroupedByMahasiswa as $mahasiswaId => $absenItems)
                 @php
                     $mahasiswa = $absenItems[0]->mahasiswa;
                 @endphp
-        
+
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $mahasiswa->nim }}</td>
                     <td colspan="2">{{ $mahasiswa->nama_lengkap }}</td>
-        
+
                     @for ($i = 1; $i <= 7; $i++)
                         @php
                             $status = '';
@@ -200,25 +216,25 @@
                                     break;
                                 }
                             }
-        
+
                             if ($status === 'H' || $status === 'T') {
                                 $jumlahHadirPerKolom[$i]++;
                             }
                         @endphp
-                        <td>{{ $status ?: '-' }}</td>
+                        <td>{{ $status ?: '' }}</td>
                     @endfor
                 </tr>
             @endforeach
-        
+
             <tr>
                 <td></td>
                 <td colspan="3">Jumlah Yang Hadir</td>
                 @for ($i = 1; $i <= 7; $i++)
-                    <td>{{ $jumlahHadirPerKolom[$i] > 0 ? $jumlahHadirPerKolom[$i] : '-' }}</td>
+                    <td>{{ $jumlahHadirPerKolom[$i] > 0 ? $jumlahHadirPerKolom[$i] : '' }}</td>
                 @endfor
             </tr>
         </table>
-        
+
         <div class="signature-section">
             <div class="signature-box left">
                 <h5 style="margin-bottom:50px">Mengetahui</h5>
@@ -233,4 +249,5 @@
         </div>
     </div>
 </body>
+
 </html>

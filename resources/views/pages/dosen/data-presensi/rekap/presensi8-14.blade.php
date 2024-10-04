@@ -107,7 +107,16 @@
                 margin-bottom: 20px;
             }
         }
+        @page {
+            size: A4 portrait;
+            margin: 30px;
+        }
     </style>
+     <script>
+        window.onload = function () {
+            window.print(); 
+        };
+    </script>
 </head>
 
 <body>
@@ -172,7 +181,7 @@
                             }
                         }
                     @endphp
-                    <td>{{ $tanggal ?: '-' }}</td> 
+                    <td>{{ $tanggal ?: '' }}</td> 
                 @endfor
             </tr>
         
@@ -209,7 +218,7 @@
                                 $jumlahHadirPerKolom[$i]++;
                             }
                         @endphp
-                        <td>{{ $status ?: '-' }}</td>
+                        <td>{{ $status ?: '' }}</td>
                     @endfor
                 </tr>
             @endforeach
@@ -218,7 +227,7 @@
                 <td></td>
                 <td colspan="3">Jumlah Yang Hadir</td>
                 @for ($i = 8; $i <= 14; $i++)
-                    <td>{{ $jumlahHadirPerKolom[$i] > 0 ? $jumlahHadirPerKolom[$i] : '-' }}</td> 
+                    <td>{{ $jumlahHadirPerKolom[$i] > 0 ? $jumlahHadirPerKolom[$i] : '' }}</td> 
                 @endfor
             </tr>
         </table>

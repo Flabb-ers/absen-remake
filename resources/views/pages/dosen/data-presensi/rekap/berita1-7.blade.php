@@ -15,19 +15,25 @@
             flex-direction: column;
         }
 
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 20px;
+        }
+
         .kop-header {
             display: flex;
             justify-content: center;
             align-items: center;
             margin-bottom: 20px;
             text-align: center;
+            margin-top: -40px;
         }
 
         img {
             width: 80px;
-            margin-right: 100px;
-            margin-bottom: -80px;
-            margin-left: 190px
+            margin-left: 190px;
+            margin-bottom: -45px;
         }
 
         .kop-header h3 {
@@ -36,19 +42,18 @@
         }
 
         .header-info {
-            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            width: 100%;
             text-align: left;
         }
 
-        .header-info h5 {
-            display: inline-block;
-            width: 150px;
-            margin: 0;
-        }
-
-        .header-info h5.separator {
-            margin-right: 5px;
-            margin-left: -80px;
+        .header-info h4 {
+            font-size: 14px;
+            margin: 7px;
+            font-weight: normal;
         }
 
         table {
@@ -104,20 +109,6 @@
             width: 100%;
         }
 
-        .header-info {
-            display: flex;
-            justify-content: space-between; 
-            margin-top: 30px;
-            margin-bottom: 30px;
-            width: 100%;
-        }
-
-        .header-info h4 {
-            font-size: 14px;
-            margin: 7px;
-            font-weight: normal;
-        }
-
         @media print {
             body {
                 visibility: hidden;
@@ -147,8 +138,18 @@
             img {
                 margin-left: 170px;
             }
+
+            @page {
+                size: A4 landscape;
+                margin: 30px;
+            }
         }
     </style>
+    <script>
+        window.onload = function () {
+            window.print(); 
+        };
+    </script>
 </head>
 
 <body>
@@ -168,20 +169,21 @@
                 <h4 style="display: inline-block; width: 140px;">Dosen</h4>
                 <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
                 <h4 style="display: inline-block;">{{ $beritas->first()->dosen->nama }}</h4>
-                <br> 
+                <br>
                 <h4 style="display: inline-block; width: 140px;">Mata Kuliah</h4>
-                <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4> 
+                <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
                 <h4 style="display: inline-block;">{{ $beritas->first()->matkul->nama_matkul }}</h4>
             </div>
             <div>
                 <h4 style="display: inline-block; width: 200px;">Prodi</h4>
-                <h4 style="display: inline-block; margin-right: 5px; margin-left:-80px">:</h4> 
+                <h4 style="display: inline-block; margin-right: 5px; margin-left:-80px">:</h4>
                 <h4 style="display: inline-block;">{{ $beritas->first()->kelas->prodi->nama_prodi }}</h4>
-                
-                <br>    
+
+                <br>
                 <h4 style="display: inline-block; width: 200px;">Semester/Kelas</h4>
                 <h4 style="display: inline-block; margin-right: 5px; margin-left:-80px">:</h4>
-                <h4 style="display: inline-block;">Semester {{ $beritas->first()->kelas->semester->semester }}/{{ $beritas->first()->kelas->nama_kelas }}</h4>
+                <h4 style="display: inline-block;">Semester
+                    {{ $beritas->first()->kelas->semester->semester }}/{{ $beritas->first()->kelas->nama_kelas }}</h4>
             </div>
         </div>
 
@@ -196,19 +198,22 @@
                 <th class="tidak-hadir">Jml Mhs Tdk Hadir</th>
                 <th class="ttd-dosen">Ttd Dosen</th>
             </tr>
-            @foreach ($beritas as $berita)
+            @for ($i = 1; $i <= 7; $i++)
+                @php
+                    $berita = $beritas->firstWhere('pertemuan', $i);
+                @endphp
                 <tr>
-                    <td class="pertemuan-ke" style="text-align: center">{{ $berita->pertemuan }}</td>
+                    <td class="pertemuan-ke" style="text-align: center">{{ $i }}</td>
                     <td class="tanggal" style="text-align: center">
-                        {{ \Carbon\Carbon::parse($berita->tanggal)->format('d-m-Y') }}</td>
+                        {{ $berita ? \Carbon\Carbon::parse($berita->tanggal)->format('d-m-Y') : '' }}</td>
                     <td class="waktu" style="text-align: center">
-                        {{ \Carbon\Carbon::parse($berita->waktu)->format('H:i') }}</td>
-                    <td class="ikhtisar">{{ $berita->materi }}</td>
-                    <td class="hadir" style="text-align: center">{{ $berita->hadir }}</td>
-                    <td class="tidak-hadir" style="text-align: center">{{ $berita->tidak_hadir }}</td>
+                        {{ $berita ? \Carbon\Carbon::parse($berita->waktu)->format('H:i') : '' }}</td>
+                    <td class="ikhtisar">{{ $berita->materi ?? '' }}</td>
+                    <td class="hadir" style="text-align: center">{{ $berita->hadir ?? '' }}</td>
+                    <td class="tidak-hadir" style="text-align: center">{{ $berita->tidak_hadir ?? '' }}</td>
                     <td class="ttd-dosen"></td>
                 </tr>
-            @endforeach
+            @endfor
             <tr>
                 <td style="text-align: center;">UTS/UAS</td>
                 <td></td>
@@ -220,7 +225,7 @@
             </tr>
         </table>
         <div style="margin-top:15px;margin-bottom:5px">
-            Catatan : Daftar ini harsus diisi setiap perkuliahan sebagai dasar perhitungan honor mengajar
+            Catatan : Daftar ini harus diisi setiap perkuliahan sebagai dasar perhitungan honor mengajar
         </div>
     </div>
 </body>

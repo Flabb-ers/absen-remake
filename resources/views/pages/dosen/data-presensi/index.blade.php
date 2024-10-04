@@ -9,7 +9,7 @@
     <div class="main-panel">
         <div class="content-wrapper">
             <div class="row">
-                @foreach ($jadwals as $jadwal)
+                @forelse ($jadwals as $jadwal)
                     <div class="col-lg-4 col-md-6 col-sm-12 grid-margin stretch-card">
                         <div class="card text-bg-light mb-3">
                             <div class="card-header">{{ $jadwal->matkul->nama_matkul }}</div>
@@ -36,17 +36,17 @@
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        @if ($absens->isEmpty())
+                                        {{-- @if ($absens->isEmpty()) --}}
                                             <a href="/presensi/data-presensi/isi-presensi/{{ $jadwal->id }}"
                                                 class="btn btn-dark btn-sm w-100 mb-2">
                                                 <span class="mdi mdi-clipboard-edit-outline"></span> Isi Absensi
                                             </a>
-                                        @else
+                                        {{-- @else --}}
                                             <a href="/presensi/data-presensi/edit/{{ $pertemuanCounts[$jadwal->id] ?? 0 }}/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
                                                 class="btn btn-warning btn-sm w-100 mb-2">
                                                 <span class="mdi mdi-clipboard-edit-outline"></span> Edit Absensi
                                             </a>
-                                        @endif
+                                        {{-- @endif --}}
                                     </div>
                                 </div>
                                 
@@ -116,7 +116,11 @@
                             </div>
                         </div>
                     </div>
-                @endforeach
+                    @empty
+                    <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
+                        <p class="text-center">Belum Ada Jadwal 🎉🎉....</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>
