@@ -6,11 +6,15 @@
             <div class="row">
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
+                        <div class="card-header bg-white">
+                            <div class="p-2">
+                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#tambahModal">
+                                    <span class="mdi mdi-plus"></span> Tambah
+                                </button>
+                            </div>
+                        </div>
                         <div class="card-body">
-                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#tambahModal">
-                                <span class="mdi mdi-plus"></span> Tambah
-                            </button>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
@@ -75,7 +79,8 @@
                     <form id="tambahForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="namaProdi" class="form-label">Program Studi <span style="color: red;">*</span></label>
+                            <label for="namaProdi" class="form-label">Program Studi <span
+                                    style="color: red;">*</span></label>
                             <select class="form-select" id="namaProdi" name="id_prodi" required>
                                 <option selected disabled>--Program Studi--</option>
                                 @foreach ($prodis as $prodi)
@@ -95,7 +100,8 @@
                             <div class="invalid-feedback" id="errorSemester"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="jenisKelas" class="form-label">Jenis Kelas <span style="color: red;">*</span></label>
+                            <label for="jenisKelas" class="form-label">Jenis Kelas <span
+                                    style="color: red;">*</span></label>
                             <select class="form-select" id="jenisKelas" name="jenis_kelas" required>
                                 <option selected disabled>--Jenis Kelas--</option>
                                 <option value="Reguler">Reguler</option>
@@ -125,7 +131,8 @@
                         @method('PUT')
                         <input type="hidden" id="editKelasId" name="id">
                         <div class="mb-3">
-                            <label for="editNamaProdi" class="form-label">Program Studi <span style="color: red;">*</span></label>
+                            <label for="editNamaProdi" class="form-label">Program Studi <span
+                                    style="color: red;">*</span></label>
                             <select class="form-select" id="editNamaProdi" name="id_prodi" required>
                                 <option selected disabled>--Program Studi--</option>
                                 @foreach ($prodis as $prodi)
@@ -135,7 +142,8 @@
                             <div class="invalid-feedback" id="editErrorProdi"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="editSemester" class="form-label">Semester <span style="color: red;">*</span></label>
+                            <label for="editSemester" class="form-label">Semester <span
+                                    style="color: red;">*</span></label>
                             <select class="form-select" id="editSemester" name="id_semester" required>
                                 <option selected disabled>--Semester--</option>
                                 @foreach ($semesters as $semester)
@@ -145,7 +153,8 @@
                             <div class="invalid-feedback" id="editErrorSemester"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="editJenisKelas" class="form-label">Jenis Kelas <span style="color: red;">*</span></label>
+                            <label for="editJenisKelas" class="form-label">Jenis Kelas <span
+                                    style="color: red;">*</span></label>
                             <select class="form-select" id="editJenisKelas" name="jenis_kelas" required>
                                 <option selected disabled>--Jenis Kelas--</option>
                                 <option value="Reguler">Reguler</option>

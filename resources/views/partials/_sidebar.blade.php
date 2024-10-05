@@ -40,7 +40,7 @@
                 </ul>
             </div>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {{ Request::is('presensi/data-mahasiswa*') ? 'active' : '' }}">
             <a class="nav-link" href="/presensi/data-mahasiswa">
                 <i class="mdi mdi-calendar-month-outline menu-icon"></i>
                 <span class="menu-title">Mahasiswa</span>

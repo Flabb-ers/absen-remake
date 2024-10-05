@@ -16,7 +16,7 @@ class KaprodiController extends Controller
      */
     public function index()
     {
-        $kaprodis = Kaprodi::with('prodi')->get();
+        $kaprodis = Kaprodi::with('prodi')->latest()->get();
         $dosens = Dosen::all();
         $prodis = Prodi::all();
         return view('pages.data-master.data-kaprodi', compact('dosens', 'prodis', 'kaprodis'));

@@ -13,7 +13,7 @@ class ProdiController extends Controller
      */
     public function index()
     {
-        $prodis = Prodi::all();
+        $prodis = Prodi::latest()->get();
         return view('pages.data-master.data-prodi',compact('prodis'));
     }
 

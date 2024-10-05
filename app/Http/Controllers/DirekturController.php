@@ -14,7 +14,7 @@ class DirekturController extends Controller
      */
     public function index()
     {
-        $direkturs = Direktur::all();
+        $direkturs = Direktur::latest()->get();
         $dosens = Dosen::all();
         return view('pages.data-master.data-direktur', compact('direkturs', 'dosens'));
     }

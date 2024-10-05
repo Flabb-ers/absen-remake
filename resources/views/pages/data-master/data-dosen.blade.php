@@ -6,11 +6,15 @@
             <div class="row">
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
+                        <div class="card-header bg-white">
+                            <div class="p-2">
+                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#tambahModal">
+                                    <span class="mdi mdi-plus"></span> Tambah
+                                </button>
+                            </div>
+                        </div>
                         <div class="card-body">
-                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#tambahModal">
-                                <span class="mdi mdi-plus"></span> Tambah
-                            </button>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
@@ -235,7 +239,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalLabel">Edit Dosen</h5>
-                    <button type="button" class="btn-close close-edit" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close close-edit" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="editForm">
@@ -244,15 +249,18 @@
                         <div class="row">
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="nama" class="form-label">Nama Dosen <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" id="namaEdit" name="nama" placeholder="Nama Dosen">
+                                    <label for="nama" class="form-label">Nama Dosen <span
+                                            style="color: red;">*</span></label>
+                                    <input type="text" class="form-control form-control-sm" id="namaEdit"
+                                        name="nama" placeholder="Nama Dosen">
                                     <div id="namaErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="nidn" class="form-label">NIDN</label>
-                                    <input type="number" class="form-control form-control-sm" id="nidnEdit" name="nidn" placeholder="NIDN" min="1000000000" max="9999999999">
+                                    <input type="number" class="form-control form-control-sm" id="nidnEdit"
+                                        name="nidn" placeholder="NIDN" min="1000000000" max="9999999999">
                                     <div id="nidnErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -265,7 +273,8 @@
                                         <div class="form-group me-3">
                                             <div class="form-check form-check-primary">
                                                 <label class="form-check-label" for="jenis_kelamin_1Edit">
-                                                    <input type="radio" class="form-check-input" value="Laki-Laki" name="jenis_kelaminEdit" id="jenis_kelamin_1Edit">
+                                                    <input type="radio" class="form-check-input" value="Laki-Laki"
+                                                        name="jenis_kelaminEdit" id="jenis_kelamin_1Edit">
                                                     Laki-Laki
                                                 </label>
                                             </div>
@@ -273,7 +282,8 @@
                                         <div class="form-group me-3">
                                             <div class="form-check form-check-primary">
                                                 <label class="form-check-label" for="jenis_kelamin_2Edit">
-                                                    <input type="radio" class="form-check-input" value="Perempuan" name="jenis_kelaminEdit" id="jenis_kelamin_2Edit">
+                                                    <input type="radio" class="form-check-input" value="Perempuan"
+                                                        name="jenis_kelaminEdit" id="jenis_kelamin_2Edit">
                                                     Perempuan
                                                 </label>
                                             </div>
@@ -283,8 +293,10 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" id="no_telephoneEdit" name="no_telephone" placeholder="Nomor WhatsApp">
+                                    <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif <span
+                                            style="color: red;">*</span></label>
+                                    <input type="text" class="form-control form-control-sm" id="no_telephoneEdit"
+                                        name="no_telephone" placeholder="Nomor WhatsApp">
                                     <div id="noTelephoneErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -292,7 +304,8 @@
                         <div class="row">
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="agama" class="form-label">Agama <span style="color: red;">*</span></label>
+                                    <label for="agama" class="form-label">Agama <span
+                                            style="color: red;">*</span></label>
                                     <select class="form-select" id="agamaEdit" name="agama">
                                         <option selected disabled>--Agama--</option>
                                         <option value="Islam">Islam</option>
@@ -307,25 +320,31 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="tanggal_lahir" class="form-label">Tanggal Lahir <span style="color: red;">*</span></label>
-                                    <input type="date" class="form-control form-control-sm" id="tanggal_lahirEdit" name="tanggal_lahir" placeholder="Tanggal Lahir">
+                                    <label for="tanggal_lahir" class="form-label">Tanggal Lahir <span
+                                            style="color: red;">*</span></label>
+                                    <input type="date" class="form-control form-control-sm" id="tanggal_lahirEdit"
+                                        name="tanggal_lahir" placeholder="Tanggal Lahir">
                                     <div id="tanggalLahirErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
                         </div>
-    
+
                         <div class="row">
                             <div class="col-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="tempat_lahir" class="form-label">Tempat Lahir <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" id="tempat_lahirEdit" name="tempat_lahir" placeholder="Tempat Lahir">
+                                    <label for="tempat_lahir" class="form-label">Tempat Lahir <span
+                                            style="color: red;">*</span></label>
+                                    <input type="text" class="form-control form-control-sm" id="tempat_lahirEdit"
+                                        name="tempat_lahir" placeholder="Tempat Lahir">
                                     <div id="tempatLahirErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Email <span style="color: red;">*</span></label>
-                                    <input type="email" class="form-control form-control-sm" id="emailEdit" name="email" placeholder="Email">
+                                    <label for="email" class="form-label">Email <span
+                                            style="color: red;">*</span></label>
+                                    <input type="email" class="form-control form-control-sm" id="emailEdit"
+                                        name="email" placeholder="Email">
                                     <div id="emailErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -335,7 +354,8 @@
                                     <div class="form-group me-3">
                                         <div class="form-check form-check-primary">
                                             <label class="form-check-label" for="status_aktifEdit">
-                                                <input class="form-check-input" type="radio" name="status" id="status_aktifEdit" value="1">
+                                                <input class="form-check-input" type="radio" name="status"
+                                                    id="status_aktifEdit" value="1">
                                                 Aktif
                                             </label>
                                         </div>
@@ -343,7 +363,8 @@
                                     <div class="form-group me-3">
                                         <div class="form-check form-check-primary">
                                             <label class="form-check-label" for="status_non_aktifEdit">
-                                                <input class="form-check-input" type="radio" name="status" id="status_non_aktifEdit" value="0">
+                                                <input class="form-check-input" type="radio" name="status"
+                                                    id="status_non_aktifEdit" value="0">
                                                 Non-Aktif
                                             </label>
                                         </div>
@@ -351,7 +372,7 @@
                                 </div>
                             </div>
                         </div>
-    
+
                         <button type="submit" class="btn btn-primary btn-sm">
                             <span class="mdi mdi-content-save"></span> Simpan
                         </button>
@@ -360,7 +381,7 @@
             </div>
         </div>
     </div>
-    
+
 
 
 

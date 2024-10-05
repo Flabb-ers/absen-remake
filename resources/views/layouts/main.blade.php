@@ -50,7 +50,7 @@
             <!-- partial:partials/_sidebar.html -->
             @include('partials._sidebar')
             <!-- partial -->
-            @yield('container')``
+            @yield('container')
             <!-- main-panel ends -->
         </div>
         <!-- page-body-wrapper ends -->

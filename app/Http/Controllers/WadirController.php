@@ -14,7 +14,7 @@ class WadirController extends Controller
      */
     public function index()
     {
-        $wadirs = Wadir::all();
+        $wadirs = Wadir::latest()->get();
         $dosens = Dosen::all();
         return view('pages.data-master.data-wadir', compact('wadirs', 'dosens'));
     }

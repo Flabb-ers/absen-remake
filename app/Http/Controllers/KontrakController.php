@@ -16,7 +16,7 @@ class KontrakController extends Controller
      */
     public function index()
     {
-        $jadwals = Jadwal::with('dosen', 'matkul', 'kelas.prodi', 'ruangan')->get();
+        $jadwals = Jadwal::with('dosen', 'matkul', 'kelas.prodi', 'ruangan')->latest()->get();
         $pertemuanCounts = [];
         foreach ($jadwals as $jadwal) {
             $pertemuan = Kontrak::where('jadwals_id', $jadwal->id)->max('pertemuan');

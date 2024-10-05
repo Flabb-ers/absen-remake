@@ -6,11 +6,15 @@
             <div class="row">
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
+                        <div class="card-header bg-white">
+                            <div class="p-2">
+                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#tambahModal">
+                                    <span class="mdi mdi-plus"></span> Tambah
+                                </button>
+                            </div>
+                        </div>
                         <div class="card-body">
-                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#tambahModal">
-                                <span class="mdi mdi-plus"></span> Tambah
-                            </button>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
@@ -125,19 +129,22 @@
                         @csrf
                         <input type="hidden" id="edit-id" name="id">
                         <div class="mb-3">
-                            <label for="kodeProdi" class="form-label">Kode Prodi <span style="color: red;">*</span></label>
+                            <label for="kodeProdi" class="form-label">Kode Prodi <span
+                                    style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="edit-kode" name="kode_prodi"
                                 placeholder="Kode prodi">
                             <div id="edit-kodeError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="namaProdi" class="form-label">Nama Prodi <span style="color: red;">*</span></label>
+                            <label for="namaProdi" class="form-label">Nama Prodi <span
+                                    style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="edit-nama" name="nama_prodi"
                                 placeholder="Nama prodi">
                             <div id="edit-namaError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="singkatan" class="form-label">Singkatan <span style="color: red;">*</span></label>
+                            <label for="singkatan" class="form-label">Singkatan <span
+                                    style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="edit-singkatan"
                                 name="singkatan" placeholder="Singkatan">
                             <div id="edit-singkatanError" class="invalid-feedback"></div>

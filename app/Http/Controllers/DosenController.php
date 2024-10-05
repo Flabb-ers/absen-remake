@@ -14,7 +14,7 @@ class DosenController extends Controller
      */
     public function index()
     {
-        $dosens = Dosen::all();
+        $dosens = Dosen::latest()->get();
         return view('pages.data-master.data-dosen', compact('dosens'));
     }
 

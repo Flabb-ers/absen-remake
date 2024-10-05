@@ -38,21 +38,22 @@ Route::prefix('/presensi')->group(function () {
     });
     // Data Master
     Route::prefix('/data-master')->group(function () {
-        Route::resource('/data-kelas', KelasController::class);
-        Route::resource('/data-matkul', MatkulController::class);
-        Route::resource('/data-prodi', ProdiController::class);
-        Route::resource('/data-semester', SemesterController::class);
+        Route::resource('/data-kelas', KelasController::class)->except(['show']);
+        Route::resource('/data-matkul', MatkulController::class)->except(['show']);
+        Route::resource('/data-prodi', ProdiController::class)->except(['show']);
+        Route::resource('/data-semester', SemesterController::class)->except(['show']);
         Route::put('/status', [SemesterController::class, 'gantiStatus'])->name('status.update');
-        Route::resource('/data-ruangan', RuanganController::class);
-        Route::resource('/data-tahun-akademik', TahunAkademikController::class);
-        Route::resource('/data-direktur', DirekturController::class);
-        Route::resource('/data-dosen', DosenController::class);
-        Route::resource('/data-kaprodi', KaprodiController::class);
-        Route::resource('/data-wadir', WadirController::class);
+        Route::resource('/data-ruangan', RuanganController::class)->except(['show']);
+        Route::resource('/data-tahun-akademik', TahunAkademikController::class)->except(['show']);
+        Route::resource('/data-direktur', DirekturController::class)->except(['show']);
+        Route::resource('/data-dosen', DosenController::class)->except(['show']);
+        Route::resource('/data-kaprodi', KaprodiController::class)->except(['show']);;
+        Route::resource('/data-wadir', WadirController::class)->except(['show']);
     });
 
     // MAHASISWA
-    Route::resource('/data-mahasiswa', MahasiswaController::class);
+    Route::resource('/data-mahasiswa', MahasiswaController::class)->except(['show']);
+    Route::get('/data-mahasiswa/{nama_kelas}',[MahasiswaController::class,'kelas']);
 
     // JADWAL
     Route::resource('/jadwal-mengajar', JadwalController::class);
