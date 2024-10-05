@@ -85,7 +85,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="matkul" class="form-label">Matkul</label>
+                                    <label for="matkul" class="form-label">Matkul <span style="color: red;">*</span></label>
                                     <select class="form-select" id="matkul" name="matkul">
                                         <option selected>--Matkul--</option>
                                         @foreach ($matkuls as $matkul)
@@ -100,14 +100,14 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="sks" class="form-label">SKS</label>
+                                    <label for="sks" class="form-label">SKS </label>
                                     <input type="text" class="form-control form-control-sm" id="sks" name="sks"
                                         disabled>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="dosen" class="form-label">Dosen</label>
+                                    <label for="dosen" class="form-label">Dosen <span style="color: red;">*</span></label>
                                     <select class="form-select" id="dosen" name="dosen">
                                         <option selected>--Dosen--</option>
                                         @foreach ($dosens as $dosen)
@@ -122,7 +122,7 @@
                         <div class="row">
                             <div class="col">
                                 <div class="mb-3">
-                                    <label class="form-label">Pilih Hari</label>
+                                    <label class="form-label">Pilih Hari <span style="color: red;">*</span></label>
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col col-md-2">
@@ -180,7 +180,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="kelas" class="form-label">Kelas</label>
+                                    <label for="kelas" class="form-label">Kelas <span style="color: red;">*</span></label>
                                     <select class="form-select" id="kelas" name="kelas">
                                         <option selected>--Kelas--</option>
                                         @foreach ($kelass as $kelas)
@@ -192,14 +192,14 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="tahun" class="form-label">Tahun Akademik</label>
+                                    <label for="tahun" class="form-label">Tahun Akademik <span style="color: red;">*</span></label>
                                     <input type="text" class="form-control form-control-sm" id="tahun"
                                         name="tahun" disabled value="{{ $tahun->tahun_akademik }}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="ruangan" class="form-label">Ruangan</label>
+                                    <label for="ruangan" class="form-label">Ruangan <span style="color: red;">*</span></label>
                                     <select class="form-select" id="ruangan" name="ruangan">
                                         <option selected>--Ruangan--</option>
                                         @foreach ($ruangans as $ruangan)
@@ -214,7 +214,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="jamMulai" class="form-label">Jam Mulai</label>
+                                    <label for="jamMulai" class="form-label">Jam Mulai <span style="color: red;">*</span></label>
                                     <input type="time" class="form-control form-control-sm" id="jamMulai"
                                         name="jam_mulai">
                                     <div class="invalid-feedback" id="jamMulaiError"></div>
@@ -222,7 +222,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="jamSelesai" class="form-label">Jam Selesai</label>
+                                    <label for="jamSelesai" class="form-label">Jam Selesai <span style="color: red;">*</span></label>
                                     <input type="time" class="form-control form-control-sm" id="jamSelesai"
                                         name="jam_selesai">
                                     <div class="invalid-feedback" id="jamSelesaiError"></div>
@@ -254,7 +254,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="editMatkul" class="form-label">Matkul</label>
+                                    <label for="editMatkul" class="form-label">Matkul <span style="color: red;">*</span></label>
                                     <select class="form-select" id="editMatkul" name="matkul" required>
                                         <option selected>--Matkul--</option>
                                         @foreach ($matkuls as $matkul)
@@ -269,7 +269,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="editSks" class="form-label">SKS</label>
+                                    <label for="editSks" class="form-label">SKS <span style="color: red;">*</span></label>
                                     <input type="text" class="form-control form-control-sm" id="editSks"
                                         name="sks" disabled>
                                     <div class="invalid-feedback" id="editSksError"></div>
@@ -277,7 +277,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="editDosen" class="form-label">Dosen</label>
+                                    <label for="editDosen" class="form-label">Dosen <span style="color: red;">*</span></label>
                                     <select class="form-select" id="editDosen" name="dosen" required>
                                         <option selected>--Dosen--</option>
                                         @foreach ($dosens as $dosen)
@@ -292,7 +292,7 @@
                         <div class="row">
                             <div class="col">
                                 <div class="mb-3">
-                                    <label class="form-label">Pilih Hari</label>
+                                    <label class="form-label">Pilih Hari <span style="color: red;">*</span></label>
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col col-md-2">
@@ -350,7 +350,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="editKelas" class="form-label">Kelas</label>
+                                    <label for="editKelas" class="form-label">Kelas <span style="color: red;">*</span></label>
                                     <select class="form-select" id="editKelas" name="kelas" required>
                                         <option selected>--Kelas--</option>
                                         @foreach ($kelass as $kelas)
@@ -362,14 +362,14 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="tahunEdit" class="form-label">Tahun Akademik</label>
+                                    <label for="tahunEdit" class="form-label">Tahun Akademik <span style="color: red;">*</span></label>
                                     <input type="text" class="form-control form-control-sm" id="tahunEdit"
                                         name="tahunEdit" disabled>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="editRuangan" class="form-label">Ruangan</label>
+                                    <label for="editRuangan" class="form-label">Ruangan <span style="color: red;">*</span></label>
                                     <select class="form-select" id="editRuangan" name="ruangan" required>
                                         <option selected>--Ruangan--</option>
                                         @foreach ($ruangans as $ruangan)
@@ -384,7 +384,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="editJamMulai" class="form-label">Jam Mulai</label>
+                                    <label for="editJamMulai" class="form-label">Jam Mulai <span style="color: red;">*</span></label>
                                     <input type="time" class="form-control form-control-sm" id="editJamMulai"
                                         name="jam_mulai" required>
                                     <div class="invalid-feedback" id="editJamMulaiError"></div>
@@ -392,7 +392,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="editJamSelesai" class="form-label">Jam Selesai</label>
+                                    <label for="editJamSelesai" class="form-label">Jam Selesai <span style="color: red;">*</span></label>
                                     <input type="time" class="form-control form-control-sm" id="editJamSelesai"
                                         name="jam_selesai" required>
                                     <div class="invalid-feedback" id="editJamSelesaiError"></div>

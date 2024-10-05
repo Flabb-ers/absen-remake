@@ -21,7 +21,7 @@ class SemesterController extends Controller
             ->whereRaw('semester % 2 = 0')
             ->first();
 
-        $semesters = Semester::all();
+        $semesters = Semester::orderBy('semester', 'asc')->get();
         return view('pages.data-master.data-semester', compact('semesters', 'ganjil', 'genap'));
     }
 
@@ -42,11 +42,35 @@ class SemesterController extends Controller
             "semester.max" => "Maksimal 2 digit"
         ]);
 
+        $activeSemester = Semester::where('status', 1)->first();
+        $newSemesterIsEven = $validatedData['semester'] % 2 == 0;
+        $status = 0;
+
+        if ($activeSemester) {
+            $activeSemesterIsEven = $activeSemester->semester % 2 == 0;
+
+            if ($newSemesterIsEven == $activeSemesterIsEven) {
+                $activeSemester->update(['status' => 0]);
+                $status = 1;
+            }
+        } else {
+            $status = 1;
+        }
+
         $semester = Semester::create([
-            'semester' => $validatedData['semester']
+            'semester' => $validatedData['semester'],
+            'status' => $status
         ]);
 
-        return response()->json(['success' => 'Semester berhasil ditambahkan', 'semester' => $semester]);
+        if (!Semester::where('status', 1)->exists()) {
+            $activeSemester->update(['status' => 1]);
+        }
+
+        return response()->json([
+            'success' => 'Semester berhasil ditambahkan',
+            'semester' => $semester,
+            'active_semester' => Semester::where('status', 1)->first()
+        ]);
     }
 
 

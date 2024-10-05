@@ -53,6 +53,9 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="mt-3">
+                                {{ $kelass->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -72,7 +75,7 @@
                     <form id="tambahForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="namaProdi" class="form-label">Program Studi</label>
+                            <label for="namaProdi" class="form-label">Program Studi <span style="color: red;">*</span></label>
                             <select class="form-select" id="namaProdi" name="id_prodi" required>
                                 <option selected disabled>--Program Studi--</option>
                                 @foreach ($prodis as $prodi)
@@ -82,7 +85,7 @@
                             <div class="invalid-feedback" id="errorProdi"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="semester" class="form-label">Semester</label>
+                            <label for="semester" class="form-label">Semester <span style="color: red;">*</span></label>
                             <select class="form-select" id="semester" name="id_semester" required>
                                 <option selected disabled>--Semester--</option>
                                 @foreach ($semesters as $semester)
@@ -92,7 +95,7 @@
                             <div class="invalid-feedback" id="errorSemester"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="jenisKelas" class="form-label">Jenis Kelas</label>
+                            <label for="jenisKelas" class="form-label">Jenis Kelas <span style="color: red;">*</span></label>
                             <select class="form-select" id="jenisKelas" name="jenis_kelas" required>
                                 <option selected disabled>--Jenis Kelas--</option>
                                 <option value="Reguler">Reguler</option>
@@ -122,7 +125,7 @@
                         @method('PUT')
                         <input type="hidden" id="editKelasId" name="id">
                         <div class="mb-3">
-                            <label for="editNamaProdi" class="form-label">Program Studi</label>
+                            <label for="editNamaProdi" class="form-label">Program Studi <span style="color: red;">*</span></label>
                             <select class="form-select" id="editNamaProdi" name="id_prodi" required>
                                 <option selected disabled>--Program Studi--</option>
                                 @foreach ($prodis as $prodi)
@@ -132,7 +135,7 @@
                             <div class="invalid-feedback" id="editErrorProdi"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="editSemester" class="form-label">Semester</label>
+                            <label for="editSemester" class="form-label">Semester <span style="color: red;">*</span></label>
                             <select class="form-select" id="editSemester" name="id_semester" required>
                                 <option selected disabled>--Semester--</option>
                                 @foreach ($semesters as $semester)
@@ -142,7 +145,7 @@
                             <div class="invalid-feedback" id="editErrorSemester"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="editJenisKelas" class="form-label">Jenis Kelas</label>
+                            <label for="editJenisKelas" class="form-label">Jenis Kelas <span style="color: red;">*</span></label>
                             <select class="form-select" id="editJenisKelas" name="jenis_kelas" required>
                                 <option selected disabled>--Jenis Kelas--</option>
                                 <option value="Reguler">Reguler</option>

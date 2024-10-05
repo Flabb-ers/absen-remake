@@ -25,7 +25,7 @@ class DosenController extends Controller
     {
         $validateData = $request->validate([
             'nama' => 'required',
-            'nidn' => 'required|numeric|unique:dosens,nidn',
+            'nidn' => 'numeric|digits:10|nullable|unique:dosens,nidn',
             'jenis_kelamin' => 'required',
             'no_telephone' => 'required|string|max:15|unique:dosens,no_telephone',
             'agama' => 'required|string',
@@ -35,9 +35,9 @@ class DosenController extends Controller
             'password' => 'required'
         ], [
             'nama.required' => 'Nama Dosen harus diisi',
-            'nidn.required' => 'NIDN harus diisi',
+            'nidn.numeric' => 'NIDN harus berupa angka',
+            'nidn.digits' => 'NIDN harus terdiri dari 10 digit',
             'nidn.unique' => 'NIDN sudah terdaftar',
-            'nidn.numeric' => 'NIDN harus angka',
             'jenis_kelamin.required' => 'Jenis kelamin harus dipilih',
             'no_telephone.required' => 'Nomor WhatsApp harus diisi',
             'no_telephone.unique' => 'Nomor WhatsApp sudah terdaftar',
@@ -68,13 +68,14 @@ class DosenController extends Controller
 
 
 
+
     public function update(Request $request, $id)
     {
         $dosen = Dosen::findOrFail($id);
-
+    
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nidn' => 'required|integer|unique:dosens,nidn,' . $dosen->id,
+            'nidn' => 'nullable|numeric|digits:10|unique:dosens,nidn,' . $dosen->id,
             'jenis_kelamin' => 'required|string',
             'no_telephone' => 'required|string|max:15|unique:dosens,no_telephone,' . $dosen->id,
             'agama' => 'required|string',
@@ -84,8 +85,8 @@ class DosenController extends Controller
             'email' => 'required|email|unique:dosens,email,' . $dosen->id,
         ], [
             'nama.required' => 'Nama dosen harus diisi',
-            'nidn.required' => 'NIDN harus diisi',
-            'nidn.unique' => 'NIDN sudah terdaftar',
+            'nidn.numeric' => 'NIDN harus angka',
+            'nidn.digits' => 'NIDN harus terdiri 10 digit',
             'jenis_kelamin.required' => 'Jenis kelamin harus dipilih',
             'no_telephone.required' => 'Nomor WhatsApp harus diisi',
             'no_telephone.unique' => 'Nomor WhatsApp sudah terdaftar',
@@ -97,7 +98,7 @@ class DosenController extends Controller
             'email.unique' => 'Email sudah digunakan',
             'status.required' => 'Status harus dipilih',
         ]);
-
+    
         $kolomUpdate = [
             'nama',
             'nidn',
@@ -110,16 +111,17 @@ class DosenController extends Controller
         ];
         
         foreach ($kolomUpdate as $kolom) {
-            if ($dosen->$kolom !== $request->$kolom) {
+            if ($request->$kolom !== null && $dosen->$kolom !== $request->$kolom) {
                 $dosen->$kolom = $request->$kolom;
             }
         }
-
+    
         $dosen->status = $request->status;
         $dosen->save();
-
+    
         return response()->json(['success' => 'Data dosen berhasil diperbarui']);
     }
+    
 
 
 

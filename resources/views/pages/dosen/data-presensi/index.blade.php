@@ -20,7 +20,7 @@
                                     <li><strong>SKS:</strong> {{ $jadwal->matkul->praktek + $jadwal->matkul->teori }}</li>
                                     <li><strong>Hari:</strong> {{ $jadwal->hari }}</li>
                                     <li><strong>Waktu:</strong>
-                                        {{ Carbon::parse($jadwal->waktu_mulai)->format('H:i') }} - 
+                                        {{ Carbon::parse($jadwal->waktu_mulai)->format('H:i') }} -
                                         {{ Carbon::parse($jadwal->waktu_selesai)->format('H:i') }}
                                     </li>
                                     <li><strong>Kelas:</strong> {{ $jadwal->kelas->nama_kelas }}</li>
@@ -36,20 +36,60 @@
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        {{-- @if ($absens->isEmpty()) --}}
-                                            <a href="/presensi/data-presensi/isi-presensi/{{ $jadwal->id }}"
-                                                class="btn btn-dark btn-sm w-100 mb-2">
-                                                <span class="mdi mdi-clipboard-edit-outline"></span> Isi Absensi
-                                            </a>
-                                        {{-- @else --}}
-                                            <a href="/presensi/data-presensi/edit/{{ $pertemuanCounts[$jadwal->id] ?? 0 }}/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
-                                                class="btn btn-warning btn-sm w-100 mb-2">
-                                                <span class="mdi mdi-clipboard-edit-outline"></span> Edit Absensi
-                                            </a>
-                                        {{-- @endif --}}
+                                        @if (($pertemuanCounts[$jadwal->id] ?? 0) < 14)
+                                            @if ($absens->isEmpty())
+                                                <a href="/presensi/data-presensi/isi-presensi/{{ $jadwal->id }}"
+                                                    class="btn btn-dark btn-sm w-100 mb-2">
+                                                    <span class="mdi mdi-clipboard-edit-outline"></span> Isi Presensi
+                                                </a>
+                                            @else
+                                                <a href="/presensi/data-presensi/edit/{{ $pertemuanCounts[$jadwal->id] ?? 0 }}/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
+                                                    class="btn btn-warning btn-sm w-100 mb-2">
+                                                    <span class="mdi mdi-clipboard-edit-outline"></span> Edit Presensi
+                                                </a>
+                                            @endif
+                                        @else
+                                            <button class="btn btn-secondary btn-sm w-100 mb-2" disabled>
+                                                <span class="mdi mdi-clipboard-edit-outline"></span> Presensi Sudah Selesai
+                                            </button>
+                                        @endif
                                     </div>
                                 </div>
-                                
+
+                                <div class="row mb-2">
+                                    <div class="col-md-12">
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-success dropdown-toggle w-100" type="button"
+                                                id="dropdownMenuSizeButton2" data-bs-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false">Rekap Presensi</button>
+                                            <div class="dropdown-menu  w-100" aria-labelledby="dropdownMenuSizeButton2">
+                                                <li>
+                                                    <a href="/presensi/data-presensi/rekap/1-7/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
+                                                        class="dropdown-item text-center">
+                                                        <span class="mdi mdi-file-document-outline"></span> Pertemuan 1 - 7
+                                                    </a>
+                                                </li>
+                                                @if (($pertemuanCounts[$jadwal->id] ?? 0) >= 8)
+                                                    <li>
+                                                        <a href="/presensi/data-presensi/rekap/8-14/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
+                                                            class="dropdown-item text-center">
+                                                            <span class="mdi mdi-file-document-outline"></span> Pertemuan 8
+                                                            - 14
+                                                        </a>
+                                                    </li>
+                                                @else
+                                                    <li>
+                                                        <a class="dropdown-item disabled text-center">
+                                                            <span class="mdi mdi-file-document-outline"></span> Pertemuan 8
+                                                            - 14
+                                                        </a>
+                                                    </li>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="dropdown">
@@ -67,13 +107,15 @@
                                                     <li>
                                                         <a href="/presensi/data-presensi/rekap/berita-acara-perkuliahan/8-14/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
                                                             class="dropdown-item text-center">
-                                                            <span class="mdi mdi-file-document-outline"></span> Pertemuan 8 - 14
+                                                            <span class="mdi mdi-file-document-outline"></span> Pertemuan 8
+                                                            - 14
                                                         </a>
                                                     </li>
                                                 @else
                                                     <li>
                                                         <a class="dropdown-item disabled text-center">
-                                                            <span class="mdi mdi-file-document-outline"></span> Pertemuan 8 - 14
+                                                            <span class="mdi mdi-file-document-outline"></span> Pertemuan 8
+                                                            - 14
                                                         </a>
                                                     </li>
                                                 @endif
@@ -82,41 +124,11 @@
                                     </div>
                                 </div>
 
-                                <div class="row mt-2">
-                                    <div class="col-md-12">
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-success dropdown-toggle w-100" type="button"
-                                                id="dropdownMenuSizeButton2" data-bs-toggle="dropdown" aria-haspopup="true"
-                                                aria-expanded="false">Rekap Presensi</button>
-                                            <div class="dropdown-menu  w-100" aria-labelledby="dropdownMenuSizeButton2">
-                                                <li>
-                                                    <a href="/presensi/data-presensi/rekap/1-7/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
-                                                        class="dropdown-item text-center">
-                                                        <span class="mdi mdi-file-document-outline"></span> Pertemuan 1 - 7
-                                                    </a>
-                                                </li>
-                                                @if (($pertemuanCounts[$jadwal->id] ?? 0) >= 8)
-                                                    <li>
-                                                        <a href="/presensi/data-presensi/rekap/8-14/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
-                                                            class="dropdown-item text-center">
-                                                            <span class="mdi mdi-file-document-outline"></span> Pertemuan 8 - 14
-                                                        </a>
-                                                    </li>
-                                                @else
-                                                    <li>
-                                                        <a class="dropdown-item disabled text-center">
-                                                            <span class="mdi mdi-file-document-outline"></span> Pertemuan 8 - 14
-                                                        </a>
-                                                    </li>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </div>
-                    @empty
+                @empty
                     <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
                         <p class="text-center">Belum Ada Jadwal 🎉🎉....</p>
                     </div>

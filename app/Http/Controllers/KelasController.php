@@ -15,8 +15,8 @@ class KelasController extends Controller
     public function index()
     {
         $prodis = Prodi::all();
-        $semesters = Semester::all();
-        $kelass = Kelas::with(['semester', 'prodi'])->get();
+        $semesters = Semester::orderBy('semester','asc')->get();
+        $kelass = Kelas::with(['semester', 'prodi'])->paginate(6);
         return view('pages.data-master.data-kelas', compact('prodis', 'semesters', 'kelass'));
     }
 

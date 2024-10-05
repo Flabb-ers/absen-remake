@@ -79,26 +79,26 @@
                     <form id="tambahForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="kodeProdi" class="form-label">Kode Prodi</label>
+                            <label for="kodeProdi" class="form-label">Kode Prodi <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="kodeProdi" name="kode_prodi"
                                 placeholder="Kode prodi">
                             <div id="kodeError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="namaProdi" class="form-label">Nama Prodi</label>
+                            <label for="namaProdi" class="form-label">Nama Prodi <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="namaProdi" name="nama_prodi"
                                 placeholder="Nama prodi">
                             <div id="namaError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="singkatan" class="form-label">Singkatan</label>
+                            <label for="singkatan" class="form-label">Singkatan <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="singkatan" name="singkatan"
                                 placeholder="Singkatan">
                             <div id="singkatanError" class="invalid-feedback"></div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="jenjang" class="form-label">Jenjang</label>
+                            <label for="jenjang" class="form-label">Jenjang <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="jenjang" name="jenjang"
                                 placeholder="Jenjang">
                             <div id="jenjangError" class="invalid-feedback"></div>
@@ -125,26 +125,26 @@
                         @csrf
                         <input type="hidden" id="edit-id" name="id">
                         <div class="mb-3">
-                            <label for="kodeProdi" class="form-label">Kode Prodi</label>
+                            <label for="kodeProdi" class="form-label">Kode Prodi <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="edit-kode" name="kode_prodi"
                                 placeholder="Kode prodi">
                             <div id="edit-kodeError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="namaProdi" class="form-label">Nama Prodi</label>
+                            <label for="namaProdi" class="form-label">Nama Prodi <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="edit-nama" name="nama_prodi"
                                 placeholder="Nama prodi">
                             <div id="edit-namaError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="singkatan" class="form-label">Singkatan</label>
+                            <label for="singkatan" class="form-label">Singkatan <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="edit-singkatan"
                                 name="singkatan" placeholder="Singkatan">
                             <div id="edit-singkatanError" class="invalid-feedback"></div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="jenjang" class="form-label">Jenjang</label>
+                            <label for="jenjang" class="form-label">Jenjang <span style="color: red;">*</span>s</label>
                             <input type="text" class="form-control form-control-sm" id="edit-jenjang" name="jenjang"
                                 placeholder="Jenjang">
                             <div id="edit-jenjangError" class="invalid-feedback"></div>

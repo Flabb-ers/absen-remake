@@ -29,7 +29,7 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $dosen->nama }}</td>
-                                                <td>{{ $dosen->nidn }}</td>
+                                                <td>{{ $dosen->nidn ?: '-' }}</td>
                                                 <td>{{ $dosen->jenis_kelamin }}</td>
                                                 @if ($dosen->status == 1)
                                                     <td><span class="bg-success rounded"
@@ -105,15 +105,16 @@
                     <form id="tambahForm">
                         @csrf
                         <div class="row">
-                            <div class="col col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="nama" class="form-label">Nama Dosen</label>
+                                    <label for="nama" class="form-label">Nama Dosen <span
+                                            style="color: red;">*</span></label>
                                     <input type="text" class="form-control form-control-sm" id="nama" name="nama"
                                         placeholder="Nama Dosen" autocomplete="off">
                                     <div id="namaError" class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            <div class="col col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="nidn" class="form-label">NIDN</label>
                                     <input type="number" class="form-control form-control-sm" id="nidn" name="nidn"
@@ -124,9 +125,9 @@
                         </div>
 
                         <div class="row">
-                            <div class="col col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div>
-                                    <label class="form-label">Jenis Kelamin</label><br>
+                                    <label class="form-label">Jenis Kelamin <span style="color: red;">*</span></label><br>
                                     <div class="d-flex flex-wrap">
                                         <div class="form-group me-3">
                                             <div class="form-check form-check-primary">
@@ -149,9 +150,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif</label>
+                                    <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif <span
+                                            style="color: red;">*</span></label>
                                     <input type="text" class="form-control form-control-sm" id="no_telephone"
                                         name="no_telephone" placeholder="Nomor WhatsApp" autocomplete="off">
                                     <div id="noTelephoneError" class="invalid-feedback"></div>
@@ -160,9 +162,10 @@
                         </div>
 
                         <div class="row">
-                            <div class="col col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="agama" class="form-label">Agama</label>
+                                    <label for="agama" class="form-label">Agama <span
+                                            style="color: red;">*</span></label>
                                     <select class="form-select" id="agama" name="agama">
                                         <option selected disabled>--Agama--</option>
                                         <option value="Islam">Islam</option>
@@ -175,9 +178,10 @@
                                     <div id="agamaError" class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            <div class="col col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+                                    <label for="tanggal_lahir" class="form-label">Tanggal Lahir <span
+                                            style="color: red;">*</span></label>
                                     <input type="date" class="form-control form-control-sm" id="tanggal_lahir"
                                         name="tanggal_lahir" placeholder="Tanggal Lahir" autocomplete="off">
                                     <div id="tanggalLahirError" class="invalid-feedback"></div>
@@ -186,25 +190,28 @@
                         </div>
 
                         <div class="row">
-                            <div class="col col-md-4">
+                            <div class="col-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="tempat_lahir" class="form-label">Tempat Lahir</label>
+                                    <label for="tempat_lahir" class="form-label">Tempat Lahir <span
+                                            style="color: red;">*</span></label>
                                     <input type="text" class="form-control form-control-sm" id="tempat_lahir"
                                         name="tempat_lahir" placeholder="Tempat Lahir" autocomplete="off">
                                     <div id="tempatLahirError" class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            <div class="col col-md-4">
+                            <div class="col-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
+                                    <label for="email" class="form-label">Email <span
+                                            style="color: red;">*</span></label>
                                     <input type="email" class="form-control form-control-sm" id="email"
                                         name="email" placeholder="Email" autocomplete="off">
                                     <div id="emailError" class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            <div class="col col-md-4">
+                            <div class="col-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
+                                    <label for="password" class="form-label">Password <span
+                                            style="color: red;">*</span></label>
                                     <input type="password" class="form-control form-control-sm" id="password"
                                         name="password" placeholder="Password" autocomplete="off">
                                     <div id="passwordError" class="invalid-feedback"></div>
@@ -221,47 +228,44 @@
         </div>
     </div>
 
+
     {{-- edit --}}
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalLabel">Edit Dosen</h5>
-                    <button type="button" class="btn-close close-edit" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                    <button type="button" class="btn-close close-edit" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="editForm">
                         @csrf
                         <input type="hidden" id="dosen_id" name="id">
                         <div class="row">
-                            <div class="col col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="nama" class="form-label">Nama Dosen</label>
-                                    <input type="text" class="form-control form-control-sm" id="namaEdit"
-                                        name="nama" placeholder="Nama Dosen">
+                                    <label for="nama" class="form-label">Nama Dosen <span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control form-control-sm" id="namaEdit" name="nama" placeholder="Nama Dosen">
                                     <div id="namaErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            <div class="col col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="nidn" class="form-label">NIDN</label>
-                                    <input type="number" class="form-control form-control-sm" id="nidnEdit"
-                                        name="nidn" placeholder="NIDN">
+                                    <input type="number" class="form-control form-control-sm" id="nidnEdit" name="nidn" placeholder="NIDN" min="1000000000" max="9999999999">
                                     <div id="nidnErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div>
-                                    <label class="form-label">Jenis Kelamin</label><br>
+                                    <label class="form-label">Jenis Kelamin <span style="color: red;">*</span></label><br>
                                     <div class="d-flex flex-wrap">
                                         <div class="form-group me-3">
                                             <div class="form-check form-check-primary">
                                                 <label class="form-check-label" for="jenis_kelamin_1Edit">
-                                                    <input type="radio" class="form-check-input" value="Laki-Laki"
-                                                        name="jenis_kelaminEdit" id="jenis_kelamin_1Edit" required>
+                                                    <input type="radio" class="form-check-input" value="Laki-Laki" name="jenis_kelaminEdit" id="jenis_kelamin_1Edit">
                                                     Laki-Laki
                                                 </label>
                                             </div>
@@ -269,8 +273,7 @@
                                         <div class="form-group me-3">
                                             <div class="form-check form-check-primary">
                                                 <label class="form-check-label" for="jenis_kelamin_2Edit">
-                                                    <input type="radio" class="form-check-input" value="Perempuan"
-                                                        name="jenis_kelaminEdit" id="jenis_kelamin_2Edit" required>
+                                                    <input type="radio" class="form-check-input" value="Perempuan" name="jenis_kelaminEdit" id="jenis_kelamin_2Edit">
                                                     Perempuan
                                                 </label>
                                             </div>
@@ -278,19 +281,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif</label>
-                                    <input type="text" class="form-control form-control-sm" id="no_telephoneEdit"
-                                        name="no_telephone" placeholder="Nomor WhatsApp">
+                                    <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif <span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control form-control-sm" id="no_telephoneEdit" name="no_telephone" placeholder="Nomor WhatsApp">
                                     <div id="noTelephoneErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="agama" class="form-label">Agama</label>
+                                    <label for="agama" class="form-label">Agama <span style="color: red;">*</span></label>
                                     <select class="form-select" id="agamaEdit" name="agama">
                                         <option selected disabled>--Agama--</option>
                                         <option value="Islam">Islam</option>
@@ -303,41 +305,37 @@
                                     <div id="agamaErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            <div class="col col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
-                                    <input type="date" class="form-control form-control-sm" id="tanggal_lahirEdit"
-                                        name="tanggal_lahir" placeholder="Tanggal Lahir">
+                                    <label for="tanggal_lahir" class="form-label">Tanggal Lahir <span style="color: red;">*</span></label>
+                                    <input type="date" class="form-control form-control-sm" id="tanggal_lahirEdit" name="tanggal_lahir" placeholder="Tanggal Lahir">
                                     <div id="tanggalLahirErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
                         </div>
-
+    
                         <div class="row">
-                            <div class="col col-md-4">
+                            <div class="col-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="tempat_lahir" class="form-label">Tempat Lahir</label>
-                                    <input type="text" class="form-control form-control-sm" id="tempat_lahirEdit"
-                                        name="tempat_lahir" placeholder="Tempat Lahir">
+                                    <label for="tempat_lahir" class="form-label">Tempat Lahir <span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control form-control-sm" id="tempat_lahirEdit" name="tempat_lahir" placeholder="Tempat Lahir">
                                     <div id="tempatLahirErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            <div class="col col-md-4">
+                            <div class="col-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control form-control-sm" id="emailEdit"
-                                        name="email" placeholder="Email">
+                                    <label for="email" class="form-label">Email <span style="color: red;">*</span></label>
+                                    <input type="email" class="form-control form-control-sm" id="emailEdit" name="email" placeholder="Email">
                                     <div id="emailErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            <div class="col col-md-4">
-                                <label class="form-label">Status</label><br>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">Status <span style="color: red;">*</span></label><br>
                                 <div class="d-flex flex-wrap">
                                     <div class="form-group me-3">
                                         <div class="form-check form-check-primary">
                                             <label class="form-check-label" for="status_aktifEdit">
-                                                <input class="form-check-input" type="radio" name="status"
-                                                    id="status_aktifEdit" value="1" required>
+                                                <input class="form-check-input" type="radio" name="status" id="status_aktifEdit" value="1">
                                                 Aktif
                                             </label>
                                         </div>
@@ -345,8 +343,7 @@
                                     <div class="form-group me-3">
                                         <div class="form-check form-check-primary">
                                             <label class="form-check-label" for="status_non_aktifEdit">
-                                                <input class="form-check-input" type="radio" name="status"
-                                                    id="status_non_aktifEdit" value="0" required>
+                                                <input class="form-check-input" type="radio" name="status" id="status_non_aktifEdit" value="0">
                                                 Non-Aktif
                                             </label>
                                         </div>
@@ -354,7 +351,7 @@
                                 </div>
                             </div>
                         </div>
-
+    
                         <button type="submit" class="btn btn-primary btn-sm">
                             <span class="mdi mdi-content-save"></span> Simpan
                         </button>
@@ -363,6 +360,8 @@
             </div>
         </div>
     </div>
+    
+
 
 
     <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">

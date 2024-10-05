@@ -89,13 +89,13 @@
                         @csrf
                         <div class="row">
                             <div class="mb-3 col-12 col-md-6">
-                                <label for="nama" class="form-label">Nama</label>
+                                <label for="nama" class="form-label">Nama <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control form-control-sm" id="nama"
                                     name="nama_lengkap" placeholder="Nama Sesuai KTP">
                                 <div id="namaError" class="invalid-feedback"></div>
                             </div>
                             <div class="mb-3 col-12 col-md-6">
-                                <label for="nim" class="form-label">NIM</label>
+                                <label for="nim" class="form-label">NIM <span style="color: red;">*</span></label>
                                 <input type="number" class="form-control form-control-sm" id="nim" name="nim"
                                     placeholder="NIM">
                                 <div id="nimError" class="invalid-feedback"></div>
@@ -109,7 +109,7 @@
                                 <div id="nisnError" class="invalid-feedback"></div>
                             </div>
                             <div class="mb-3 col-12 col-md-6">
-                                <label for="nik" class="form-label">NIK</label>
+                                <label for="nik" class="form-label">NIK <span style="color: red;">*</span></label>
                                 <input type="number" class="form-control form-control-sm" id="nik" name="nik"
                                     placeholder="NIK">
                                 <div id="nikError" class="invalid-feedback"></div>
@@ -117,7 +117,7 @@
                         </div>
                         <div class="row">
                             <div class="mb-3 col-12 col-md-3">
-                                <label for="kelas" class="form-label">Kelas</label>
+                                <label for="kelas" class="form-label">Kelas <span style="color: red;">*</span></label>
                                 <select class="form-select" id="kelas" name="kelas_id">
                                     <option selected value="">--Kelas--</option>
                                     @foreach ($kelass as $kelas)
@@ -147,19 +147,19 @@
                         </div>
                         <div class="row">
                             <div class="mb-3 col-12 col-md-4">
-                                <label for="tanggal_lahir" class="form-label">Tanggal lahir</label>
+                                <label for="tanggal_lahir" class="form-label">Tanggal lahir <span style="color: red;">*</span></label>
                                 <input type="date" class="form-control form-control-sm" id="tanggal_lahir"
                                     name="tanggal_lahir">
                                 <div id="tanggalError" class="invalid-feedback"></div>
                             </div>
                             <div class="mb-3 col-12 col-md-4">
-                                <label for="tempat_lahir" class="form-label">Tempat lahir</label>
+                                <label for="tempat_lahir" class="form-label">Tempat lahir <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control form-control-sm" id="tempat_lahir"
                                     name="tempat_lahir" placeholder="Tempat Lahir">
                                 <div id="tempatError" class="invalid-feedback"></div>
                             </div>
                             <div class="mb-3 col-12 col-md-4">
-                                <label for="nama_ibu" class="form-label">Nama Ibu</label>
+                                <label for="nama_ibu" class="form-label">Nama Ibu <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control form-control-sm" id="nama_ibu"
                                     name="nama_ibu" placeholder="Nama Ibu">
                                 <div id="ibuError" class="invalid-feedback"></div>
@@ -167,13 +167,13 @@
                         </div>
                         <div class="row">
                             <div class="mb-3 col-12 col-md-4">
-                                <label for="no_telephone" class="form-label">Nomor Telephone</label>
+                                <label for="no_telephone" class="form-label">Nomor Telephone <span style="color: red;">*</span></label>
                                 <input type="number" class="form-control form-control-sm" id="no_telephone"
                                     name="no_telephone" placeholder="Nomor Telephone">
                                 <div id="telephoneError" class="invalid-feedback"></div>
                             </div>
                             <div class="mb-3 col-md-4 col-12">
-                                <label class="form-label">Jenis Kelamin</label><br>
+                                <label class="form-label">Jenis Kelamin <span style="color: red;">*</span></label><br>
                                 <div class="d-flex flex-wrap">
                                     <div class="form-check me-3">
                                         <label class="form-check-label" for="jenis_kelamin_1">
@@ -189,7 +189,7 @@
                                 </div>
                             </div>
                             <div class="mb-3 col-12 col-md-4">
-                                <label for="email" class="form-label">Email</label>
+                                <label for="email" class="form-label">Email <span style="color: red;">*</span></label>
                                 <input type="email" class="form-control form-control-sm" id="email"
                                     placeholder="Email" name="email">
                                 <div id="emailError" class="invalid-feedback"></div>
@@ -197,7 +197,7 @@
                         </div>
                         <div class="row">
                             <div class="mb-3 col-12">
-                                <label for="alamat" class="form-label">Alamat Lengkap</label>
+                                <label for="alamat" class="form-label">Alamat Lengkap <span style="color: red;">*</span></label>
                                 <textarea class="form-control form-control-sm" id="alamat" name="alamat" rows="3"
                                     placeholder="Alamat Lengkap" style="height: 100px"></textarea>
                                 <div id="alamatError" class="invalid-feedback"></div>
@@ -226,13 +226,13 @@
                         <input type="hidden" id="editId" name="id">
                         <div class="row">
                             <div class="mb-3 col-12 col-md-6">
-                                <label for="editNama" class="form-label">Nama</label>
+                                <label for="editNama" class="form-label">Nama <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control form-control-sm" id="editNama"
                                     name="nama_lengkap" placeholder="Nama Sesuai KTP">
                                 <div id="editNamaError" class="invalid-feedback"></div>
                             </div>
                             <div class="mb-3 col-12 col-md-6">
-                                <label for="editNim" class="form-label">NIM</label>
+                                <label for="editNim" class="form-label">NIM <span style="color: red;">*</span></label>
                                 <input type="number" class="form-control form-control-sm" id="editNim" name="nim"
                                     placeholder="NIM">
                                 <div id="editNimError" class="invalid-feedback"></div>
@@ -246,7 +246,7 @@
                                 <div id="editNisnError" class="invalid-feedback"></div>
                             </div>
                             <div class="mb-3 col-12 col-md-6">
-                                <label for="editNik" class="form-label">NIK</label>
+                                <label for="editNik" class="form-label">NIK <span style="color: red;">*</span></label>
                                 <input type="number" class="form-control form-control-sm" id="editNik" name="nik"
                                     placeholder="NIK">
                                 <div id="editNikError" class="invalid-feedback"></div>
@@ -254,7 +254,7 @@
                         </div>
                         <div class="row">
                             <div class="mb-3 col-12 col-md-3">
-                                <label for="editKelas" class="form-label">Kelas</label>
+                                <label for="editKelas" class="form-label">Kelas <span style="color: red;">*</span></label>
                                 <select class="form-select" id="editKelas" name="kelas_id">
                                     <option selected value="">--Kelas--</option>
                                     @foreach ($kelass as $kelas)
@@ -287,19 +287,19 @@
 
                         <div class="row">
                             <div class="mb-3 col-12 col-md-4">
-                                <label for="editTanggalLahir" class="form-label">Tanggal lahir</label>
+                                <label for="editTanggalLahir" class="form-label">Tanggal lahir <span style="color: red;">*</span></label>
                                 <input type="date" class="form-control form-control-sm" id="editTanggalLahir"
                                     name="tanggal_lahir">
                                 <div id="editTanggalLahirError" class="invalid-feedback"></div>
                             </div>
                             <div class="mb-3 col-12 col-md-4">
-                                <label for="editTempatLahir" class="form-label">Tempat lahir</label>
+                                <label for="editTempatLahir" class="form-label">Tempat lahir <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control form-control-sm" id="editTempatLahir"
                                     name="tempat_lahir" placeholder="Tempat Lahir">
                                 <div id="editTempatLahirError" class="invalid-feedback"></div>
                             </div>
                             <div class="mb-3 col-12 col-md-4">
-                                <label for="editNamaIbu" class="form-label">Nama Ibu</label>
+                                <label for="editNamaIbu" class="form-label">Nama Ibu <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control form-control-sm" id="editNamaIbu"
                                     name="nama_ibu" placeholder="Nama Ibu">
                                 <div id="editNamaIbuError" class="invalid-feedback"></div>
@@ -307,13 +307,13 @@
                         </div>
                         <div class="row">
                             <div class="mb-3 col-12 col-md-4">
-                                <label for="editNoTelephone" class="form-label">Nomor Telephone</label>
+                                <label for="editNoTelephone" class="form-label">Nomor Telephone <span style="color: red;">*</span></label>
                                 <input type="number" class="form-control form-control-sm" id="editNoTelephone"
                                     name="no_telephone" placeholder="Nomor Telephone">
                                 <div id="editNoTelephoneError" class="invalid-feedback"></div>
                             </div>
                             <div class="mb-3 col-12 col-md-4">
-                                <label class="form-label">Jenis Kelamin</label><br>
+                                <label class="form-label">Jenis Kelamin <span style="color: red;">*</span></label><br>
                                 <div class="d-flex flex-wrap">
                                     <div class="form-check me-3">
                                         <label class="form-check-label" for="editJenisKelamin1">
@@ -331,7 +331,7 @@
                                 </div>
                             </div>
                             <div class="mb-3 col-12 col-md-4">
-                                <label for="editEmail" class="form-label">Email</label>
+                                <label for="editEmail" class="form-label">Email <span style="color: red;">*</span></label>
                                 <input type="email" class="form-control form-control-sm" id="editEmail"
                                     placeholder="Email" name="email">
                                 <div id="editEmailError" class="invalid-feedback"></div>
@@ -339,7 +339,7 @@
                         </div>
                         <div class="row">
                             <div class="mb-3 col-12">
-                                <label for="editAlamat" class="form-label">Alamat Lengkap</label>
+                                <label for="editAlamat" class="form-label">Alamat Lengkap <span style="color: red;">*</span></label>
                                 <textarea class="form-control form-control-sm" id="editAlamat" name="alamat" rows="3"
                                     placeholder="Alamat Lengkap" style="height: 100px"></textarea>
                                 <div id="editAlamatError" class="invalid-feedback"></div>

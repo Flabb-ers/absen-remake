@@ -64,7 +64,7 @@
                     <form id="tambahForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="ruangan" class="form-label">Nama Ruangan</label>
+                            <label for="ruangan" class="form-label">Nama Ruangan <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="ruangan" name="nama"
                                 placeholder="Nama Ruangan" >
                             <div id="namaError" class="invalid-feedback"></div>
@@ -91,7 +91,7 @@
                         @method('PUT')
                         <input type="hidden" id="edit-id">
                         <div class="mb-3">
-                            <label for="edit-ruangan" class="form-label">Nama Ruangan</label>
+                            <label for="edit-ruangan" class="form-label">Nama Ruangan <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="edit-ruangan" name="nama"
                                 placeholder="Nama Ruangan">
                             <div id="edit-namaError" class="invalid-feedback"></div>

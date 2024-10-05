@@ -17,13 +17,13 @@
                                     </div>
                                     <div class="col-6 col-md-5 d-flex justify-content-end">
                                         <div class="d-flex gap-2 align-items-center">
-                                            <label for="toggleSemesterStatus" class="fw-bolder">Status Semester:
+                                            <label for="toggleSemesterStatus" class="fw-bolder">
+                                                <span class="d-none d-md-inline">Status Semester:</span>
                                                 @if ($genap != null)
                                                     <span class="badge badge-info badge-sm rounded-pill">Genap</span>
                                                 @else
                                                     <span class="badge badge-warning badge-sm rounded-pill">Ganjil</span>
                                                 @endif
-
                                             </label>
                                             <div class="form-switch">
                                                 <input class="form-check-input" type="checkbox" id="toggleSemesterStatus"
@@ -101,9 +101,9 @@
                     <form id="tambahForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="namaSemester" class="form-label">Semester</label>
+                            <label for="namaSemester" class="form-label">Semester <span style="color: red;">*</span></label>
                             <input type="number" class="form-control form-control-sm" id="namaSemester" name="semester"
-                            placeholder="Semester">
+                                placeholder="Semester">
                             <div id="semesterError" class="invalid-feedback"></div>
                             <button type="submit" class="btn btn-primary btn-sm mt-2">
                                 <span class="mdi mdi-content-save"></span> Simpan

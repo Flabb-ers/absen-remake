@@ -90,7 +90,7 @@
                     <form id="tambahForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="nama" class="form-label">Dosen</label>
+                            <label for="nama" class="form-label">Dosen <span style="color: red;">*</span></label>
                             <select class="form-select" id="nama" name="nama">
                                 <option selected value="">--Dosen--</option>
                                 @foreach ($dosens as $dosen)
@@ -100,7 +100,7 @@
                             <div id="dosenError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="prodi" class="form-label">Prodi</label>
+                            <label for="prodi" class="form-label">Prodi <span style="color: red;">*</span></label>
                             <select class="form-select" id="prodi" name="prodis_id">
                                 <option selected value="">--Prodi--</option>
                                 @foreach ($prodis as $prodi)
@@ -110,18 +110,18 @@
                             <div id="prodiError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif</label>
+                            <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="no_telephone" name="no_telephone"
                                 placeholder="No WhatsApp">
                             <div id="noTelephoneError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label">Email <span style="color: red;">*</span></label>
                             <input type="email" class="form-control form-control-sm" id="email" name="email" placeholder="Email">
                             <div id="emailError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
+                            <label for="password" class="form-label">Password <span style="color: red;">*</span></label>
                             <input type="password" class="form-control form-control-sm" id="password" name="password"
                                 placeholder="Password" autocomplete="off">
                             <div id="passwordError" class="invalid-feedback"></div>
@@ -150,7 +150,7 @@
                         @method('PUT')
                         <input type="hidden" id="edit_id" name="id">
                         <div class="mb-3">
-                            <label for="nama" class="form-label">Dosen</label>
+                            <label for="nama" class="form-label">Dosen <span style="color: red;">*</span></label>
                             <select class="form-select" id="edit_nama" name="nama">
                                 <option selected value="">--Dosen--</option>
                                 @foreach ($dosens as $dosen)
@@ -160,7 +160,7 @@
                             <div id="editDosenError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_prodi" class="form-label">Prodi</label>
+                            <label for="edit_prodi" class="form-label">Prodi <span style="color: red;">*</span></label>
                             <select class="form-select" id="edit_prodi" name="prodis_id">
                                 <option selected value="">--Prodi--</option>
                                 @foreach ($prodis as $prodi)
@@ -170,18 +170,18 @@
                             <div id="editProdiError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_noTelephone" class="form-label">Nomor WhatsApp</label>
+                            <label for="edit_noTelephone" class="form-label">Nomor WhatsApp <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="edit_noTelephone" name="edit_noTelephone"
                                 placeholder="Nomor WhatsApp">
                             <div id="tlpEmailError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_email" class="form-label">Email</label>
+                            <label for="edit_email" class="form-label">Email <span style="color: red;">*</span></label>
                             <input type="email" class="form-control form-control-sm" id="edit_email" name="email"
                                 placeholder="Email">
                             <div id="editEmailError" class="invalid-feedback"></div>
                         </div>
-                        <label class="form-label">Status</label><br>
+                        <label class="form-label">Status <span style="color: red;">*</span></label><br>
                         <div class="d-flex flex-wrap">
                             <div class="form-group me-3">
                                 <div class="form-check form-check-primary">

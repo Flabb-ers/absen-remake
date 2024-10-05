@@ -17,25 +17,25 @@
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-matkul">Data Matkul</a>
                     </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-kelas">Data Kelas</a>
-                    </li>
                     <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-prodi">Data Prodi</a>
                     </li>
                     <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-semester">Data
                             Semester</a>
+                    </li>
+                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-kelas">Data Kelas</a>
                     </li>
                     <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-tahun-akademik">Tahun
                             Akademik</a>
                     </li>
                     <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-ruangan">Data Ruangan</a>
                     </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-direktur">Direktur</a>
-                    </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-wadir">Wakil Direktur</a>
+                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-dosen">Dosen</a>
                     </li>
                     <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-kaprodi">Kaprodi</a>
                     </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-dosen">Dosen</a>
+                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-wadir">Wakil Direktur</a>
+                    </li>
+                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-direktur">Direktur</a>
                     </li>
                 </ul>
             </div>

@@ -76,13 +76,13 @@
                     <form id="tambahForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="tahunAkademik" class="form-label">Tahun Akademik</label>
+                            <label for="tahunAkademik" class="form-label">Tahun Akademik <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="tahunAkademik"
                                 name="tahun_akademik" placeholder="YYYY/YYYY" >
                             <div id="tahunAkademikError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Status</label><br>
+                            <label class="form-label">Status <span style="color: red;">*</span></label><br>
                             <div class="d-flex flex-wrap">
                                 <div class="form-group me-3">
                                     <div class="form-check form-check-primary">
@@ -124,13 +124,13 @@
                         @method('PUT')
                         <input type="hidden" id="editTahunId" name="id">
                         <div class="mb-3">
-                            <label for="editTahunAkademik" class="form-label">Tahun Akademik</label>
+                            <label for="editTahunAkademik" class="form-label">Tahun Akademik <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="editTahunAkademik"
                                 name="tahun_akademik" >
                             <div id="editTahunAkademikError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Status</label><br>
+                            <label class="form-label">Status <span style="color: red;">*</span></label><br>
                             <div class="d-flex flex-wrap">
                                 <div class="form-group me-3">
                                     <div class="form-check form-check-primary">

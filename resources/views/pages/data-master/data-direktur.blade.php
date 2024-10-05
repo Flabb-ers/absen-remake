@@ -84,7 +84,7 @@
                     <form id="tambahForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="nama" class="form-label">Nama</label>
+                            <label for="nama" class="form-label">Nama <span style="color: red;">*</span></label>
                             <select class="form-select" id="nama">
                                 <option selected value="">--Nama--</option>
                                 @foreach ($dosens as $dosen)
@@ -94,19 +94,19 @@
                             <div id="dosenError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif</label>
+                            <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="no_telephone" name="no_telephone"
                                 placeholder="Nomor WhatsApp">
                             <div id="noError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label">Email <span style="color: red;">*</span></label>
                             <input type="email" class="form-control form-control-sm" id="email" name="email"
                                 placeholder="Email">
                             <div id="emailError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
+                            <label for="password" class="form-label">Password <span style="color: red;">*</span></label>
                             <input type="password" class="form-control form-control-sm" id="password" name="password"
                                 placeholder="Password" autocomplete="off">
                             <div id="passwordError" class="invalid-feedback"></div>
@@ -135,7 +135,7 @@
                         @csrf
                         <input type="hidden" id="direktur_id">
                         <div class="mb-3">
-                            <label for="nama" class="form-label">Direktur</label>
+                            <label for="nama" class="form-label">Direktur <span style="color: red;">*</span></label>
                             <select class="form-select" id="namaEdit" name="nama">
                                 <option selected value="">--Direktur--</option>
                                 @foreach ($dosens as $dosen)
@@ -145,17 +145,17 @@
                             <div id="dosenErrorEdit" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="emailEdit" class="form-label">Email</label>
+                            <label for="emailEdit" class="form-label">Email <span style="color: red;">*</span></label>
                             <input type="email" class="form-control form-control-sm" id="emailEdit" name="email">
                             <div id="emailErrorEdit" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="nomorEdit" class="form-label">Nomor WhatsApp</label>
+                            <label for="nomorEdit" class="form-label">Nomor WhatsApp <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="nomorEdit" name="email">
                             <div id="nomorEditError" class="invalid-feedback"></div>
                         </div>
 
-                        <label class="form-label">Status</label><br>
+                        <label class="form-label">Status <span style="color: red;">*</span></label><br>
                         <div class="d-flex flex-wrap">
                             <div class="form-group me-3">
                                 <div class="form-check form-check-primary">

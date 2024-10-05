@@ -52,6 +52,9 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="mt-3">
+                                {{ $matkuls->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -70,19 +73,19 @@
                     <form id="tambahForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="nama_matkul" class="form-label">Nama Mata kuliah</label>
+                            <label for="nama_matkul" class="form-label">Nama Mata kuliah <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="nama_matkul" name="nama_matkul"
                                 placeholder="Nama Mata Kuliah">
                             <div id="namaMatkulError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="kode" class="form-label">Kode</label>
+                            <label for="kode" class="form-label">Kode <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="kode" name="kode"
                                 placeholder="Kode">
                             <div id="kodeError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3 row">
-                            <label class="form-label">SKS</label>
+                            <label class="form-label">SKS <span style="color: red;">*</span></label>
                             <div class="col col-md-6">
                                 <input type="number" class="form-control form-control-sm" id="teori" name="teori"
                                     placeholder="Jumlah Teori">
@@ -116,19 +119,19 @@
                         @method('PUT')
                         <input type="hidden" id="editId" name="id">
                         <div class="mb-3">
-                            <label for="edit_nama_matkul" class="form-label">Nama Mata Kuliah</label>
+                            <label for="edit_nama_matkul" class="form-label">Nama Mata Kuliah <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="edit_nama_matkul"
                                 name="nama_matkul">
                             <div id="editNamaMatkulError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="kodeEdit" class="form-label">Kode</label>
+                            <label for="kodeEdit" class="form-label">Kode <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="kodeEdit" name="kode"
                                 placeholder="kode">
                             <div id="kodeErrorEdit" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3 row">
-                            <label class="form-label">SKS</label>
+                            <label class="form-label">SKS <span style="color: red;">*</span></label>
                             <div class="col col-md-6">
                                 <input type="number" class="form-control form-control-sm" id="teoriEdit" name="teori"
                                     placeholder="Jumlah Teori">

@@ -12,7 +12,7 @@ class RuanganController extends Controller
      */
     public function index()
     {
-        $ruangans = Ruangan::all();
+        $ruangans = Ruangan::latest()->get();
         return view('pages.data-master.data-ruangan', compact('ruangans'));
     }
 
