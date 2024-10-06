@@ -1,8 +1,8 @@
-- [*] **Make input Kontrak**
-- [*] **Add Class Categories**
+- [x] **Make input Kontrak**
+- [x] **Add Class Categories**
 - [ ] **Search For all 😭😭😭**
 - [ ] **Make cursor can't click when dosen and wadir don't approve, for Absen recap and program     news**
-- [*] **Make Nim max 8 and NISN max 10**
-- [*] **Make Dosen PA and set active - non-active**
-- [*] **Add Password in Mahasiswa**
-- [*] **Add Kontrak && Presensi maximum 14 meetings**
+- [x] **Make Nim max 8 and NISN max 10**
+- [x] **Make Dosen PA and set active - non-active**
+- [x] **Add Password in Mahasiswa**
+- [x] **Add Kontrak && Presensi maximum 14 meetings**
