@@ -21,11 +21,18 @@ class Dosen extends Model
         return $this->hasMany(Jadwal::class);
     }
 
-    public function absen(){
+    public function absen()
+    {
         return $this->hasMany(Absen::class);
     }
 
-    public function resume(){
+    public function resume()
+    {
         return $this->hasMany(Resume::class);
+    }
+
+    public function mahasiswa()
+    {
+        return $this->hasMany(Mahasiswa::class);
     }
 }

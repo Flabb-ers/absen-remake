@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dosen;
 use App\Models\Kelas;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class MahasiswaController extends Controller
 {
@@ -14,7 +16,7 @@ class MahasiswaController extends Controller
 
     public function index()
     {
-        $kelass = Kelas::all();
+        $kelass = Kelas::with('prodi','semester','mahasiswa')->get();
         return view('pages.data-mahasiswa.index', compact('kelass'));
     }
 
@@ -31,6 +33,8 @@ class MahasiswaController extends Controller
             'nik' => 'required|unique:mahasiswas,nik',
             'email' => 'required|email|unique:mahasiswas,email',
             'alamat' => 'required',
+            'password' => 'required',
+            'pembimbing_akademik' => 'required',
             'no_telephone' => 'required|unique:mahasiswas,no_telephone',
             'tanggal_lahir' => 'required|date',
             'tempat_lahir' => 'required',
@@ -49,6 +53,8 @@ class MahasiswaController extends Controller
             'email.email' => 'Format email tidak valid',
             'email.unique' => 'Email sudah terdaftar',
             'alamat.required' => 'Alamat harus diisi',
+            'password.required' => 'Password harus diisi',
+            'pembimbing_akademik.required' => 'Dosen pembimbing akademik harus diisi',
             'no_telephone.required' => 'Nomor telepone harus diisi',
             'no_telephone.unique' => 'Nomor telephone sudah tedaftar',
             'tanggal_lahir.required' => 'Tanggal lahir harus diisi',
@@ -67,12 +73,14 @@ class MahasiswaController extends Controller
             'nik' => $request->nik,
             'email' => $request->email,
             'alamat' => $request->alamat,
+            'password' => Hash::make($request->password),
             'no_telephone' => $request->no_telephone,
             'tanggal_lahir' => $request->tanggal_lahir,
             'tempat_lahir' => $request->tempat_lahir,
             'nama_ibu' => $request->nama_ibu,
             'jenis_kelamin' => $request->jenis_kelamin,
-            'kelas_id' => $request->kelas_id
+            'kelas_id' => $request->kelas_id,
+            'dosen_pembimbing_id' => $request->pembimbing_akademik
         ]);
 
         return response()->json(['success' => 'Mahasiswa berhasil ditambahkan']);
@@ -89,6 +97,7 @@ class MahasiswaController extends Controller
 
         $rules = [
             'nama_lengkap' => 'required|string|max:255',
+            'dosen_pembimbing_id' => 'required',
             'nim' => 'required|numeric',
             'nisn' => 'required|numeric',
             'nik' => 'required|numeric',
@@ -131,6 +140,7 @@ class MahasiswaController extends Controller
             'nik.unique' => 'NIK sudah terdaftar',
             'nik.numeric' => 'NIK harus berupa angka',
             'email.required' => 'Email harus diisi',
+            'dosen_pembimbing_id' => 'Dosen pembimbing akademik harus diisi',
             'email.email' => 'Format email tidak valid',
             'email.unique' => 'Email sudah terdaftar',
             'alamat.required' => 'Alamat harus diisi',
@@ -169,7 +179,10 @@ class MahasiswaController extends Controller
                     ->get();
 
         $kelass = Kelas::with('prodi', 'semester')->get();
-        return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass','namaKelas'));
+        $dosens = Dosen::where('pembimbing_akademik',1)
+                        ->where('status',1)
+                        ->get();
+        return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass','namaKelas','dosens'));
     }
 
 }

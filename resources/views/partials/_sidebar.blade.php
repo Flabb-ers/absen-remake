@@ -53,13 +53,13 @@
             </a>
         </li>
         <li class="nav-item">Dosen</li>
-        <li class="nav-item">
+        <li class="nav-item {{ Request::is('presensi/data-presensi*') ? 'active' : '' }}">
             <a class="nav-link" href="/presensi/data-presensi">
                 <i class="mdi mdi-clipboard-edit-outline menu-icon"></i>
                 <span class="menu-title">Presensi</span>
             </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {{ Request::is('presensi/data-kontrak*') ? 'active' : '' }}">
             <a class="nav-link" href="/presensi/data-kontrak">
                 <i class="mdi mdi-clipboard-edit-outline menu-icon"></i>
                 <span class="menu-title">Kontrak</span>

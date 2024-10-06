@@ -151,8 +151,7 @@ class PresensiController extends Controller
                 'materi' => $request->materiResume,
             ]);
         }
-
-        return redirect()->route('data-presensi.index')
+        return redirect()->back()
             ->with('success', 'Data presensi berhasil diperbarui.');
     }
 

@@ -7,54 +7,69 @@
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-header">
-                                <h5 class="text-center">EDIT KONTRAK PERKULIAHAN</h5>
-                                <div>
-                                    <ul>
-                                        <div class="row">
-                                            <div class="col col-md-4">
-                                                <li>Mata Kuliah : {{ $kontrak->matkul->nama_matkul }}</li>
-                                            </div>
-                                            <div class="col offset-md-4">
-                                                <li>Program Studi : {{ $kontrak->kelas->prodi->nama_prodi}}</li>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col col-md-4">
-                                                <li>Dosen : {{ $kontrak->jadwal->dosen->nama }}</li>
-                                            </div>
-                                            <div class="col offset-md-4">
-                                                <li>Kelas : {{ $kontrak->kelas->nama_kelas }}</li>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col col-md-4">
-                                                <li>Pertemuan ke {{ $kontrak->pertemuan }}</li>
-                                            </div>
-                                            <div class="col offset-md-4">
-                                                <li>Tanggal : {{ \Carbon\Carbon::parse(now())->format('d/m/Y') }}</li>
-                                            </div>
-                                        </div>
-                                    </ul>
+                            <h5 class="text-center">EDIT KONTRAK PERKULIAHAN</h5>
+                            <div>
+                                <div class="row">
+                                    <div class="col-md-5 col-12">
+                                        <ul class="list-unstyled">
+                                            <li class="d-flex">
+                                                <span style="width: 140px;">Mata Kuliah</span>
+                                                <span style="margin-right: 5px;">:</span>
+                                                <span>{{ $kontrak->matkul->nama_matkul }}</span>
+                                            </li>
+                                            <li class="d-flex mt-2">
+                                                <span style="width: 140px;">Dosen</span>
+                                                <span style="margin-right: 5px;">:</span>
+                                                <span>{{ $kontrak->jadwal->dosen->nama }}</span>
+                                            </li>
+                                            <li class="d-flex mt-2">
+                                                <span style="width: 140px;">Pertemuan ke</span>
+                                                <span style="margin-right: 5px;">:</span>
+                                                <span>{{ $kontrak->pertemuan }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-5 offset-md-2 col-12">
+                                        <ul class="list-unstyled">
+                                            <li class="d-flex">
+                                                <span style="width: 140px;">Program Studi</span>
+                                                <span style="margin-right: 5px;">:</span>
+                                                <span>{{ $kontrak->kelas->prodi->nama_prodi }}</span>
+                                            </li>
+                                            <li class="d-flex mt-2">
+                                                <span style="width: 140px;">Kelas</span>
+                                                <span style="margin-right: 5px;">:</span>
+                                                <span>{{ $kontrak->kelas->nama_kelas }}</span>
+                                            </li>
+                                            <li class="d-flex mt-2">
+                                                <span style="width: 140px;">Tanggal</span>
+                                                <span style="margin-right: 5px;">:</span>
+                                                <span>{{ \Carbon\Carbon::parse(now())->format('d/m/Y') }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
+                            <hr>
                             <div class="card-body">
                                 <form method="POST" action="{{ route('data-kontrak.update', $kontrak->id) }}">
                                     @csrf
-                                    @method('PUT') 
+                                    @method('PUT')
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="mb-3 form-group">
                                                 <label for="materiKontrak">Materi Perkuliahan</label>
-                                                <input type="text" id="materiKontrak" class="form-control form-control-sm" 
-                                                    name="materiKontrak" value="{{ $kontrak->materi }}" required>
+                                                <input type="text" id="materiKontrak"
+                                                    class="form-control form-control-sm" name="materiKontrak"
+                                                    value="{{ $kontrak->materi }}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-3 form-group">
                                                 <label for="pustakaKontrak">Daftar Pustaka</label>
-                                                <input type="text" id="pustakaKontrak" class="form-control form-control-sm" 
-                                                    name="pustakaKontrak" value="{{ $kontrak->pustaka}}" required>
+                                                <input type="text" id="pustakaKontrak"
+                                                    class="form-control form-control-sm" name="pustakaKontrak"
+                                                    value="{{ $kontrak->pustaka }}" required>
                                             </div>
                                         </div>
                                     </div>

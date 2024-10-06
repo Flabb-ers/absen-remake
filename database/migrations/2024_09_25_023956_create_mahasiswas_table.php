@@ -13,19 +13,20 @@ return new class extends Migration
     {
         Schema::create('mahasiswas', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('dosen_pembimbing_id')->constrained('dosens');
             $table->string('nama_lengkap');
             $table->string('nim');
             $table->string('nisn');
             $table->string('nik');
             $table->string('email');
+            $table->string('password');
             $table->text('alamat');
             $table->string('no_telephone');
             $table->date('tanggal_lahir');
             $table->string('tempat_lahir');
             $table->string('nama_ibu');
             $table->string('jenis_kelamin');
-            $table->unsignedBigInteger('kelas_id');
-            $table->foreign('kelas_id')->references('id')->on('kelas');
+            $table->foreignId('kelas_id')->constrained('kelas');
             $table->timestamps();
         });
     }

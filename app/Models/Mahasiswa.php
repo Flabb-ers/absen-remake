@@ -16,7 +16,13 @@ class Mahasiswa extends Model
         return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 
-    public function absen(){
-        return $this->hasMany(Absen::class,'absens_id');
+    public function absen()
+    {
+        return $this->hasMany(Absen::class, 'absens_id');
+    }
+
+    public function pembimbingAkademik()
+    {
+        return $this->belongsTo(Dosen::class, 'dosen_pembimbing_id');
     }
 }

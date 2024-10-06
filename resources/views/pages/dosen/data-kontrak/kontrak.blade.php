@@ -7,39 +7,50 @@
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-header">
-                                <h5 class="text-center">KONTRAK PERKULIAHAN</h5>
-                                <div>
-                                    <ul>
-                                        <div class="row">
-                                            <div class="col col-md-4">
-                                                <li>Mata Kuliah :
-                                                    {{ $jadwal->matkul->nama_matkul }}</li>
-                                            </div>
-                                            <div class="col offset-md-4 ">
-                                                <li>Program Studi :
-                                                    {{ $jadwal->kelas->prodi->nama_prodi }}</li>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col col-md-4">
-                                                <li>Dosen : {{ $jadwal->dosen->nama }}</li>
-                                            </div>
-                                            <div class="col offset-md-4">
-                                                <li>Kelas : {{ $jadwal->kelas->nama_kelas }}</li>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col col-md-4">
-                                                <li>Pertemuan ke {{ $pertemuan }}</li>
-                                            </div>
-                                            <div class="col offset-md-4">
-                                                <li>Tanggal : {{ \Carbon\Carbon::parse(now())->format('d/m/Y') }}</li>
-                                            </div>
-                                        </div>
-                                    </ul>
+                            <h5 class="text-center">KONTRAK PERKULIAHAN</h5>
+                            <div>
+                                <div class="row">
+                                    <div class="col-md-5 col-12">
+                                        <ul class="list-unstyled">
+                                            <li class="d-flex">
+                                                <span style="width: 140px;">Mata Kuliah</span>
+                                                <span style="margin-right: 5px;">:</span>
+                                                <span>{{ $jadwal->matkul->nama_matkul }}</span>
+                                            </li>
+                                            <li class="d-flex mt-2">
+                                                <span style="width: 140px;">Dosen</span>
+                                                <span style="margin-right: 5px;">:</span>
+                                                <span>{{ $jadwal->dosen->nama }}</span>
+                                            </li>
+                                            <li class="d-flex mt-2">
+                                                <span style="width: 140px;">Pertemuan ke</span>
+                                                <span style="margin-right: 5px;">:</span>
+                                                <span>{{ $pertemuan }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-5 offset-md-2 col-12">
+                                        <ul class="list-unstyled">
+                                            <li class="d-flex">
+                                                <span style="width: 140px;">Program Studi</span>
+                                                <span style="margin-right: 5px;">:</span>
+                                                <span>{{ $jadwal->kelas->prodi->nama_prodi }}</span>
+                                            </li>
+                                            <li class="d-flex mt-2">
+                                                <span style="width: 140px;">Kelas</span>
+                                                <span style="margin-right: 5px;">:</span>
+                                                <span>{{ $jadwal->kelas->nama_kelas }}</span>
+                                            </li>
+                                            <li class="d-flex mt-2">
+                                                <span style="width: 140px;">Tanggal</span>
+                                                <span style="margin-right: 5px;">:</span>
+                                                <span>{{ \Carbon\Carbon::parse(now())->format('d/m/Y') }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
+                            <hr>
                             <div class="card-body">
                                 <form method="POST" action="{{ route('data-kontrak.store') }}">
                                     @csrf

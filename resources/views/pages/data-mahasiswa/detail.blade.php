@@ -39,7 +39,9 @@
                                                     <button class="btn btn-warning btn-sm edit-btn"
                                                         data-id="{{ $mahasiswa->id }}"
                                                         data-nama="{{ $mahasiswa->nama_lengkap }}"
-                                                        data-nim="{{ $mahasiswa->nim }}" data-nisn="{{ $mahasiswa->nisn }}"
+                                                        data-nim="{{ $mahasiswa->nim }}"
+                                                        data-nisn="{{ $mahasiswa->nisn }}"
+                                                        data-pembimbing="{{ $mahasiswa->dosen_pembimbing_id }}"
                                                         data-nik="{{ $mahasiswa->nik }}"
                                                         data-kelas="{{ $mahasiswa->kelas_id }}"
                                                         data-semester="{{ $mahasiswa->kelas->semester->semester }}"
@@ -64,7 +66,8 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td class="text-center" colspan="8">Mahasiswa Kelas {{ $namaKelas->nama_kelas }} belum ditambahkan</td>
+                                                <td class="text-center" colspan="8">Mahasiswa Kelas
+                                                    {{ $namaKelas->nama_kelas }} belum ditambahkan</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -88,31 +91,49 @@
                         @csrf
                         <div class="row">
                             <input type="hidden" name="kelas_id" id="kelas" value="{{ $namaKelas->id }}">
-                            <div class="mb-3 col-12 col-md-6">
+                            <div class="mb-3 col-12 col-md-4">
                                 <label for="nama" class="form-label">Nama <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control form-control-sm" id="nama"
                                     name="nama_lengkap" placeholder="Nama Sesuai KTP">
                                 <div id="namaError" class="invalid-feedback"></div>
                             </div>
-                            <div class="mb-3 col-12 col-md-6">
+                            <div class="mb-3 col-12 col-md-4">
                                 <label for="nim" class="form-label">NIM <span style="color: red;">*</span></label>
                                 <input type="number" class="form-control form-control-sm" id="nim" name="nim"
                                     placeholder="NIM">
                                 <div id="nimError" class="invalid-feedback"></div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="mb-3 col-12 col-md-6">
+                            <div class="mb-3 col-12 col-md-4">
                                 <label for="nisn" class="form-label">NISN</label>
                                 <input type="number" class="form-control form-control-sm" id="nisn" name="nisn"
                                     placeholder="NISN">
                                 <div id="nisnError" class="invalid-feedback"></div>
                             </div>
-                            <div class="mb-3 col-12 col-md-6">
+                        </div>
+                        <div class="row">
+                            <div class="mb-3 col-12 col-md-4">
+                                <label for="no_telephone" class="form-label">Nomor Telephone <span
+                                        style="color: red;">*</span></label>
+                                <input type="number" class="form-control form-control-sm" id="no_telephone"
+                                    name="no_telephone" placeholder="Nomor Telephone">
+                                <div id="telephoneError" class="invalid-feedback"></div>
+                            </div>
+                            <div class="mb-3 col-12 col-md-4">
                                 <label for="nik" class="form-label">NIK <span style="color: red;">*</span></label>
                                 <input type="number" class="form-control form-control-sm" id="nik" name="nik"
                                     placeholder="NIK">
                                 <div id="nikError" class="invalid-feedback"></div>
+                            </div>
+                            <div class="mb-3 col-12 col-md-4">
+                                <label for="pembimbingAkademik" class="form-label">Pembimbing Akademik<span
+                                        style="color: red;">*</span></label>
+                                <select class="form-select" id="pembimbing_akademik" name="pembimbingAkademik">
+                                    <option selected value="">--Dosen--</option>
+                                    @foreach ($dosens as $dosen)
+                                        <option value="{{ $dosen->id }}">{{ $dosen->nama }}</option>
+                                    @endforeach
+                                </select>
+                                <div id="dosenError" class="invalid-feedback"></div>
                             </div>
                         </div>
 
@@ -146,30 +167,7 @@
 
 
                         {{-- yang di ubah --}}
-                        <div class="row">
-                            <div class="mb-3 col-12 col-md-3">
-                                <label for="kelas" class="form-label">Kelas <span style="color: red;">*</span></label>
-                                <input type="text" class="form-control form-control-sm" id="kelas_nama"
-                                    value="{{ $namaKelas->nama_kelas }}" readonly>
-                                <input type="hidden" name="kelas_id" id="kelas_id" value="{{ $namaKelas->id }}">
-                                <div id="kelasError" class="invalid-feedback"></div>
-                            </div>
-                            <div class="mb-3 col-12 col-md-3">
-                                <label for="semester" class="form-label">Semester</label>
-                                <div id="semester" class="form-control form-control-sm" readonly
-                                    style="background-color: #f8f9fa; cursor: not-allowed;"></div>
-                            </div>
-                            <div class="mb-3 col-12 col-md-3">
-                                <label for="program_studi" class="form-label">Prodi</label>
-                                <div id="program_studi" class="form-control form-control-sm" readonly
-                                    style="background-color: #f8f9fa; cursor: not-allowed;"></div>
-                            </div>
-                            <div class="mb-3 col-12 col-md-3">
-                                <label for="jenis_kelas" class="form-label">Jenis Kelas</label>
-                                <div id="jenis_kelas" class="form-control form-control-sm" readonly
-                                    style="background-color: #f8f9fa; cursor: not-allowed;"></div>
-                            </div>
-                        </div>
+
 
                         <div class="row">
                             <div class="mb-3 col-12 col-md-4">
@@ -196,13 +194,6 @@
                         </div>
 
                         <div class="row">
-                            <div class="mb-3 col-12 col-md-4">
-                                <label for="no_telephone" class="form-label">Nomor Telephone <span
-                                        style="color: red;">*</span></label>
-                                <input type="number" class="form-control form-control-sm" id="no_telephone"
-                                    name="no_telephone" placeholder="Nomor Telephone">
-                                <div id="telephoneError" class="invalid-feedback"></div>
-                            </div>
                             <div class="mb-3 col-md-4 col-12">
                                 <label class="form-label">Jenis Kelamin <span style="color: red;">*</span></label><br>
                                 <div class="d-flex flex-wrap">
@@ -224,6 +215,38 @@
                                 <input type="email" class="form-control form-control-sm" id="email"
                                     placeholder="Email" name="email">
                                 <div id="emailError" class="invalid-feedback"></div>
+                            </div>
+                            <div class="mb-3 col-12 col-md-4">
+                                <label for="password" class="form-label">Password <span
+                                        style="color: red;">*</span></label>
+                                <input type="password" class="form-control form-control-sm" id="password"
+                                    placeholder="password" name="password">
+                                <div id="passwordError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-12 col-md-3">
+                                <label for="kelas" class="form-label">Kelas <span style="color: red;">*</span></label>
+                                <input type="text" class="form-control form-control-sm" id="kelas_nama"
+                                    value="{{ $namaKelas->nama_kelas }}" readonly>
+                                <input type="hidden" name="kelas_id" id="kelas_id" value="{{ $namaKelas->id }}">
+                                <div id="kelasError" class="invalid-feedback"></div>
+                            </div>
+                            <div class="mb-3 col-12 col-md-3">
+                                <label for="semester" class="form-label">Semester</label>
+                                <div id="semester" class="form-control form-control-sm" readonly
+                                    style="background-color: #f8f9fa; cursor: not-allowed;"></div>
+                            </div>
+                            <div class="mb-3 col-12 col-md-3">
+                                <label for="program_studi" class="form-label">Prodi</label>
+                                <div id="program_studi" class="form-control form-control-sm" readonly
+                                    style="background-color: #f8f9fa; cursor: not-allowed;"></div>
+                            </div>
+                            <div class="mb-3 col-12 col-md-3">
+                                <label for="jenis_kelas" class="form-label">Jenis Kelas</label>
+                                <div id="jenis_kelas" class="form-control form-control-sm" readonly
+                                    style="background-color: #f8f9fa; cursor: not-allowed;"></div>
                             </div>
                         </div>
                         <div class="row">
@@ -271,17 +294,28 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="mb-3 col-12 col-md-6">
+                            <div class="mb-3 col-12 col-md-4">
                                 <label for="editNisn" class="form-label">NISN</label>
                                 <input type="number" class="form-control form-control-sm" id="editNisn" name="nisn"
                                     placeholder="NISN">
                                 <div id="editNisnError" class="invalid-feedback"></div>
                             </div>
-                            <div class="mb-3 col-12 col-md-6">
+                            <div class="mb-3 col-12 col-md-4">
                                 <label for="editNik" class="form-label">NIK <span style="color: red;">*</span></label>
                                 <input type="number" class="form-control form-control-sm" id="editNik" name="nik"
                                     placeholder="NIK">
                                 <div id="editNikError" class="invalid-feedback"></div>
+                            </div>
+                            <div class="mb-3 col-12 col-md-4">
+                                <label for="pembimbing_AkademikEdit" class="form-label">Pembimbing Akademik<span
+                                        style="color: red;">*</span></label>
+                                <select class="form-select" id="pembimbing_akademikEdit" name="pembimbingAkademikEdit">
+                                    <option selected value="">--Dosen--</option>
+                                    @foreach ($dosens as $dosen)
+                                        <option value="{{ $dosen->id }}">{{ $dosen->nama }}</option>
+                                    @endforeach
+                                </select>
+                                <div id="dosenErrorEdit" class="invalid-feedback"></div>
                             </div>
                         </div>
                         <div class="row">
@@ -416,7 +450,9 @@
                 let nisn = $('#nisn').val();
                 let nik = $('#nik').val();
                 let email = $('#email').val();
+                let password = $('#password').val();
                 let alamat = $('#alamat').val();
+                let pembimbing_akademik = $('#pembimbing_akademik').val();
                 let noTelephone = $('#no_telephone').val();
                 let namaIbu = $('#nama_ibu').val();
                 let tanggalLahir = $('#tanggal_lahir').val();
@@ -434,12 +470,14 @@
                         nik: nik,
                         email: email,
                         alamat: alamat,
+                        password: password,
                         no_telephone: noTelephone,
                         nama_ibu: namaIbu,
                         tanggal_lahir: tanggalLahir,
                         tempat_lahir: tempatLahir,
                         jenis_kelamin: jenisKelamin,
-                        kelas_id: kelasId
+                        kelas_id: kelasId,
+                        pembimbing_akademik: pembimbing_akademik
                     },
                     success: function(response) {
                         $('#tambahModal').modal('hide');
@@ -462,6 +500,14 @@
                             if (errors.nama_lengkap) {
                                 $('#nama').addClass('is-invalid');
                                 $('#namaError').text(errors.nama_lengkap[0]);
+                            }
+                            if (errors.password) {
+                                $('#password').addClass('is-invalid');
+                                $('#passwordError').text(errors.password[0]);
+                            }
+                            if (errors.pembimbing_akademik) {
+                                $('#pembimbing_akademik').addClass('is-invalid');
+                                $('#dosenError').text(errors.pembimbing_akademik[0]);
                             }
                             if (errors.nim) {
                                 $('#nim').addClass('is-invalid');
@@ -520,7 +566,6 @@
             $(document).on('click', '.edit-btn', function() {
                 let modal = $('#editModal');
 
-                // Mengambil data dari tombol
                 let id = $(this).data('id');
                 let nama = $(this).data('nama');
                 let nim = $(this).data('nim');
@@ -537,6 +582,7 @@
                 let jenisKelamin = $(this).data('jeniskelamin');
                 let email = $(this).data('email');
                 let alamat = $(this).data('alamat');
+                let pembimbing = $(this).data('pembimbing');
 
                 // Memasukkan data ke form edit
                 modal.find('#editId').val(id);
@@ -549,6 +595,7 @@
                 modal.find('#editProgramStudi').text(prodi);
                 modal.find('#editJenisKelas').text(jenisKelas);
                 modal.find('#editTanggalLahir').val(tanggalLahir);
+                modal.find('#pembimbing_akademikEdit').val(pembimbing);
                 modal.find('#editTempatLahir').val(tempatLahir);
                 modal.find('#editNamaIbu').val(namaIbu);
                 modal.find('#editNoTelephone').val(telephone);
@@ -577,6 +624,7 @@
                 let jenis_kelamin = $('input[name="jenis_kelamin"]:checked').val();
                 let email = $('#editEmail').val();
                 let alamat = $('#editAlamat').val();
+                let dosen_pembimbing_id = $('#pembimbing_akademikEdit').val();
 
                 $.ajax({
                     url: '{{ route('data-mahasiswa.update', ':id') }}'.replace(':id', id),
@@ -593,7 +641,8 @@
                         no_telephone: no_telephone,
                         jenis_kelamin: jenis_kelamin,
                         email: email,
-                        alamat: alamat
+                        alamat: alamat,
+                        dosen_pembimbing_id: dosen_pembimbing_id
                     },
                     success: function(response) {
                         $('#editModal').modal('hide');
@@ -638,6 +687,10 @@
                             if (errors.tanggal_lahir) {
                                 $('#editTanggalLahir').addClass('is-invalid');
                                 $('#editTanggalLahirError').text(errors.tanggal_lahir[0]);
+                            }
+                            if (errors.dosen_pembimbing_id) {
+                                $('#pembimbing_akademikEdit').addClass('is-invalid');
+                                $('#dosenErrorEdit').text(errors.dosen_pembimbing_id[0]);
                             }
                             if (errors.tempat_lahir) {
                                 $('#editTempatLahir').addClass('is-invalid');
@@ -688,12 +741,12 @@
             //     $('#jenis_kelas').text(jenisKelas);
             // });
 
-    
+
             $('#tambahModal').on('shown.bs.modal', function() {
                 let kelasId = $('#kelas_id').val();
                 let kelasNama = $('#kelas_nama').val();
-                let semester = '{{ $namaKelas->semester->semester }}'; 
-                let prodi = '{{ $namaKelas->prodi->nama_prodi }}'; 
+                let semester = '{{ $namaKelas->semester->semester }}';
+                let prodi = '{{ $namaKelas->prodi->nama_prodi }}';
                 let jenisKelas = kelasNama.endsWith('B') ? 'Kelas Karyawan' : 'Kelas Reguler';
 
                 $('#semester').text('Semester ' + semester);

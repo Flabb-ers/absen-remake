@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('nidn')->unique()->nullable();
+            $table->integer('pembimbing_akademik');
             $table->string('jenis_kelamin');
             $table->string('no_telephone');
             $table->string('agama');

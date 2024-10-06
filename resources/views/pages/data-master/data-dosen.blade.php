@@ -49,6 +49,7 @@
                                                 <td>
                                                     <button class="btn btn-warning btn-sm" onclick="showDetail(this)"
                                                         data-nama="{{ $dosen->nama }}" data-nidn="{{ $dosen->nidn }}"
+                                                        data-pembimbing="{{ $dosen->pembimbing_akademik }}"
                                                         data-jenis-kelamin="{{ $dosen->jenis_kelamin }}"
                                                         data-no-telephone="{{ $dosen->no_telephone }}"
                                                         data-agama="{{ $dosen->agama }}"
@@ -62,6 +63,7 @@
                                                     <button class="btn btn-primary btn-sm edit-button"
                                                         data-id="{{ $dosen->id }}" data-nama="{{ $dosen->nama }}"
                                                         data-nidn="{{ $dosen->nidn }}"
+                                                        data-pembimbing="{{ $dosen->pembimbing_akademik }}"
                                                         data-jenis_kelamin="{{ $dosen->jenis_kelamin }}"
                                                         data-no_telephone="{{ $dosen->no_telephone }}"
                                                         data-agama="{{ $dosen->agama }}"
@@ -114,7 +116,7 @@
                                     <label for="nama" class="form-label">Nama Dosen <span
                                             style="color: red;">*</span></label>
                                     <input type="text" class="form-control form-control-sm" id="nama" name="nama"
-                                        placeholder="Nama Dosen" autocomplete="off">
+                                        placeholder="Nama Dosen">
                                     <div id="namaError" class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -122,7 +124,7 @@
                                 <div class="mb-3">
                                     <label for="nidn" class="form-label">NIDN</label>
                                     <input type="number" class="form-control form-control-sm" id="nidn" name="nidn"
-                                        placeholder="NIDN" autocomplete="off">
+                                        placeholder="NIDN">
                                     <div id="nidnError" class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -155,18 +157,42 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
-                                <div class="mb-3">
-                                    <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif <span
-                                            style="color: red;">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" id="no_telephone"
-                                        name="no_telephone" placeholder="Nomor WhatsApp" autocomplete="off">
-                                    <div id="noTelephoneError" class="invalid-feedback"></div>
+                                <label class="form-label">Status Pembimbing Akademik <span
+                                        style="color: red;">*</span></label><br>
+                                <div class="d-flex flex-wrap">
+                                    <div class="form-group me-3">
+                                        <div class="form-check form-check-primary">
+                                            <label class="form-check-label" for="pembimbing_akademik_1">
+                                                <input type="radio" class="form-check-input" value="1"
+                                                    name="pembimbing_akademik" id="pembimbing_akademik_active" required>
+                                                Aktif
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group me-3">
+                                        <div class="form-check form-check-primary">
+                                            <label class="form-check-label" for="pembimbing_akademik_2">
+                                                <input type="radio" class="form-check-input" value="0"
+                                                    name="pembimbing_akademik" id="pembimbing_akademik_nonaktif" required>
+                                                Nonaktif
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-4">
+                                <div class="mb-3">
+                                    <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif <span
+                                            style="color: red;">*</span></label>
+                                    <input type="text" class="form-control form-control-sm" id="no_telephone"
+                                        name="no_telephone" placeholder="Nomor WhatsApp">
+                                    <div id="noTelephoneError" class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="agama" class="form-label">Agama <span
                                             style="color: red;">*</span></label>
@@ -182,12 +208,12 @@
                                     <div id="agamaError" class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="tanggal_lahir" class="form-label">Tanggal Lahir <span
                                             style="color: red;">*</span></label>
                                     <input type="date" class="form-control form-control-sm" id="tanggal_lahir"
-                                        name="tanggal_lahir" placeholder="Tanggal Lahir" autocomplete="off">
+                                        name="tanggal_lahir" placeholder="Tanggal Lahir">
                                     <div id="tanggalLahirError" class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -199,7 +225,7 @@
                                     <label for="tempat_lahir" class="form-label">Tempat Lahir <span
                                             style="color: red;">*</span></label>
                                     <input type="text" class="form-control form-control-sm" id="tempat_lahir"
-                                        name="tempat_lahir" placeholder="Tempat Lahir" autocomplete="off">
+                                        name="tempat_lahir" placeholder="Tempat Lahir">
                                     <div id="tempatLahirError" class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -208,7 +234,7 @@
                                     <label for="email" class="form-label">Email <span
                                             style="color: red;">*</span></label>
                                     <input type="email" class="form-control form-control-sm" id="email"
-                                        name="email" placeholder="Email" autocomplete="off">
+                                        name="email" placeholder="Email">
                                     <div id="emailError" class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -292,6 +318,34 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
+                                <label class="form-label">Status Pembimbing Akademik <span
+                                        style="color: red;">*</span></label><br>
+                                <div class="d-flex flex-wrap">
+                                    <div class="form-group me-3">
+                                        <div class="form-check form-check-primary">
+                                            <label class="form-check-label" for="pembimbing_akademik_1">
+                                                <input type="radio" class="form-check-input" value="1"
+                                                    name="pembimbing_akademikEdit" id="pembimbing_akademik_activeEdit"
+                                                    required>
+                                                Aktif
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group me-3">
+                                        <div class="form-check form-check-primary">
+                                            <label class="form-check-label" for="pembimbing_akademik_2">
+                                                <input type="radio" class="form-check-input" value="0"
+                                                    name="pembimbing_akademikEdit" id="pembimbing_akademik_nonaktifEdit"
+                                                    required>
+                                                Nonaktif
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif <span
                                             style="color: red;">*</span></label>
@@ -300,9 +354,7 @@
                                     <div id="noTelephoneErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="agama" class="form-label">Agama <span
                                             style="color: red;">*</span></label>
@@ -318,7 +370,7 @@
                                     <div id="agamaErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="tanggal_lahir" class="form-label">Tanggal Lahir <span
                                             style="color: red;">*</span></label>
@@ -396,6 +448,8 @@
                     <ul class="list-group">
                         <li class="list-group-item"><strong>Nama: </strong><span id="detailNama"></span></li>
                         <li class="list-group-item"><strong>NIDN: </strong><span id="detailNidn"></span></li>
+                        <li class="list-group-item"><strong>Status Pembimbing Akademik: </strong><span
+                                id="detailPembimbing"></span></li>
                         <li class="list-group-item"><strong>Jenis Kelamin: </strong><span id="detailJenisKelamin"></span>
                         </li>
                         <li class="list-group-item"><strong>No. Telephone: </strong><span id="detailNoTelephone"></span>
@@ -430,6 +484,7 @@
                 let nama = $('#nama').val();
                 let nidn = $('#nidn').val();
                 let jenis_kelamin = $('input[name="jenis_kelamin"]:checked').val();
+                let pembimbing_akademik = $('input[name="pembimbing_akademik"]:checked').val();
                 let no_telephone = $('#no_telephone').val();
                 let agama = $('#agama').val();
                 let tanggal_lahir = $('#tanggal_lahir').val();
@@ -452,7 +507,8 @@
                         tanggal_lahir: tanggal_lahir,
                         tempat_lahir: tempat_lahir,
                         email: email,
-                        password: password
+                        password: password,
+                        pembimbing_akademik: pembimbing_akademik
                     },
                     success: function(response) {
                         $('#tambahModal').modal('hide');
@@ -520,6 +576,7 @@
                 let nama = $(this).data('nama');
                 let nidn = $(this).data('nidn');
                 let jenis_kelamin = $(this).data('jenis_kelamin');
+                let pembimbing_akademik = $(this).data('pembimbing');
                 let no_telephone = $(this).data('no_telephone');
                 let agama = $(this).data('agama');
                 let tanggal_lahir = $(this).data('tanggal_lahir');
@@ -536,6 +593,7 @@
                 $('#tempat_lahirEdit').val(tempat_lahir);
                 $('#emailEdit').val(email);
                 $(`input[name="jenis_kelaminEdit"][value="${jenis_kelamin}"]`).prop('checked', true);
+                $(`input[name="pembimbing_akademikEdit"][value="${pembimbing_akademik}"]`).prop('checked', true);
                 $('input[name="status"][value="' + status + '"]').prop('checked', true);
                 $('#editModal').modal('show');
 
@@ -553,6 +611,7 @@
                 let email = $('#emailEdit').val();
                 let status = $('input[name="status"]:checked').val();
                 let jenis_kelamin = $('input[name="jenis_kelaminEdit"]:checked').val();
+                let pembimbing_akademik = $('input[name="pembimbing_akademikEdit"]:checked').val();
 
                 $.ajax({
                     url: '{{ route('data-dosen.update', ':id') }}'.replace(':id', id),
@@ -565,6 +624,7 @@
                         agama: agama,
                         tanggal_lahir: tanggal_lahir,
                         tempat_lahir: tempat_lahir,
+                        pembimbing_akademik: pembimbing_akademik,
                         email: email,
                         status: status
                     },
@@ -653,8 +713,9 @@
             const tempatLahir = button.getAttribute('data-tempat-lahir');
             const email = button.getAttribute('data-email');
             const status = button.getAttribute('data-status') == 1 ? 'Aktif' : 'Non-Aktif';
+            const pembimbing = button.getAttribute('data-pembimbing') == 1 ? 'Aktif' : 'Non-Aktif';
 
-            // Set data ke elemen di modal
+
             $('#detailNama').text(nama);
             $('#detailNidn').text(nidn);
             $('#detailJenisKelamin').text(jenisKelamin);
@@ -664,8 +725,8 @@
             $('#detailTempatLahir').text(tempatLahir);
             $('#detailEmail').text(email);
             $('#detailStatus').text(status);
+            $('#detailPembimbing').text(pembimbing);
 
-            // Tampilkan modal
             $('#detailModal').modal('show');
         }
 
