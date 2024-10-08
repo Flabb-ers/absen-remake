@@ -35,4 +35,9 @@ class Dosen extends Model
     {
         return $this->hasMany(Mahasiswa::class);
     }
+
+    public function pengajuanBerita()
+    {
+        return $this->hasMany(PengajuanRekapBerita::class);
+    }
 }

@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Dosen;
 use App\Models\Prodi;
+use App\Models\Ruangan;
 use App\Models\Semester;
 use App\Models\TahunAkademik;
 use Illuminate\Database\Seeder;
@@ -47,28 +48,36 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Semester::create([
-            'semester'=>1
+            'semester'=>1,
+            'status'=>1
         ]);
         Semester::create([
-            'semester'=>12
+            'semester'=>12,
+            'status'=>1
         ]);
         Semester::create([
-            'semester'=>3
+            'semester'=>3,
+            'status'=>1
         ]);
         Semester::create([
-            'semester'=>4
+            'semester'=>4,
+            'status'=>1
         ]);
         Semester::create([
-            'semester'=>5
+            'semester'=>5,
+            'status'=>1
         ]);
         Semester::create([
-            'semester'=>6
+            'semester'=>6,
+            'status'=>1
         ]);
         Semester::create([
-            'semester'=>7
+            'semester'=>7,
+            'status'=>1
         ]);
         Semester::create([
-            'semester'=>8
+            'semester'=>8,
+            'status'=>1
         ]);
 
         TahunAkademik::create([
@@ -77,21 +86,22 @@ class DatabaseSeeder extends Seeder
         ]);
         TahunAkademik::create([
             'tahun_akademik'=>'2024/2026',
-            'status'=>1
+            'status'=>0
         ]);
         TahunAkademik::create([
             'tahun_akademik'=>'2024/2027',
-            'status'=>1
+            'status'=>0
         ]);
         TahunAkademik::create([
             'tahun_akademik'=>'2024/2028',
-            'status'=>1
+            'status'=>0
         ]);
 
         Dosen::create([
             'nama'=>'Dosen stau',
             'nidn'=>'121456645674',
             'jenis_kelamin'=>'Laki - Laki',
+            'pembimbing_akademik'=>1,
             'no_telephone'=>'098329931710',
             'agama'=>'islam',
             'status'=>1,
@@ -103,6 +113,7 @@ class DatabaseSeeder extends Seeder
         Dosen::create([
             'nama'=>'Dosen tiga',
             'nidn'=>'121456645434',
+            'pembimbing_akademik'=>1,
             'jenis_kelamin'=>'Laki - Laki',
             'no_telephone'=>'098329931710',
             'agama'=>'islam',
@@ -115,6 +126,7 @@ class DatabaseSeeder extends Seeder
         Dosen::create([
             'nama'=>'Dosen empat',
             'nidn'=>'12145632644',
+            'pembimbing_akademik'=>1,
             'jenis_kelamin'=>'Laki - Laki',
             'no_telephone'=>'098329931710',
             'agama'=>'islam',
@@ -127,6 +139,7 @@ class DatabaseSeeder extends Seeder
         Dosen::create([
             'nama'=>'Dosen dua',
             'nidn'=>'1214562334644',
+            'pembimbing_akademik'=>1,
             'jenis_kelamin'=>'Laki - Laki',
             'no_telephone'=>'09832993172323',
             'agama'=>'islam',
@@ -135,6 +148,25 @@ class DatabaseSeeder extends Seeder
             'tempat_lahir'=>'Purworejo',
             'email'=>'dhiafawass@gmail.com',
             'password'=>Hash::make('password')
+        ]);
+
+        Ruangan::create([
+            'nama'=>'LS.1.1'
+        ]);
+        Ruangan::create([
+            'nama'=>'LS.1.2'
+        ]);
+        Ruangan::create([
+            'nama'=>'LS.2.1'
+        ]);
+        Ruangan::create([
+            'nama'=>'LS.2.2'
+        ]);
+        Ruangan::create([
+            'nama'=>'A.1.1'
+        ]);
+        Ruangan::create([
+            'nama'=>'A.1.2'
         ]);
 
     }

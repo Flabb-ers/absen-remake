@@ -11,21 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('resumes', function (Blueprint $table) {
+        Schema::create('pengajuan_rekap_beritas', function (Blueprint $table) {
             $table->id();
-            $table->date('tanggal');
-            $table->time('waktu');
-            $table->string('tahun');
-            $table->string('materi');
-            $table->integer('pertemuan');
             $table->foreignId('dosens_id');
             $table->foreignId('matkuls_id');
-            $table->foreignId('prodis_id');
+            $table->foreignId('jadwal_id');
             $table->foreignId('kelas_id');
-            $table->integer('tidak_hadir');
-            $table->integer('hadir');
-            $table->boolean('setuju_wadir')->default(false); 
-            $table->boolean('setuju_kaprodi')->default(false);
+            $table->string('pertemuan');
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }
@@ -35,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('resumes');
+        Schema::dropIfExists('pengajuan_rekap_beritas');
     }
 };

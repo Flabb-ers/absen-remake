@@ -159,7 +159,7 @@
             <div>
                 <h3>POLITEKNIK SAWUNGGALIH AJI</h3>
                 <h3>BERITA ACARA PERKULIAHAN</h3>
-                <h3>SEMESTER {{ $sem }} TAHUN AKADEMIK {{ $beritas->first()->tahun }}</h3>
+                <h3>SEMESTER {{ $sem }} TAHUN AKADEMIK {{ $tahunAkademik->first()->tahun_akademik }}</h3>
             </div>
         </div>
         <hr class="double-hr">

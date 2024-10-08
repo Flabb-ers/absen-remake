@@ -109,6 +109,25 @@
             width: 100%;
         }
 
+        .btn {
+            background-color: rgb(33, 102, 175);
+            padding: 5px 10px;
+            text-decoration: none;
+            color: white;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 5px;
+            margin-bottom: 40px
+        }
+
+        .btn:hover {
+            background-color: rgb(16, 71, 130);
+            padding: 5px 10px;
+            text-decoration: none;
+            color: white;
+            border-radius: 5px;
+        }
+
         @media print {
             body {
                 visibility: hidden;
@@ -145,11 +164,6 @@
             }
         }
     </style>
-    <script>
-        window.onload = function () {
-            window.print(); 
-        };
-    </script>
 </head>
 
 <body>
@@ -159,7 +173,7 @@
             <div>
                 <h3>POLITEKNIK SAWUNGGALIH AJI</h3>
                 <h3>BERITA ACARA PERKULIAHAN</h3>
-                <h3>SEMESTER {{ $sem }} TAHUN AKADEMIK {{ $tahunAkademik->first()->tahun_akademik}}</h3>
+                <h3>SEMESTER {{ $sem }} TAHUN AKADEMIK {{ $tahunAkademik->tahun_akademik }}</h3>
             </div>
         </div>
         <hr class="double-hr">
@@ -186,8 +200,6 @@
                     {{ $beritas->first()->kelas->semester->semester }}/{{ $beritas->first()->kelas->nama_kelas }}</h4>
             </div>
         </div>
-
-
         <table>
             <tr>
                 <th class="pertemuan-ke">Pertemuan Ke</th>
@@ -198,7 +210,7 @@
                 <th class="tidak-hadir">Jml Mhs Tdk Hadir</th>
                 <th class="ttd-dosen">Ttd Dosen</th>
             </tr>
-            @for ($i = 1; $i <= 7; $i++)
+            @foreach ($range as $i)
                 @php
                     $berita = $beritas->firstWhere('pertemuan', $i);
                 @endphp
@@ -213,7 +225,7 @@
                     <td class="tidak-hadir" style="text-align: center">{{ $berita->tidak_hadir ?? '' }}</td>
                     <td class="ttd-dosen"></td>
                 </tr>
-            @endfor
+            @endforeach
             <tr>
                 <td style="text-align: center;">UTS/UAS</td>
                 <td></td>
@@ -224,10 +236,87 @@
                 <td></td>
             </tr>
         </table>
+
+
         <div style="margin-top:15px;margin-bottom:5px">
             Catatan : Daftar ini harus diisi setiap perkuliahan sebagai dasar perhitungan honor mengajar
         </div>
-    </div>
+
+        <div style="border: 1px solid black; padding: 10px; margin-top: 20px; width: 240px">
+            @php
+                $rentangUrl = min($range) . '-' . max($range);
+            @endphp
+
+            <form id="approvalForm" method="POST"
+                action="/presensi/pengajuan-konfirmasi/rekap-berita/{{ $rentangUrl }}/{{ $beritas->first()->matkuls_id }}/{{ $beritas->first()->kelas_id }}">
+                @csrf
+                @method('PUT')
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="kaprodi" name="kaprodi"
+                        {{ $beritas->where('setuju_kaprodi', 1)->count() == count($range) ? 'checked' : '' }}
+                        onchange="confirmSubmission(this)">
+                    <label class="form-check-label" for="kaprodi">Kaprodi</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="wakil_direktur" name="wakil_direktur"
+                        {{ $beritas->where('setuju_wadir', 1)->count() == count($range) ? 'checked' : '' }}
+                        onchange="confirmSubmission(this)">
+                    <label class="form-check-label" for="wakil_direktur">Wakil Direktur</label>
+                </div>
+            </form>
+        </div>
+        <div style="margin-top: 30px;">
+            <a href="/presensi/pengajuan-konfirmasi/rekap-berita" class="btn">Kembali</a>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            function confirmSubmission(checkbox) {
+                const isChecked = checkbox.checked;
+                const label = checkbox.nextElementSibling.innerText;
+                if (isChecked) {
+                    Swal.fire({
+                        title: 'Konfirmasi',
+                        text: `Apakah Anda yakin ingin menyetujui ${label}?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, setujui',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById('approvalForm').submit();
+                        } else {
+                            checkbox.checked = false;
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Konfirmasi',
+                        text: `Apakah Anda yakin ingin membatalkan persetujuan ${label}?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, batalkan',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById('approvalForm').submit();
+                        } else {
+                            checkbox.checked = true;
+                        }
+                    });
+                }
+            }
+        </script>
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    title: 'Sukses!',
+                    text: '{{ session('success') }}',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
 </body>
 
 </html>

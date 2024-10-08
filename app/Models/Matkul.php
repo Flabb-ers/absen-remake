@@ -16,11 +16,6 @@ class Matkul extends Model
         return $this->belongsTo(Kelas::class);
     }
 
-    public function dosen()
-    {
-        return $this->belongsTo(Dosen::class, 'dosens_id');
-    }
-
     public function ruangan()
     {
         return $this->belongsTo(Ruangan::class, 'ruangans_id');
@@ -35,7 +30,17 @@ class Matkul extends Model
         return $this->hasMany(Absen::class);
     }
 
-    public function resume(){
+    public function resume()
+    {
         return $this->hasMany(Resume::class);
+    }
+    public function pengajuanPresensi()
+    {
+        return $this->hasMany(PengajuanRekapPresensi::class);
+    }
+
+    public function pengajuanBerita()
+    {
+        return $this->hasMany(PengajuanRekapBerita::class);
     }
 }

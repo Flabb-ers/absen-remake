@@ -2,14 +2,14 @@
     <ul class="nav">
         <li class="nav-item">
             <a class="nav-link" href="/presensi/dashboard">
-                <i class="icon-grid menu-icon"></i>
+                <i class="mdi mdi-view-dashboard menu-icon"></i>
                 <span class="menu-title">Dashboard</span>
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#data-master" aria-expanded="false"
                 aria-controls="data-master">
-                <i class="icon-folder menu-icon"></i>
+                <i class="mdi mdi-folder menu-icon"></i>
                 <span class="menu-title">Data Master</span>
                 <i class="menu-arrow"></i>
             </a>
@@ -42,7 +42,7 @@
         </li>
         <li class="nav-item {{ Request::is('presensi/data-mahasiswa*') ? 'active' : '' }}">
             <a class="nav-link" href="/presensi/data-mahasiswa">
-                <i class="mdi mdi-calendar-month-outline menu-icon"></i>
+                <i class="mdi mdi-account-group menu-icon"></i>
                 <span class="menu-title">Mahasiswa</span>
             </a>
         </li>
@@ -65,82 +65,38 @@
                 <span class="menu-title">Kontrak</span>
             </a>
         </li>
-        {{-- <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
-                <i class="icon-bar-graph menu-icon"></i>
-                <span class="menu-title">Charts</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="charts">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">ChartJs</a></li>
-                </ul>
-            </div>
-        </li>
+        <li class="nav-item">Wadir dan direkturrrrr</li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
-                <i class="icon-grid-2 menu-icon"></i>
-                <span class="menu-title">Tables</span>
+            <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap" aria-expanded="false"
+                aria-controls="pengajuan-rekap">
+                <i class="icon-folder menu-icon"></i>
+                <span class="menu-title">Rekap Presensi</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="tables">
+            <div class="collapse" id="pengajuan-rekap">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="pages/tables/basic-table.html">Basic
-                            table</a></li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#icons" aria-expanded="false"
-                aria-controls="icons">
-                <i class="icon-contract menu-icon"></i>
-                <span class="menu-title">Icons</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="icons">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="pages/icons/mdi.html">Mdi icons</a>
+                    <li class="nav-item"> <a class="nav-link" href="/presensi/pengajuan-konfirmasi/rekap-presensi">Diajukan</a>
+                    </li>
+                    <li class="nav-item"> <a class="nav-link" href="/presensi/pengajuan-konfirmasi/presensi-disetujui">Disetujui</a>
                     </li>
                 </ul>
             </div>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false"
-                aria-controls="auth">
-                <i class="icon-head menu-icon"></i>
-                <span class="menu-title">User Pages</span>
+            <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap-berita" aria-expanded="false"
+                aria-controls="pengajuan-rekap-berita">
+                <i class="icon-folder menu-icon"></i>
+                <span class="menu-title">Rekap Berita Acara</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="auth">
+            <div class="collapse" id="pengajuan-rekap-berita">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Login </a>
+                    <li class="nav-item"> <a class="nav-link" href="/presensi/pengajuan-konfirmasi/rekap-berita">Diajukan</a>
                     </li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html">
-                            Register </a></li>
+                    <li class="nav-item"> <a class="nav-link" href="/presensi/pengajuan-konfirmasi/berita-disetujui">Disetujui</a>
+                    </li>
                 </ul>
             </div>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#error" aria-expanded="false"
-                aria-controls="error">
-                <i class="icon-ban menu-icon"></i>
-                <span class="menu-title">Error pages</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="error">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404
-                        </a></li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500
-                        </a></li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="../../../docs/documentation.html">
-                <i class="icon-paper menu-icon"></i>
-                <span class="menu-title">Documentation</span>
-            </a>
-        </li> --}}
     </ul>
 </nav>

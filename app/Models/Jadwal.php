@@ -13,29 +13,43 @@ class Jadwal extends Model
 
     public function dosen()
     {
-        return $this->belongsTo(Dosen::class,'dosens_id');
+        return $this->belongsTo(Dosen::class, 'dosens_id');
     }
 
     public function kelas()
     {
-        return $this->belongsTo(Kelas::class,'kelas_id');
+        return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 
-    public function matkul(){
+    public function matkul()
+    {
 
-        return $this->belongsTo(Matkul::class,'matkuls_id');
+        return $this->belongsTo(Matkul::class, 'matkuls_id');
     }
 
-    public function ruangan(){
-        return $this->belongsTo(Ruangan::class,'ruangans_id');
+    public function ruangan()
+    {
+        return $this->belongsTo(Ruangan::class, 'ruangans_id');
     }
 
-    public function absen(){
+    public function absen()
+    {
 
         return $this->hasMany(Absen::class);
     }
 
-    public function kontrak(){
+    public function kontrak()
+    {
         return $this->hasMany(Kontrak::class);
+    }
+
+    public function pengajuanPresensi()
+    {
+        return $this->hasOne(PengajuanRekapPresensi::class);
+    }
+
+    public function pengajuanBerita()
+    {
+        return $this->hasOne(PengajuanRekapBerita::class);
     }
 }

@@ -1,7 +1,8 @@
 - [x] **Make input Kontrak**
 - [x] **Add Class Categories**
 - [ ] **Search For all 😭😭😭**
-- [ ] **Make cursor can't click when dosen and wadir don't approve, for Absen recap and program     news**
+- [x] **Make cursor can't click when dosen and wadir don't approve, for Absen recap and program news**
+- [ ] Make cursor cant't click when dosen and wadir does't approve kontrak
 - [x] **Make Nim max 8 and NISN max 10**
 - [x] **Make Dosen PA and set active - non-active**
 - [x] **Add Password in Mahasiswa**

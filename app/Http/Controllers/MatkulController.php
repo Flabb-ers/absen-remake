@@ -15,7 +15,7 @@ class MatkulController extends Controller
      */
     public function index()
     {
-        $matkuls = Matkul::with('kelas.semester', 'dosen', 'ruangan')->latest()->paginate(6);
+        $matkuls = Matkul::with('kelas.semester', 'ruangan')->latest()->paginate(6);
         return view('pages.data-master.data-matkul', compact('matkuls'));
     }
 

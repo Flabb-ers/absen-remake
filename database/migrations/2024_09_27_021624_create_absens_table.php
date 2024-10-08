@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreignId('mahasiswas_id');
             $table->string('status');
             $table->boolean('setuju_wadir')->default(false); 
-            $table->boolean('setuju_kaprodi')->default(false); 
+            $table->boolean('setuju_kaprodi')->default(false);
             $table->timestamps();
         });
     }

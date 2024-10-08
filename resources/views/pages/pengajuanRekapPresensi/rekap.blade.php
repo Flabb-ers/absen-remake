@@ -84,6 +84,24 @@
             font-weight: bold;
         }
 
+        .btn {
+            background-color: rgb(33, 102, 175);
+            padding: 5px 10px;
+            text-decoration: none;
+            color: white;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            background-color: rgb(16, 71, 130);
+            padding: 5px 10px;
+            text-decoration: none;
+            color: white;
+            border-radius: 5px;
+        }
+
         @media print {
             table {
                 width: auto;
@@ -112,17 +130,7 @@
                 margin-bottom: 20px;
             }
         }
-
-        @page {
-            size: A4 portrait;
-            margin: 30px;
-        }
     </style>
-    <script>
-        window.onload = function () {
-            window.print(); 
-        };
-    </script>
 </head>
 
 <body>
@@ -131,7 +139,7 @@
             <h3>POLITEKNIK SAWUNGGALIH AJI</h3>
             <h4 style="margin-top:-20px">PRESENSI MAHASISWA SEMESTER {{ $absens->first()->kelas->semester->semester }}
             </h4>
-            <h5 style="margin-top:-18px;margin-bottom:60px">TAHUN AKADEMIK {{ $tahunAkademik->first()->tahun_akademik }}</h5>
+            <h5 style="margin-top:-18px;margin-bottom:60px">TAHUN AKADEMIK {{ $absens->first()->tahun }}</h5>
         </div>
         <div class="header-info">
             <div>
@@ -160,32 +168,28 @@
                 <th rowspan="3">NIM</th>
                 <th rowspan="3">Nama</th>
                 <th colspan="1"></th>
-                <th colspan="7" style="padding: 2px">Tanggal Pertemuan</th>
+                <th colspan="{{ count($rentang) }}" style="padding: 2px">Tanggal Pertemuan</th>
             </tr>
             <tr>
                 <th style="font-weight: bold;">Pert. Ke</th>
-                <th style="font-weight:normal;">1</th>
-                <th style="font-weight:normal;">2</th>
-                <th style="font-weight:normal;">3</th>
-                <th style="font-weight:normal;">4</th>
-                <th style="font-weight:normal;">5</th>
-                <th style="font-weight:normal;">6</th>
-                <th style="font-weight:normal;">7</th>
+                @foreach ($rentang as $r)
+                    <th style="font-weight:normal;">{{ $r }}</th>
+                @endforeach
             </tr>
             <tr>
                 <th style="font-weight: bold; padding:2px">Tgl</th>
-                @for ($i = 1; $i <= 7; $i++)
+                @foreach ($rentang as $r)
                     @php
                         $tanggal = '';
                         foreach ($absens as $absen) {
-                            if ($absen->pertemuan == $i) {
+                            if ($absen->pertemuan == $r) {
                                 $tanggal = date('d/m/Y', strtotime($absen->tanggal));
                                 break;
                             }
                         }
                     @endphp
-                    <td>{{ $tanggal ?:''}}</td>
-                @endfor
+                    <td>{{ $tanggal ?: '' }}</td>
+                @endforeach
             </tr>
 
             @php
@@ -194,7 +198,7 @@
                     $absenGroupedByMahasiswa[$absen->mahasiswas_id][] = $absen;
                 }
 
-                $jumlahHadirPerKolom = array_fill(1, 7, 0);
+                $jumlahHadirPerKolom = array_fill(1, count($rentang), 0);
             @endphp
 
             @foreach ($absenGroupedByMahasiswa as $mahasiswaId => $absenItems)
@@ -207,31 +211,38 @@
                     <td>{{ $mahasiswa->nim }}</td>
                     <td colspan="2">{{ $mahasiswa->nama_lengkap }}</td>
 
-                    @for ($i = 1; $i <= 7; $i++)
+                    @php
+                        $jumlahHadirPerKolom = array_fill(min($rentang), count($rentang), 0);
+                    @endphp
+
+                    @foreach ($rentang as $r)
                         @php
                             $status = '';
+
                             foreach ($absenItems as $absen) {
-                                if ($absen->pertemuan == $i) {
+                                if ($absen->pertemuan == $r) {
                                     $status = $absen->status;
                                     break;
                                 }
                             }
 
                             if ($status === 'H' || $status === 'T') {
-                                $jumlahHadirPerKolom[$i]++;
+                                $jumlahHadirPerKolom[$r]++;
                             }
                         @endphp
                         <td>{{ $status ?: '' }}</td>
-                    @endfor
+                    @endforeach
+
+
                 </tr>
             @endforeach
 
             <tr>
                 <td></td>
                 <td colspan="3">Jumlah Yang Hadir</td>
-                @for ($i = 1; $i <= 7; $i++)
-                    <td>{{ $jumlahHadirPerKolom[$i] > 0 ? $jumlahHadirPerKolom[$i] : 0 }}</td>
-                @endfor
+                @foreach ($rentang as $r)
+                    <td>{{ $jumlahHadirPerKolom[$r] > 0 ? $jumlahHadirPerKolom[$r] : 0 }}</td>
+                @endforeach
             </tr>
         </table>
 
@@ -247,7 +258,110 @@
                 <h5 style="margin-left: 100px;">Dosen Pengampu</h5>
             </div>
         </div>
+
+
+
+        {{-- @php
+        
+            $isKaprodi = auth()->guard('kaprodi')->check(); // Cek jika pengguna adalah kaprodi
+            $isWadir = auth()->guard('wakil_direktur')->check(); // Cek jika pengguna adalah wakil direktur
+
+            $kaprodiApproved = true; // Contoh: status approve Kaprodi
+            $wakilDiterApproved = false; // Contoh: status approve Wakil Direktur
+        @endphp
+
+        <div style="border: 1px solid black; padding: 10px; margin-top: 20px; width:240px">
+            <form action="">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="kaprodi"
+                        {{ $isKaprodi ? ($kaprodiApproved ? 'checked readonly' : '') : 'disabled' }}>
+                    <label class="form-check-label" for="kaprodi">Kaprodi</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="wakil_direktur"
+                        {{ $isWadir ? ($wakilDiterApproved ? 'checked readonly' : '') : 'disabled' }}>
+                    <label class="form-check-label" for="wakil_direktur">Wakil Direktur</label>
+                </div>
+            </form>
+        </div> --}}
+
+        <div style="border: 1px solid black; padding: 10px; margin-top: 20px; width:240px">
+            @php
+                $rentangUrl = min($rentang) . '-' . max($rentang);
+            @endphp
+
+            <form id="attendanceForm" method="POST"
+                action="/presensi/pengajuan-konfirmasi/rekap-presensi/{{ $rentangUrl }}/{{ $absens->first()->matkuls_id }}/{{ $absens->first()->kelas_id }}">
+                @csrf
+                @method('PUT')
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="kaprodi" name="kaprodi"
+                        {{ $absens->where('setuju_kaprodi', 1)->count() == count($rentang) ? 'checked' : '' }}
+                        onchange="confirmSubmission(this)">
+                    <label class="form-check-label" for="kaprodi">Kaprodi</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="wakil_direktur" name="wakil_direktur"
+                        {{ $absens->where('setuju_wadir', 1)->count() == count($rentang) ? 'checked' : '' }}
+                        onchange="confirmSubmission(this)">
+                    <label class="form-check-label" for="wakil_direktur">Wakil Direktur</label>
+                </div>
+            </form>
+        </div>
+        <div style="margin-top: 30px;">
+            <a href="/presensi/pengajuan-konfirmasi/rekap-presensi" class="btn">Kembali</a>
+        </div>
     </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmSubmission(checkbox) {
+            const isChecked = checkbox.checked;
+            const label = checkbox.nextElementSibling.innerText;
+            if (isChecked) {
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: `Apakah Anda yakin ingin menyetujui ${label}?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, setujui',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('attendanceForm').submit();
+                    } else {
+                        checkbox.checked = false;
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: `Apakah Anda yakin ingin membatalkan persetujuan ${label}?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, batalkan',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('attendanceForm').submit();
+                    } else {
+                        checkbox.checked = true;
+                    }
+                });
+            }
+        }
+    </script>
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                title: 'Sukses!',
+                text: '{{ session('success') }}',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
 </body>
 
 </html>

@@ -220,7 +220,7 @@
                                 <label for="password" class="form-label">Password <span
                                         style="color: red;">*</span></label>
                                 <input type="password" class="form-control form-control-sm" id="password"
-                                    placeholder="password" name="password">
+                                    placeholder="Password" name="password">
                                 <div id="passwordError" class="invalid-feedback"></div>
                             </div>
                         </div>

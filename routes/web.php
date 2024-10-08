@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\PresensiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\KelasController;
@@ -9,12 +8,15 @@ use App\Http\Controllers\WadirController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\MatkulController;
 use App\Http\Controllers\KaprodiController;
+use App\Http\Controllers\KontrakController;
 use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\DirekturController;
-use App\Http\Controllers\KontrakController;
+use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\PengajuanRekapBeritaController;
 use App\Http\Controllers\TahunAkademikController;
+use App\Http\Controllers\PengajuanRekapPresensiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,7 +60,7 @@ Route::prefix('/presensi')->group(function () {
     // JADWAL
     Route::resource('/jadwal-mengajar', JadwalController::class);
 
-    // ABSEN
+    // PRESENSI
     Route::resource('/data-presensi', PresensiController::class);
     Route::get('/data-presensi/isi-presensi/{id}', [PresensiController::class, 'absen']);
     Route::get('/data-presensi/edit/{id}/{matkuls_id}/{kelas_id}', [PresensiController::class, 'edit']);
@@ -73,4 +75,20 @@ Route::prefix('/presensi')->group(function () {
     Route::resource('/data-kontrak', KontrakController::class);
     Route::get('/data-kontrak/isi-kontrak/{id}', [KontrakController::class,'create']);
     Route::get('/data-kontrak/rekap/{matkuls_id}/{kelas_id}/{jadwals_id}', [KontrakController::class,'rekap']);
+
+
+        
+    // PENGAJUAN PRESENSI
+    Route::resource('/pengajuan-konfirmasi/rekap-presensi',PengajuanRekapPresensiController::class);
+    Route::get('/pengajuan-konfirmasi/presensi-disetujui',[PengajuanRekapPresensiController::class,'confirm']);
+    Route::get('/pengajuan-konfirmasi/rekap-presensi/{pertemuan}/{matkul_id}/{kelas_id}',[PengajuanRekapPresensiController::class,'edit']);
+    route::put('/pengajuan-konfirmasi/rekap-presensi/{pertemuan}/{matkul_id}/{kelas_id}',[PengajuanRekapPresensiController::class,'update']);
+
+
+
+    // PENGAJUAN BERITA
+    Route::resource('/pengajuan-konfirmasi/rekap-berita',PengajuanRekapBeritaController::class);
+    Route::get('/pengajuan-konfirmasi/rekap-berita/{pertemuan}/{matkul_id}/{kelas_id}',[PengajuanRekapBeritaController::class,'edit']);
+    route::put('/pengajuan-konfirmasi/rekap-berita/{pertemuan}/{matkul_id}/{kelas_id}',[PengajuanRekapBeritaController::class,'update']);
+    Route::get('/pengajuan-konfirmasi/berita-disetujui',[PengajuanRekapBeritaController::class,'confirm']);
 });
