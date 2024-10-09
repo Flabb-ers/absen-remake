@@ -3,6 +3,14 @@
 @section('container')
     <div class="main-panel">
         <div class="content-wrapper">
+            <div class="breadcrumb">
+                <a href="/presensi/dashboard" class="breadcrumb-item">
+                    <span class="mdi mdi-home"></span> Dashboard
+                </a>
+                <a href="/presensi/data-mahasiswa" class="breadcrumb-item">Mahasiswa</a>
+                <span class="breadcrumb-item">Kelas</span>
+                <span class="breadcrumb-item">{{ $mahasiswas->first()->kelas->nama_kelas }}</span>
+            </div>
             <div class="row">
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
@@ -15,6 +23,8 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
+                                            <th><input type="checkbox" id="select-all" /></th>
+                                            <!-- Checkbox untuk memilih semua -->
                                             <th>#</th>
                                             <th>NIM</th>
                                             <th>Nama Mahasiswa</th>
@@ -28,6 +38,9 @@
                                     <tbody>
                                         @forelse ($mahasiswas as $mahasiswa)
                                             <tr>
+                                                <td><input type="checkbox" class="select-checkbox"
+                                                        data-id="{{ $mahasiswa->id }}" /></td>
+                                                <!-- Checkbox untuk setiap mahasiswa -->
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $mahasiswa->nim }}</td>
                                                 <td>{{ $mahasiswa->nama_lengkap }}</td>
@@ -66,7 +79,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td class="text-center" colspan="8">Mahasiswa Kelas
+                                                <td class="text-center" colspan="9">Mahasiswa Kelas
                                                     {{ $namaKelas->nama_kelas }} belum ditambahkan</td>
                                             </tr>
                                         @endforelse
@@ -79,6 +92,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -219,8 +233,13 @@
                             <div class="mb-3 col-12 col-md-4">
                                 <label for="password" class="form-label">Password <span
                                         style="color: red;">*</span></label>
-                                <input type="password" class="form-control form-control-sm" id="password"
-                                    placeholder="Password" name="password">
+                                <div class="input-group">
+                                    <input type="password" class="form-control form-control-sm" id="password"
+                                        name="password" placeholder="Password">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+                                    </span>
+                                </div>
                                 <div id="passwordError" class="invalid-feedback"></div>
                             </div>
                         </div>
@@ -814,6 +833,35 @@
                 $(formId).find('.invalid-feedback').text('');
                 $(formId)[0].reset();
             }
+
+            $('#togglePassword').on('click', function() {
+                let passwordInput = $('#password');
+                let icon = $(this);
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#select-all').change(function() {
+                $('.select-checkbox').prop('checked', this.checked);
+            });
+
+            $('.select-checkbox').change(function() {
+                if (!this.checked) {
+                    $('#select-all').prop('checked', false);
+                }
+                if ($('.select-checkbox:checked').length === $('.select-checkbox').length) {
+                    $('#select-all').prop('checked', true);
+                }
+            });
         });
     </script>
 @endsection

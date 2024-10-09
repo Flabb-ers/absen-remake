@@ -79,6 +79,7 @@
     <!-- End custom js for this page-->
     {{-- axsios --}}
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 </body>
 
 </html>

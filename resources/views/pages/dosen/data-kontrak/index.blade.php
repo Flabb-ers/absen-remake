@@ -10,6 +10,12 @@
 @section('container')
     <div class="main-panel">
         <div class="content-wrapper">
+            <div class="breadcrumb">
+                <a href="/presensi/dashboard" class="breadcrumb-item">
+                    <span class="mdi mdi-home"></span> Dashboard
+                </a>
+                <span class="breadcrumb-item" id="dataMasterBreadcrumb">Kontrak</span>
+            </div>            
             <div class="row">
                 @forelse ($jadwals as $jadwal)
                     <div class="col-lg-4 col-md-6 col-sm-12 grid-margin stretch-card">
@@ -72,7 +78,7 @@
                                             @elseif($rekapStatus->status == 1)
                                                 <a href="/presensi/data-kontrak/rekap/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}/{{ $jadwal->id }}"
                                                     class="btn btn-success btn-sm w-100 mb-2">
-                                                    <span class="mdi mdi-file-document"></span> Rekap Kontrak
+                                                    <span class="mdi mdi-file-document"></span> Rekap Kontrak (Approved)
                                                 </a>
                                             @endif
                                         @endif

@@ -182,7 +182,8 @@ class MahasiswaController extends Controller
         $dosens = Dosen::where('pembimbing_akademik',1)
                         ->where('status',1)
                         ->get();
-        return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass','namaKelas','dosens'));
+        $kelasAll = Kelas::where('id_prodi',$namaKelas->id_prodi)->get();
+        return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass','namaKelas','dosens','kelasAll'));
     }
 
 }

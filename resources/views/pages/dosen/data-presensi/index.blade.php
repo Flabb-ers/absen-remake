@@ -8,6 +8,12 @@
 @section('container')
     <div class="main-panel">
         <div class="content-wrapper">
+            <div class="breadcrumb">
+                <a href="/presensi/dashboard" class="breadcrumb-item">
+                    <span class="mdi mdi-home"></span> Dashboard
+                </a>
+                <span class="breadcrumb-item" id="dataMasterBreadcrumb">Presensi</span>
+            </div> 
             <div class="row">
                 @forelse ($jadwals as $jadwal)
                     <div class="col-lg-4 col-md-6 col-sm-12 grid-margin stretch-card">
@@ -89,7 +95,8 @@
                                                                 <a href="/presensi/data-presensi/rekap/1-7/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
                                                                     class="dropdown-item text-center text-success">
                                                                     <span class="mdi mdi-file-document-outline"></span>
-                                                                    Rekap 1 - 7
+                                                                    Rekap 1 - 7 (
+                                                                        Approved)
                                                                 </a>
                                                             </li>
                                                         @elseif($rekap_1_7_pending)
@@ -144,7 +151,7 @@
                                                                 <a href="/presensi/data-presensi/rekap/8-14/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
                                                                     class="dropdown-item text-center text-success">
                                                                     <span class="mdi mdi-file-document-outline"></span>
-                                                                    Rekap 8 - 14
+                                                                    Rekap 8 - 14 (Approved)
                                                                 </a>
                                                             </li>
                                                         @elseif($rekap_8_14_pending)
@@ -214,7 +221,7 @@
                                                             <a href="/presensi/data-presensi/rekap/berita-acara-perkuliahan/1-7/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
                                                                 class="dropdown-item text-center text-success">
                                                                 <span class="mdi mdi-file-document-outline"></span>
-                                                                Rekap 1 - 7
+                                                                Rekap 1 - 7 (Approved)
                                                             </a>
                                                         </li>
                                                     @elseif($berita_1_7_pending)
@@ -253,7 +260,7 @@
                                                             <a href="/presensi/data-presensi/rekap/berita-acara-perkuliahan/8-14/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
                                                                 class="dropdown-item text-center text-success">
                                                                 <span class="mdi mdi-file-document-outline"></span>
-                                                                Rekap 8 - 14
+                                                                Rekap 8 - 14 (Approved)
                                                             </a>
                                                         </li>
                                                     @elseif($berita_8_14_pending)

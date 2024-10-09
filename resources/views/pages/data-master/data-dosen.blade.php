@@ -3,6 +3,13 @@
 @section('container')
     <div class="main-panel">
         <div class="content-wrapper">
+            <div class="breadcrumb">
+                <a href="/presensi/dashboard" class="breadcrumb-item">
+                    <span class="mdi mdi-home"></span> Dashboard
+                </a>
+                <span class="breadcrumb-item" id="dataMasterBreadcrumb">Data Master</span>
+                <span class="breadcrumb-item active">Dosen</span>
+            </div> 
             <div class="row">
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
@@ -242,8 +249,13 @@
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Password <span
                                             style="color: red;">*</span></label>
-                                    <input type="password" class="form-control form-control-sm" id="password"
-                                        name="password" placeholder="Password" autocomplete="off">
+                                    <div class="input-group">
+                                        <input type="password" class="form-control form-control-sm" id="password"
+                                            name="password" placeholder="Password" autocomplete="off">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+                                        </span>
+                                    </div>
                                     <div id="passwordError" class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -476,6 +488,19 @@
                 }
             });
 
+            $('#togglePassword').on('click', function() {
+                let passwordInput = $('#password');
+                let icon = $(this);
+                // Toggle the type attribute
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+
             $('#tambahForm').submit(function(e) {
                 e.preventDefault();
 
@@ -593,7 +618,8 @@
                 $('#tempat_lahirEdit').val(tempat_lahir);
                 $('#emailEdit').val(email);
                 $(`input[name="jenis_kelaminEdit"][value="${jenis_kelamin}"]`).prop('checked', true);
-                $(`input[name="pembimbing_akademikEdit"][value="${pembimbing_akademik}"]`).prop('checked', true);
+                $(`input[name="pembimbing_akademikEdit"][value="${pembimbing_akademik}"]`).prop('checked',
+                    true);
                 $('input[name="status"][value="' + status + '"]').prop('checked', true);
                 $('#editModal').modal('show');
 

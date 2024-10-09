@@ -3,6 +3,13 @@
 @section('container')
     <div class="main-panel">
         <div class="content-wrapper">
+            <div class="breadcrumb">
+                <a href="/presensi/dashboard" class="breadcrumb-item">
+                    <span class="mdi mdi-home"></span> Dashboard
+                </a>
+                <span class="breadcrumb-item" id="dataMasterBreadcrumb">Data Master</span>
+                <span class="breadcrumb-item active">Wakil Direktur</span>
+            </div> 
             <div class="row">
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
@@ -95,7 +102,8 @@
                             <div id="dosenError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif <span style="color: red;">*</span></label>
+                            <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif <span
+                                    style="color: red;">*</span></label>
                             <input type="no_telephone" class="form-control form-control-sm" id="no_telephone"
                                 name="no_telephone" placeholder="Nomor WhatsApp">
                             <div id="NotlpError" class="invalid-feedback"></div>
@@ -108,8 +116,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password <span style="color: red;">*</span></label>
-                            <input type="password" class="form-control form-control-sm" id="password" name="password"
-                                placeholder="Password" autocomplete="off">
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-sm" id="password" name="password"
+                                    placeholder="Password" autocomplete="off">
+                                <span class="input-group-text">
+                                    <i class="fa fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+                                </span>
+                            </div>
                             <div id="passwordError" class="invalid-feedback"></div>
                         </div>
                         <button type="submit" class="btn btn-primary btn-sm">
@@ -145,10 +158,11 @@
                             <div id="dosenErrorEdit" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="nomorEdit" class="form-label">Nomor WhatsApp< <span style="color: red;">*</span>/label>
-                            <input type="string" class="form-control form-control-sm" id="nomorEdit" name="email"
-                                placeholder="Nomor WhatsApp">
-                            <div id="notlperror" class="invalid-feedback"></div>
+                            <label for="nomorEdit" class="form-label">Nomor WhatsApp< <span style="color: red;">
+                                    *</span>/label>
+                                    <input type="string" class="form-control form-control-sm" id="nomorEdit"
+                                        name="email" placeholder="Nomor WhatsApp">
+                                    <div id="notlperror" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
                             <label for="emailEdit" class="form-label">Email <span style="color: red;">*</span></label>
@@ -195,6 +209,18 @@
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $('#togglePassword').on('click', function() {
+                let passwordInput = $('#password');
+                let icon = $(this);
+                // Toggle the type attribute
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
                 }
             });
 
