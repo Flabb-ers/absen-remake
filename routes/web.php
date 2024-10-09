@@ -15,8 +15,10 @@ use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PengajuanRekapBeritaController;
+use App\Http\Controllers\PengajuanRekapkontrakController;
 use App\Http\Controllers\TahunAkademikController;
 use App\Http\Controllers\PengajuanRekapPresensiController;
+use App\Models\PengajuanRekapkontrak;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,4 +93,11 @@ Route::prefix('/presensi')->group(function () {
     Route::get('/pengajuan-konfirmasi/rekap-berita/{pertemuan}/{matkul_id}/{kelas_id}',[PengajuanRekapBeritaController::class,'edit']);
     route::put('/pengajuan-konfirmasi/rekap-berita/{pertemuan}/{matkul_id}/{kelas_id}',[PengajuanRekapBeritaController::class,'update']);
     Route::get('/pengajuan-konfirmasi/berita-disetujui',[PengajuanRekapBeritaController::class,'confirm']);
+
+
+    // PENGAJUAN KONTRAK
+    Route::resource('/pengajuan-konfirmasi/rekap-kontrak',PengajuanRekapkontrakController::class);
+    Route::get('/pengajuan-konfirmasi/rekap-kontrak/{jadwal_id}/{matkul_id}/{kelas_id}',[PengajuanRekapkontrakController::class,'edit']);
+    Route::put('/pengajuan-konfirmasi/rekap-kontrak/{jadwal_id}/{matkul_id}/{kelas_id}',[PengajuanRekapkontrakController::class,'update']);
+    Route::get('/pengajuan-konfirmasi/kontrak-disetujui',[PengajuanRekapKontrakController::class,'confirm']);
 });

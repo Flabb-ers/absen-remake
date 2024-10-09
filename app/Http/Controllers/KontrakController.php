@@ -8,6 +8,7 @@ use App\Models\Kontrak;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\TahunAkademik;
+use App\Models\PengajuanRekapkontrak;
 
 class KontrakController extends Controller
 {
@@ -22,7 +23,14 @@ class KontrakController extends Controller
             $pertemuan = Kontrak::where('jadwals_id', $jadwal->id)->max('pertemuan');
             $pertemuanCounts[$jadwal->id] = $pertemuan ?? 0;
         }
-        return view('pages.dosen.data-kontrak.index', compact('jadwals', 'pertemuanCounts'));
+
+        $rekapKontrakStatus = PengajuanRekapkontrak::where('jadwal_id', $jadwal->id)
+            ->where('kelas_id', $jadwal->kelas->id)
+            ->where('matkul_id', $jadwal->matkul->id)
+            ->pluck('status')
+            ->first();
+
+        return view('pages.dosen.data-kontrak.index', compact('jadwals', 'pertemuanCounts','rekapKontrakStatus'));
     }
 
     /**
@@ -89,21 +97,20 @@ class KontrakController extends Controller
     }
 
 
-    public function rekap($matkuls_id,$kelas_id,$jadwals_id){
+    public function rekap($matkuls_id, $kelas_id, $jadwals_id)
+    {
 
-        $kontraks = Kontrak::with('matkul','kelas.semester','kelas.prodi')
-                ->where('matkuls_id',$matkuls_id)
-                ->where('kelas_id',$kelas_id)
-                ->where('jadwals_id',$jadwals_id)
-                ->get();
+        $kontraks = Kontrak::with('matkul', 'kelas.semester', 'kelas.prodi')
+            ->where('matkuls_id', $matkuls_id)
+            ->where('kelas_id', $kelas_id)
+            ->where('jadwals_id', $jadwals_id)
+            ->get();
 
-        return view('pages.dosen.data-kontrak.rekap',compact('kontraks'));
+        return view('pages.dosen.data-kontrak.rekap', compact('kontraks'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Kontrak $kontrak)
-    {
-    }
+    public function destroy(Kontrak $kontrak) {}
 }

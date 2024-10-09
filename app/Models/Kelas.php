@@ -58,4 +58,8 @@ class Kelas extends Model
     {
         return $this->hasMany(PengajuanRekapBerita::class);
     }
+    public function pengajuanKontreak()
+    {
+        return $this->hasMany(PengajuanRekapkontrak::class);
+    }
 }

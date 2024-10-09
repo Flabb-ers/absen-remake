@@ -98,5 +98,21 @@
                 </ul>
             </div>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap-kontrak" aria-expanded="false"
+                aria-controls="pengajuan-rekap-kontrak">
+                <i class="icon-folder menu-icon"></i>
+                <span class="menu-title">Rekap Kontrak Kuliah</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="pengajuan-rekap-kontrak">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link" href="/presensi/pengajuan-konfirmasi/rekap-kontrak">Diajukan</a>
+                    </li>
+                    <li class="nav-item"> <a class="nav-link" href="/presensi/pengajuan-konfirmasi/kontrak-disetujui">Disetujui</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
     </ul>
 </nav>
