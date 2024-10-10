@@ -49,7 +49,7 @@
                                                 <span class="mdi mdi-clipboard-edit-outline"></span> Isi Presensi
                                             </a>
                                             {{-- @else --}}
-                                            <a href="/presensi/data-presensi/edit/{{ $pertemuanCounts[$jadwal->id] ?? 0 }}/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
+                                            <a href="/presensi/data-presensi/edit/{{ $pertemuanCounts[$jadwal->id] ?? 0 }}/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}/{{ $jadwal->id }}"
                                                 class="btn btn-warning btn-sm w-100 mb-2">
                                                 <span class="mdi mdi-clipboard-edit-outline"></span> Edit Presensi
                                             </a>
@@ -92,7 +92,7 @@
 
                                                         @if ($rekap_1_7_approved)
                                                             <li>
-                                                                <a href="/presensi/data-presensi/rekap/1-7/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
+                                                                <a href="/presensi/data-presensi/rekap/1-7/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}/{{ $jadwal->id }}"
                                                                     class="dropdown-item text-center text-success">
                                                                     <span class="mdi mdi-file-document-outline"></span>
                                                                     Rekap 1 - 7 (
@@ -148,7 +148,7 @@
 
                                                         @if ($rekap_8_14_approved)
                                                             <li>
-                                                                <a href="/presensi/data-presensi/rekap/8-14/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
+                                                                <a href="/presensi/data-presensi/rekap/8-14/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}/{{ $jadwal->id }}"
                                                                     class="dropdown-item text-center text-success">
                                                                     <span class="mdi mdi-file-document-outline"></span>
                                                                     Rekap 8 - 14 (Approved)
@@ -218,7 +218,7 @@
                                                     <!-- Rekap 1 - 7 -->
                                                     @if ($berita_1_7_approved)
                                                         <li>
-                                                            <a href="/presensi/data-presensi/rekap/berita-acara-perkuliahan/1-7/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
+                                                            <a href="/presensi/data-presensi/rekap/berita-acara-perkuliahan/1-7/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}/{{ $jadwal->id }}"
                                                                 class="dropdown-item text-center text-success">
                                                                 <span class="mdi mdi-file-document-outline"></span>
                                                                 Rekap 1 - 7 (Approved)
@@ -257,7 +257,7 @@
                                                     <!-- Rekap 8 - 14 -->
                                                     @if ($berita_8_14_approved)
                                                         <li>
-                                                            <a href="/presensi/data-presensi/rekap/berita-acara-perkuliahan/8-14/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}"
+                                                            <a href="/presensi/data-presensi/rekap/berita-acara-perkuliahan/8-14/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}/{{ $jadwal->id }}"
                                                                 class="dropdown-item text-center text-success">
                                                                 <span class="mdi mdi-file-document-outline"></span>
                                                                 Rekap 8 - 14 (Approved)

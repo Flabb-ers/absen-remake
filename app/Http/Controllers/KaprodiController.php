@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dosen;
+use App\Models\Kelas;
 use App\Models\Prodi;
 use App\Models\Kaprodi;
 use Illuminate\Http\Request;
@@ -16,10 +17,11 @@ class KaprodiController extends Controller
      */
     public function index()
     {
+        $kelasAll = Kelas::all();
         $kaprodis = Kaprodi::with('prodi')->latest()->get();
         $dosens = Dosen::all();
         $prodis = Prodi::all();
-        return view('pages.data-master.data-kaprodi', compact('dosens', 'prodis', 'kaprodis'));
+        return view('pages.data-master.data-kaprodi', compact('dosens', 'prodis', 'kaprodis','kelasAll'));
     }
 
 

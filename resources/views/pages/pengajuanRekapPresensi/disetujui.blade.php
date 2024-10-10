@@ -35,7 +35,7 @@
                                             <td>{{ $presensi->kelas->prodi->nama_prodi }}</td>
                                             <td>{{ $presensi->jadwal->dosen->nama }}</td>
                                             <td>{{ $presensi->matkul->nama_matkul }}</td>
-                                            <td><a href="/presensi/data-presensi/rekap/{{ $presensi->pertemuan }}/{{ $presensi->matkul_id }}/{{ $presensi->kelas_id }}" class="btn btn-success btn-sm"><span class="mdi mdi-file-download"></span> Rekap</a></td>
+                                            <td><a href="/presensi/data-presensi/rekap/{{ $presensi->pertemuan }}/{{ $presensi->matkul_id }}/{{ $presensi->kelas_id }}/{{ $presensi->jadwals_id}}" class="btn btn-success btn-sm"><span class="mdi mdi-file-download"></span> Rekap</a></td>
                                         </tr>
                                     @empty
                                         <tr>

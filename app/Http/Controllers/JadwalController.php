@@ -17,13 +17,14 @@ class JadwalController extends Controller
      */
     public function index()
     {
+        $kelasAll = Kelas::all();
         $dosens = Dosen::all();
         $kelass = Kelas::all();
         $matkuls = Matkul::all();
         $jadwals = Jadwal::with('dosen', 'kelas', 'matkul', 'ruangan')->latest()->get();
         $ruangans = Ruangan::all();
         $tahun = TahunAkademik::where('status','1')->first();
-        return view('pages.jadwal-mengajar.index', compact('dosens', 'kelass', 'matkuls', 'jadwals', 'ruangans','tahun'));
+        return view('pages.jadwal-mengajar.index', compact('dosens', 'kelass', 'matkuls', 'jadwals', 'ruangans','tahun','kelasAll'));
     }
 
 

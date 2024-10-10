@@ -8,8 +8,8 @@
                     <span class="mdi mdi-home"></span> Dashboard
                 </a>
                 <a href="/presensi/data-mahasiswa" class="breadcrumb-item">Mahasiswa</a>
-                <span class="breadcrumb-item">Kelas</span>
-                <span class="breadcrumb-item">{{ $mahasiswas->first()->kelas->nama_kelas }}</span>
+                <span class="breadcrumb-item">jelas</span>
+                <span class="breadcrumb-item">{{ $kelasAlls->nama_kelas }}</span>
             </div>
             <div class="row">
                 <div class="col-lg-12 grid-margin stretch-card">
@@ -24,7 +24,6 @@
                                     <thead>
                                         <tr>
                                             <th><input type="checkbox" id="select-all" /></th>
-                                            <!-- Checkbox untuk memilih semua -->
                                             <th>#</th>
                                             <th>NIM</th>
                                             <th>Nama Mahasiswa</th>

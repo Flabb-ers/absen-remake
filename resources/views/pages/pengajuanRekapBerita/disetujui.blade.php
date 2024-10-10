@@ -37,7 +37,7 @@
                                                 <td>{{ $berita->jadwal->dosen->nama }}</td>
                                                 <td>{{ $berita->matkul->nama_matkul }}</td>
                                                 <td>{{ $berita->pertemuan }}</td>
-                                                <td><a href="/presensi/data-presensi/rekap/berita-acara-perkuliahan/{{ $berita->pertemuan }}/{{ $berita->matkuls_id }}/{{ $berita->kelas_id }}"
+                                                <td><a href="/presensi/data-presensi/rekap/berita-acara-perkuliahan/{{ $berita->pertemuan }}/{{ $berita->matkuls_id }}/{{ $berita->kelas_id }}/{{ $berita->jadwal_id }}"
                                                         class="btn btn-success btn-sm"><span class="mdi mdi-file-document"></span>
                                                         Rekap</a>
                                                 </td>

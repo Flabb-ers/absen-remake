@@ -11,17 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jadwals', function (Blueprint $table) {
+        Schema::create('Tugas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('dosens_id');
-            $table->foreignId('matkuls_id');
+            $table->foreignId('mahasiswa_id');
+            $table->foreignId('matkul_id');
             $table->foreignId('kelas_id');
-            $table->foreignId('ruangans_id');
-            $table->time('waktu_mulai');
-            $table->time('waktu_selesai');
-            $table->string('hari');
-            $table->string('tahun');
-            $table->softDeletes();
+            $table->foreignId('jadwal_id');
+            $table->integer('tugas_ke');
+            $table->float('nilai');
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jadwals');
+        Schema::dropIfExists('Tugas');
     }
 };

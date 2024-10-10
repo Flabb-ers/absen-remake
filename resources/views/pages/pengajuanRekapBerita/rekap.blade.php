@@ -248,7 +248,7 @@
             @endphp
 
             <form id="approvalForm" method="POST"
-                action="/presensi/pengajuan-konfirmasi/rekap-berita/{{ $rentangUrl }}/{{ $beritas->first()->matkuls_id }}/{{ $beritas->first()->kelas_id }}">
+                action="/presensi/pengajuan-konfirmasi/rekap-berita/{{ $rentangUrl }}/{{ $beritas->first()->matkuls_id }}/{{ $beritas->first()->kelas_id }}/{{ $beritas->first()->jadwals_id }}">
                 @csrf
                 @method('PUT')
                 <div class="form-check">

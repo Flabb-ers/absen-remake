@@ -291,7 +291,7 @@
             @endphp
 
             <form id="attendanceForm" method="POST"
-                action="/presensi/pengajuan-konfirmasi/rekap-presensi/{{ $rentangUrl }}/{{ $absens->first()->matkuls_id }}/{{ $absens->first()->kelas_id }}">
+                action="/presensi/pengajuan-konfirmasi/rekap-presensi/{{ $rentangUrl }}/{{ $absens->first()->matkuls_id }}/{{ $absens->first()->kelas_id }}/{{ $absens->first()->jadwals_id }}">
                 @csrf
                 @method('PUT')
                 <div class="form-check">

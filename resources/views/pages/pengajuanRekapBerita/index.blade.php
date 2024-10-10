@@ -35,7 +35,7 @@
                                             <td>{{ $berita->kelas->prodi->nama_prodi }}</td>
                                             <td>{{ $berita->jadwal->dosen->nama }}</td>
                                             <td>{{ $berita->matkul->nama_matkul }}</td>
-                                            <td><a href="/presensi/pengajuan-konfirmasi/rekap-berita/{{ $berita->pertemuan }}/{{$berita->matkuls_id}}/{{$berita->kelas_id}}" class="btn btn-warning btn-sm"><span class="mdi mdi-eye"></span> Lihat</a></td>
+                                            <td><a href="/presensi/pengajuan-konfirmasi/rekap-berita/{{ $berita->pertemuan }}/{{$berita->matkuls_id}}/{{$berita->kelas_id}}/{{ $berita->jadwal_id }}" class="btn btn-warning btn-sm"><span class="mdi mdi-eye"></span> Lihat</a></td>
                                         </tr>
                                     @empty
                                         <tr>

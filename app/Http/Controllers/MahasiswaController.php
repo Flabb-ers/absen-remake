@@ -17,7 +17,8 @@ class MahasiswaController extends Controller
     public function index()
     {
         $kelass = Kelas::with('prodi','semester','mahasiswa')->get();
-        return view('pages.data-mahasiswa.index', compact('kelass'));
+        $kelasAll = Kelas::all();
+        return view('pages.data-mahasiswa.index', compact('kelass','kelasAll'));
     }
 
     /**
@@ -182,8 +183,9 @@ class MahasiswaController extends Controller
         $dosens = Dosen::where('pembimbing_akademik',1)
                         ->where('status',1)
                         ->get();
-        $kelasAll = Kelas::where('id_prodi',$namaKelas->id_prodi)->get();
-        return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass','namaKelas','dosens','kelasAll'));
+        $kelasAll = Kelas::all();
+        $kelasAlls = Kelas::where('id_prodi',$namaKelas->id_prodi)->first();
+        return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass','namaKelas','dosens','kelasAlls','kelasAll'));
     }
 
 }

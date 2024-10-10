@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dosen;
+use App\Models\Kelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -14,8 +15,9 @@ class DosenController extends Controller
      */
     public function index()
     {
+        $kelasAll = Kelas::all();
         $dosens = Dosen::latest()->get();
-        return view('pages.data-master.data-dosen', compact('dosens'));
+        return view('pages.data-master.data-dosen', compact('dosens','kelasAll'));
     }
 
     /**

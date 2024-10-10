@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kelas;
 use App\Models\Resume;
 use App\Models\Semester;
 use Illuminate\Http\Request;
@@ -15,19 +16,30 @@ class PengajuanRekapBeritaController extends Controller
      */
     public function index()
     {
-        $beritas = PengajuanRekapBerita::where('status', 0)
-            ->latest()
-            ->get();
-        return view('pages.pengajuanRekapBerita.index', compact('beritas'));
+        $beritas = PengajuanRekapBerita::with(['matkul', 'kelas', 'jadwal' => function ($query) {
+            $query->withTrashed();
+        }])
+        ->where('status', 0)
+        ->latest()
+        ->get();
+    
+        $kelasAll = Kelas::all();
+    
+        return view('pages.pengajuanRekapBerita.index', compact('beritas', 'kelasAll'));
     }
-
-
+    
     public function confirm()
     {
-        $beritas = PengajuanRekapBerita::where('status', 1)
-            ->latest()
-            ->get();
-        return view('pages.pengajuanRekapBerita.disetujui', compact('beritas'));
+        $beritas = PengajuanRekapBerita::with(['matkul', 'kelas', 'jadwal' => function ($query) {
+            $query->withTrashed();
+        }])
+        ->where('status', 1)
+        ->latest()
+        ->get();
+    
+        $kelasAll = Kelas::all();
+    
+        return view('pages.pengajuanRekapBerita.disetujui', compact('beritas', 'kelasAll'));
     }
 
     /**
@@ -57,7 +69,7 @@ class PengajuanRekapBeritaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($pertemuan, $matkul_id, $kelas_id)
+    public function edit($pertemuan, $matkul_id, $kelas_id,$jadwal_id)
     {
         $range = [];
         if ($pertemuan == '1-7') {
@@ -69,6 +81,7 @@ class PengajuanRekapBeritaController extends Controller
         $beritas = Resume::with('dosen', 'matkul', 'kelas.prodi')
             ->where('matkuls_id', $matkul_id)
             ->where('kelas_id', $kelas_id)
+            ->where('jadwals_id',$jadwal_id)
             ->whereIn('pertemuan', $range)
             ->get();
 
@@ -83,7 +96,7 @@ class PengajuanRekapBeritaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $pertemuan, $matkul_id, $kelas_id)
+    public function update(Request $request, $pertemuan, $matkul_id, $kelas_id,$jadwal_id)
     {
         $rentang = [];
         if ($pertemuan == '1-7') {
@@ -95,6 +108,7 @@ class PengajuanRekapBeritaController extends Controller
         try {
             $resumeRecords = Resume::where('matkuls_id', $matkul_id)
                 ->where('kelas_id', $kelas_id)
+                ->where('jadwals_id',$jadwal_id)
                 ->whereIn('pertemuan', $rentang)
                 ->get();
 
@@ -115,6 +129,7 @@ class PengajuanRekapBeritaController extends Controller
             Resume::where('matkuls_id', $matkul_id)
                 ->where('kelas_id', $kelas_id)
                 ->whereIn('pertemuan', $rentang)
+                ->where('jadwals_id',$jadwal_id)
                 ->update($updateData);
 
             if ($updateData['setuju_kaprodi'] && $updateData['setuju_wadir']) {
@@ -126,6 +141,7 @@ class PengajuanRekapBeritaController extends Controller
             $pengajuan = PengajuanRekapBerita::where('matkuls_id', $matkul_id)
                 ->where('kelas_id', $kelas_id)
                 ->where('pertemuan', $pertemuan)
+                ->where('jadwal_id',$jadwal_id)
                 ->first();
 
             if ($pengajuan) {

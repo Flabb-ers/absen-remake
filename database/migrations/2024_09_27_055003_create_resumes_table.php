@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('pertemuan');
             $table->foreignId('dosens_id');
             $table->foreignId('matkuls_id');
+            $table->foreignId('jadwals_id');
             $table->foreignId('prodis_id');
             $table->foreignId('kelas_id');
             $table->integer('tidak_hadir');

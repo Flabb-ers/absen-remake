@@ -24,6 +24,7 @@ class PresensiController extends Controller
 
      public function index()
      {
+        $kelasAll = Kelas::all();
          $jadwals = Jadwal::with('dosen', 'matkul', 'kelas.prodi', 'ruangan')->latest()->get();
          $pertemuanCounts = [];
          
@@ -37,7 +38,7 @@ class PresensiController extends Controller
          $berita = PengajuanRekapBerita::whereIn('jadwal_id',$jadwals->pluck('id'))->get()->groupBy('jadwal_id');
 
      
-         return view('pages.dosen.data-presensi.index', compact('jadwals', 'pertemuanCounts', 'pengajuan','berita'));
+         return view('pages.dosen.data-presensi.index', compact('jadwals', 'pertemuanCounts', 'pengajuan','berita','kelasAll'));
      }
      
 
@@ -51,7 +52,8 @@ class PresensiController extends Controller
         $pertemuan = $pertemuan ? $pertemuan + 1 : 1;
         $mahasiswas = Mahasiswa::where('kelas_id', $jadwal->kelas->id)->get();
         $tahun = TahunAkademik::where('status',1)->first();
-        return view('pages.dosen.data-presensi.presensi', compact('jadwal', 'mahasiswas', 'pertemuan','tahun'));
+        $kelasAll = Kelas::all();
+        return view('pages.dosen.data-presensi.presensi', compact('jadwal', 'mahasiswas', 'pertemuan','tahun','kelasAll'));
     }
 
     /**
@@ -103,23 +105,26 @@ class PresensiController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id, $matkuls_id, $kelas_id)
+    public function edit($id, $matkuls_id, $kelas_id,$jadwal_id)
     {
 
         $resume = Resume::where('pertemuan', $id)
             ->where('kelas_id', $kelas_id)
             ->where('matkuls_id', $matkuls_id)
+            ->where('jadwals_id',$jadwal_id)
             ->first();
 
         $absens = Absen::with('prodi', 'matkul')
             ->where('pertemuan', $id)
             ->where('kelas_id', $kelas_id)
             ->where('matkuls_id', $matkuls_id)
+            ->where('jadwals_id',$jadwal_id)
             ->get();
 
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)->get();
+        $kelasAll = Kelas::all();
 
-        return view('pages.dosen.data-presensi.edit', compact('resume',  'absens', 'mahasiswas', 'id'));
+        return view('pages.dosen.data-presensi.edit', compact('resume',  'absens', 'mahasiswas', 'id','kelasAll'));
     }
 
 
@@ -142,6 +147,7 @@ class PresensiController extends Controller
                 ->where('mahasiswas_id', $mahasiswa_id)
                 ->where('pertemuan', $request->pertemuan)
                 ->where('matkuls_id', $request->matkuls_id)
+                ->where('jadwals_id',$request->jawals_id)
                 ->first();
 
             if ($absensi) {
