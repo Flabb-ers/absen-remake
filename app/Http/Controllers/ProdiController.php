@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kelas;
 use App\Models\Prodi;
+use App\Models\Jadwal;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\Return_;
 
@@ -14,7 +15,7 @@ class ProdiController extends Controller
      */
     public function index()
     {
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         $prodis = Prodi::latest()->get();
         return view('pages.data-master.data-prodi',compact('prodis','kelasAll'));
     }

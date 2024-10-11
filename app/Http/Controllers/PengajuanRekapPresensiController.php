@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Absen;
 use App\Models\Kelas;
+use App\Models\Jadwal;
 use Illuminate\Http\Request;
 use App\Models\PengajuanRekapPresensi;
 
@@ -21,7 +22,7 @@ class PengajuanRekapPresensiController extends Controller
             ->latest()
             ->get();
 
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
 
         return view('pages.pengajuanRekapPresensi.index', compact('presensis', 'kelasAll'));
     }
@@ -35,7 +36,7 @@ class PengajuanRekapPresensiController extends Controller
             ->latest()
             ->get();
 
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
 
         return view('pages.pengajuanRekapPresensi.disetujui', compact('presensis', 'kelasAll'));
     }

@@ -7,27 +7,88 @@
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="text-center mb-4">Edit Nilai Mahasiswa</h5>
-                            <form method="POST" action="{{ url('/presensi/data-nilai/' . $kelas_id . '/' . $matkul_id . '/tugas/' . $tugas_ke) }}">
-                                @csrf
-                                @method('PUT')
+                            <h5 class="text-center mb-4">EDIT NILAI MAHASISWA</h5>
+                            <div class="row mb-4">
+                                <div class="col-md-5 col-12">
+                                    <ul class="list-unstyled">
+                                        <li class="d-flex align-items-center">
+                                            <span style="width: 140px;">Mata Kuliah</span>
+                                            <span style="margin-right: 5px;">:</span>
+                                            <span>{{ $tugas->first()->matkul->nama_matkul }}</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mt-2">
+                                            <span style="width: 140px;">Dosen</span>
+                                            <span style="margin-right: 5px;">:</span>
+                                            <span>{{ $tugas->first()->jadwal->dosen->nama }}</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mt-2">
+                                            <span style="width: 140px;">Tugas ke</span>
+                                            <span style="margin-right: 5px;">:</span>
+                                            <span>{{ $tugas_ke }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-5 offset-md-2 col-12">
+                                    <ul class="list-unstyled">
+                                        <li class="d-flex align-items-center">
+                                            <span style="width: 140px;">Program Studi</span>
+                                            <span style="margin-right: 5px;">:</span>
+                                            <span>{{ $tugas->first()->kelas->prodi->nama_prodi }}</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mt-2">
+                                            <span style="width: 140px;">Kelas</span>
+                                            <span style="margin-right: 5px;">:</span>
+                                            <span>{{ $tugas->first()->kelas->nama_kelas}}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="card-body">
+                                <form method="POST" action="{{ url('/presensi/data-nilai/' . $kelas_id . '/' . $matkul_id . '/' . $jadwal_id . '/tugas/' . $tugas_ke) }}">
+                                    @csrf
+                                    @method('PUT')
+                                    @foreach ($mahasiswas as $mahasiswa)
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-0">{{ $mahasiswa->nama_lengkap }}</h6>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <label for="nilai_{{ $mahasiswa->id }}" class="me-2">Nilai:</label>
+                                                <input type="number" name="nilai[]" id="nilai_{{ $mahasiswa->id }}" 
+                                                       value="{{ $tugas->where('mahasiswa_id', $mahasiswa->id)->first()->nilai ?? '' }}" 
+                                                       min="0" max="100" required class="form-control" style="width: 100%;">
+                                                <input type="hidden" value="{{ $mahasiswa->id }}" name="mahasiswas_id[]">
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    @endforeach
 
-                                @foreach ($mahasiswas as $mahasiswa)
-                                    <div class="mb-3">
-                                        <label>{{ $mahasiswa->nama_lengkap }} [{{ $mahasiswa->nim }}]</label>
-                                        <input type="hidden" name="mahasiswas_id[]" value="{{ $mahasiswa->id }}">
-                                        <input type="number" name="nilai[]" 
-                                               value="{{ $tugas->where('mahasiswa_id', $mahasiswa->id)->first()->nilai ?? '' }}" 
-                                               min="0" max="100" class="form-control" required>
-                                    </div>
-                                @endforeach
-
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                            </form>
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <span class="mdi mdi-content-save"></span> Simpan
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                showConfirmButton: true,
+                confirmButtonText: 'Ok'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ url('/presensi/data-nilai/' . $kelas_id . '/' . $matkul_id . '/' . $jadwal_id . '/detail') }}";
+                }
+            });
+        </script>
+    @endif
 @endsection

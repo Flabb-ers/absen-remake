@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\Jadwal;
 use App\Models\Resume;
 use App\Models\Semester;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class PengajuanRekapBeritaController extends Controller
         ->latest()
         ->get();
     
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
     
         return view('pages.pengajuanRekapBerita.index', compact('beritas', 'kelasAll'));
     }
@@ -37,7 +38,7 @@ class PengajuanRekapBeritaController extends Controller
         ->latest()
         ->get();
     
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
     
         return view('pages.pengajuanRekapBerita.disetujui', compact('beritas', 'kelasAll'));
     }

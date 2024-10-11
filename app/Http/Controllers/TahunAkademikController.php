@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\Jadwal;
 use Illuminate\Http\Request;
 use App\Models\TahunAkademik;
 
@@ -13,7 +14,7 @@ class TahunAkademikController extends Controller
      */
     public function index()
     {
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         $tahuns = TahunAkademik::latest()->get();
         return view('pages.data-master.data-tahun-akademik', compact('tahuns','kelasAll'));
     }

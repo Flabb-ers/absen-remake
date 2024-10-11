@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Dosen;
 use App\Models\Kelas;
 use App\Models\Prodi;
+use App\Models\Jadwal;
 use App\Models\Kaprodi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +18,7 @@ class KaprodiController extends Controller
      */
     public function index()
     {
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         $kaprodis = Kaprodi::with('prodi')->latest()->get();
         $dosens = Dosen::all();
         $prodis = Prodi::all();

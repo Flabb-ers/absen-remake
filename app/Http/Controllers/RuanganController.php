@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\Jadwal;
 use App\Models\Ruangan;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,7 @@ class RuanganController extends Controller
      */
     public function index()
     {
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         $ruangans = Ruangan::latest()->get();
         return view('pages.data-master.data-ruangan', compact('ruangans','kelasAll'));
     }

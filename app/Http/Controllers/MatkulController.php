@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dosen;
 use App\Models\Kelas;
+use App\Models\Jadwal;
 use App\Models\Matkul;
 use App\Models\Ruangan;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class MatkulController extends Controller
      */
     public function index()
     {
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         $matkuls = Matkul::with('kelas.semester', 'ruangan')->latest()->paginate(6);
         return view('pages.data-master.data-matkul', compact('matkuls','kelasAll'));
     }

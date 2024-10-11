@@ -23,6 +23,7 @@ use App\Http\Controllers\TahunAkademikController;
 use App\Http\Controllers\PengajuanRekapBeritaController;
 use App\Http\Controllers\PengajuanRekapkontrakController;
 use App\Http\Controllers\PengajuanRekapPresensiController;
+use App\Http\Controllers\UasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,7 +43,8 @@ Route::get('/', function () {
 Route::prefix('/presensi')->group(function () {
     // DASHBOARD
     Route::get('/dashboard', function () {
-        return view('pages.dashboard.index');
+        $kelasAll = Jadwal::all(); 
+        return view('pages.dashboard.index',compact('kelasAll'));
     });
     // Data Master
     Route::prefix('/data-master')->group(function () {
@@ -107,12 +109,18 @@ Route::prefix('/presensi')->group(function () {
 
     // NILAI
     Route::get('/data-nilai/{kelas_id}', [NilaiController::class, 'index']);
-    Route::get('/data-nilai/{kelas_id}/{matkul_id}/detail', [NilaiController::class, 'detail']);
+    Route::get('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/detail', [NilaiController::class, 'detail']);
 
     // TUGAS
-    Route::get('/data-nilai/{kelas_id}/{matkul_id}/tugas', [TugasController::class, 'index']);
-    Route::get('/data-nilai/{kelas_id}/{matkul_id}/tugas/create', [TugasController::class, 'create']);
-    Route::post('/data-nilai/{kelas_id}/{matkul_id}/tugas/', [TugasController::class, 'store']);
-    Route::get('/data-nilai/{kelas_id}/{matkul_id}/tugas/{tugas_ke}/edit', [TugasController::class, 'edit'])->name('tugas.edit');
-    Route::put('/data-nilai/{kelas_id}/{matkul_id}/tugas/{tugas_ke}', [TugasController::class, 'update'])->name('tugas.update');
+    Route::get('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/tugas', [TugasController::class, 'index']);
+    Route::get('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/create', [TugasController::class, 'create']);
+    Route::post('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/', [TugasController::class, 'store']);
+    Route::get('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/{tugas_ke}/edit', [TugasController::class, 'edit'])->name('tugas.edit');
+    Route::put('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/{tugas_ke}', [TugasController::class, 'update'])->name('tugas.update');
+    Route::delete('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/{tugas_ke}/delete', [TugasController::class, 'destroy']);
+
+    // UAS
+    Route::get('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/uas',[UasController::class,'index']);
+    Route::get('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/uas/create',[UasController::class,'create']);
+
 });

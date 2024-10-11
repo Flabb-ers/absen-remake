@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dosen;
 use App\Models\Kelas;
+use App\Models\Jadwal;
 use App\Models\Direktur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +16,7 @@ class DirekturController extends Controller
      */
     public function index()
     {
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         $direkturs = Direktur::latest()->get();
         $dosens = Dosen::all();
         return view('pages.data-master.data-direktur', compact('direkturs', 'dosens','kelasAll'));

@@ -50,6 +50,10 @@ class Kelas extends Model
     {
         return $this->hasMany(Resume::class);
     }
+    public function tugas()
+    {
+        return $this->hasMany(Tugas::class);
+    }
     public function pengajuanPresensi()
     {
         return $this->hasMany(PengajuanRekapPresensi::class);

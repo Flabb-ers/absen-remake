@@ -60,28 +60,63 @@
                 });
             }
 
-            var kelas_id = "{{ $kelas_id }}";
-            var matkul_id = "{{ $matkul_id }}";
+            let kelas_id = "{{ $kelas_id }}";
+            let matkul_id = "{{ $matkul_id }}";
+            let jadwal_id = "{{ $jadwal_id }}"
 
-            loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/tugas`);
+            loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/tugas`);
 
-            // Event listener untuk klik tab "Tugas"
             $('#tab-tugas').on('click', function(e) {
                 e.preventDefault();
-                loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/tugas`);
+                loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/tugas`);
+                setActiveTab('#tab-tugas');
             });
 
-            // Event listener untuk klik tab "UTS"
             $('#tab-uts').on('click', function(e) {
                 e.preventDefault();
-                loadTabContent(`/presensi/data-nilai/${kelas_id}/uts`);
+                loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/uts`);
+                setActiveTab('#tab-uts');
             });
 
-            // Event listener untuk klik tab "UAS"
             $('#tab-uas').on('click', function(e) {
                 e.preventDefault();
-                loadTabContent(`/presensi/data-nilai/${kelas_id}/uas`);
+                loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/uas`);
+                setActiveTab('#tab-uas');
             });
+
+            function setActiveTab(activeTabId) {
+                $('.nav-link').removeClass('active'); 
+                $(activeTabId).addClass('active'); 
+            }
+
+            $(document).on('click', '.delete-button', function(e) {
+                e.preventDefault();
+
+                var form = $(this).closest('form');
+                Swal.fire({
+                    title: 'Apakah kamu yakin?',
+                    text: "Data ini akan dihapus dan tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    showConfirmButton: true,
+                    confirmButtonText: 'Ok'
+                });
+            @endif
         });
     </script>
 @endsection

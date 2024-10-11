@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Dosen;
 use App\Models\Kelas;
 use App\Models\Wadir;
+use App\Models\Jadwal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -17,7 +18,7 @@ class WadirController extends Controller
     {
         $wadirs = Wadir::latest()->get();
         $dosens = Dosen::all();
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         return view('pages.data-master.data-wadir', compact('wadirs', 'dosens','kelasAll'));
     }
 

@@ -66,24 +66,25 @@
             </a>
         </li>
         <li class="nav-item {{ Request::is('presensi/data-nilai*') ? 'active' : '' }}">
-            <a class="nav-link" data-bs-toggle="collapse" href="#data-nilai" aria-expanded="false" aria-controls="data-nilai">
+            <a class="nav-link" data-bs-toggle="collapse" href="#data-nilai" aria-expanded="false"
+                aria-controls="data-nilai">
                 <i class="mdi mdi-folder menu-icon"></i>
                 <span class="menu-title">Nilai</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse {{ request()->is('presensi/data-nilai/*') ? 'show' : '' }}" id="data-nilai">
                 <ul class="nav flex-column sub-menu">
-                    @foreach ($kelasAll as $kelas)
+                    @foreach ($kelasAll->unique('kelas_id') as $kelas)
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('presensi/data-nilai/' . $kelas->id . '/*') ? 'active' : '' }}" 
-                               href="/presensi/data-nilai/{{ $kelas->id }}">
-                               {{ $kelas->nama_kelas }}
+                            <a class="nav-link {{ request()->is('presensi/data-nilai/' . $kelas->kelas->id . '/*') ? 'active' : '' }}"
+                                href="/presensi/data-nilai/{{ $kelas->kelas->id }}">
+                                {{ $kelas->kelas->nama_kelas }}
                             </a>
                         </li>
                     @endforeach
                 </ul>
-            </div>                       
-        </li>        
+            </div>
+        </li>
         <li class="nav-item">Wadir dan direkturrrrr</li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap" aria-expanded="false"
@@ -94,9 +95,11 @@
             </a>
             <div class="collapse" id="pengajuan-rekap">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/pengajuan-konfirmasi/rekap-presensi">Diajukan</a>
+                    <li class="nav-item"> <a class="nav-link"
+                            href="/presensi/pengajuan-konfirmasi/rekap-presensi">Diajukan</a>
                     </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/pengajuan-konfirmasi/presensi-disetujui">Disetujui</a>
+                    <li class="nav-item"> <a class="nav-link"
+                            href="/presensi/pengajuan-konfirmasi/presensi-disetujui">Disetujui</a>
                     </li>
                 </ul>
             </div>
@@ -110,9 +113,11 @@
             </a>
             <div class="collapse" id="pengajuan-rekap-berita">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/pengajuan-konfirmasi/rekap-berita">Diajukan</a>
+                    <li class="nav-item"> <a class="nav-link"
+                            href="/presensi/pengajuan-konfirmasi/rekap-berita">Diajukan</a>
                     </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/pengajuan-konfirmasi/berita-disetujui">Disetujui</a>
+                    <li class="nav-item"> <a class="nav-link"
+                            href="/presensi/pengajuan-konfirmasi/berita-disetujui">Disetujui</a>
                     </li>
                 </ul>
             </div>
@@ -126,9 +131,11 @@
             </a>
             <div class="collapse" id="pengajuan-rekap-kontrak">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/pengajuan-konfirmasi/rekap-kontrak">Diajukan</a>
+                    <li class="nav-item"> <a class="nav-link"
+                            href="/presensi/pengajuan-konfirmasi/rekap-kontrak">Diajukan</a>
                     </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/pengajuan-konfirmasi/kontrak-disetujui">Disetujui</a>
+                    <li class="nav-item"> <a class="nav-link"
+                            href="/presensi/pengajuan-konfirmasi/kontrak-disetujui">Disetujui</a>
                     </li>
                 </ul>
             </div>

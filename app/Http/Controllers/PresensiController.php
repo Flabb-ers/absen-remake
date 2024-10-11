@@ -24,7 +24,7 @@ class PresensiController extends Controller
 
      public function index()
      {
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
          $jadwals = Jadwal::with('dosen', 'matkul', 'kelas.prodi', 'ruangan')->latest()->get();
          $pertemuanCounts = [];
          
@@ -122,7 +122,7 @@ class PresensiController extends Controller
             ->get();
 
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)->get();
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
 
         return view('pages.dosen.data-presensi.edit', compact('resume',  'absens', 'mahasiswas', 'id','kelasAll'));
     }

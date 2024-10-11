@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\Jadwal;
 use App\Models\Kontrak;
 use Illuminate\Http\Request;
 use App\Models\PengajuanRekapkontrak;
@@ -18,7 +19,7 @@ class PengajuanRekapkontrakController extends Controller
             ->where('status', 0)
             ->latest()
             ->get();
-            $kelasAll = Kelas::all();
+            $kelasAll = Jadwal::all();
         return view('pages.pengajuanRekapKontrak.index', compact('kontraks','kelasAll'));
     }
 
@@ -29,7 +30,7 @@ class PengajuanRekapkontrakController extends Controller
             ->where('status', 1)
             ->latest()
             ->get();
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         return view('pages.pengajuanRekapKontrak.disetujui', compact('kontraks','kelasAll'));
     }
 

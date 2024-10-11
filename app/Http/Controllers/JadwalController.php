@@ -17,7 +17,7 @@ class JadwalController extends Controller
      */
     public function index()
     {
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         $dosens = Dosen::all();
         $kelass = Kelas::all();
         $matkuls = Matkul::all();

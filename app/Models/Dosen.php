@@ -40,4 +40,8 @@ class Dosen extends Model
     {
         return $this->hasMany(PengajuanRekapBerita::class);
     }
+    public function tugas()
+    {
+        return $this->hasMany(Tugas::class);
+    }
 }

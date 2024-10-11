@@ -48,4 +48,8 @@ class Matkul extends Model
     {
         return $this->hasMany(PengajuanRekapkontrak::class);
     }
+    public function tugas()
+    {
+        return $this->hasMany(Tugas::class);
+    }
 }

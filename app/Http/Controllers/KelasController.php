@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kelas;
 use App\Models\Prodi;
+use App\Models\Jadwal;
 use App\Models\Semester;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,7 @@ class KelasController extends Controller
     public function index()
     {
         $prodis = Prodi::all();
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         $semesters = Semester::orderBy('semester','asc')->get();
         $kelass = Kelas::with(['semester', 'prodi'])->latest()->paginate(6);
         return view('pages.data-master.data-kelas', compact('prodis', 'semesters', 'kelass','kelasAll'));

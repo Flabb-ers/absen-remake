@@ -26,7 +26,7 @@
                                             </div>
                                             <p class="card-text mb-4">{{ $jadwal->kelas->prodi->nama_prodi}} | Semester {{ $jadwal->kelas->semester->semester }}</p>
                                             <div class="mt-auto">
-                                                <a href="/presensi/data-nilai/{{ $jadwal->kelas->id }}/{{ $jadwal->matkul->id }}/detail" class="btn btn-primary w-100">
+                                                <a href="/presensi/data-nilai/{{ $jadwal->kelas->id }}/{{ $jadwal->matkul->id }}/{{ $jadwal->id }}/detail" class="btn btn-primary w-100">
                                                     <i class="mdi mdi-eye"></i> Lihat Detail
                                                 </a>
                                             </div>

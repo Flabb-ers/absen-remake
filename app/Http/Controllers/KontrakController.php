@@ -31,7 +31,7 @@ class KontrakController extends Controller
             ->pluck('status')
             ->first();
 
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         return view('pages.dosen.data-kontrak.index', compact('jadwals', 'pertemuanCounts', 'rekapKontrakStatus', 'kelasAll'));
     }
 
@@ -45,7 +45,7 @@ class KontrakController extends Controller
             ->first();
         $pertemuan = Absen::where('jadwals_id', $id)->max('pertemuan');;
         $mahasiswas = Mahasiswa::where('kelas_id', $jadwal->kelas->id)->get();
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         $tahun = TahunAkademik::where('status', 1)->first();
         return view('pages.dosen.data-kontrak.kontrak', compact('jadwal', 'mahasiswas', 'pertemuan', 'tahun', 'kelasAll'));
     }
@@ -75,7 +75,7 @@ class KontrakController extends Controller
     {
         $kontrak = Kontrak::with(['matkul', 'kelas.prodi', 'jadwal.dosen'])
             ->findOrFail($id);
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         return view('pages.dosen.data-kontrak.edit', compact('kontrak','kelasAll'));
     }
 

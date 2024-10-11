@@ -15,17 +15,18 @@ class NilaiController extends Controller
      */
     public function index($kelas_id)
     {
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         $jadwals = Jadwal::with('kelas.mahasiswa','kelas')->where('kelas_id',$kelas_id)->get(); 
         return view('pages.dosen.data-nilai.index',compact('kelasAll','jadwals'));
     }
 
-    public function detail($kelas_id,$matkul_id){
-        $kelasAll = Kelas::all();
+    public function detail($kelas_id,$matkul_id,$jadwal_id){
+        $kelasAll = Jadwal::all();
         $jadwal = Jadwal::where('kelas_id',$kelas_id)
                         ->where('matkuls_id',$matkul_id)
+                        ->where('id', $jadwal_id)
                         ->first();
 
-        return view('pages.dosen.data-nilai.detail',compact('kelas_id','matkul_id','kelasAll','jadwal'));
+        return view('pages.dosen.data-nilai.detail',compact('kelas_id','matkul_id','kelasAll','jadwal','jadwal_id'));
     }
 }

@@ -45,7 +45,7 @@
                             </div>
                             <hr>
                             <div class="card-body">
-                                <form method="POST" action="{{ url('/presensi/data-nilai/' . $kelas_id . '/' . $matkul_id . '/tugas') }}">
+                                <form method="POST" action="{{ url('/presensi/data-nilai/' . $kelas_id . '/' . $matkul_id . '/' . $jadwal_id . '/tugas') }}">
                                     @csrf
                                     <input type="hidden" name="tugas_ke" id="tugas_ke" value="{{ $nextTugasKe }}">
                                     <input type="hidden" value="{{ $jadwal->id }}" id="jadwal_Id" name="jadwal_id">
@@ -88,7 +88,7 @@
                 confirmButtonText: 'Ok'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "{{ url('/presensi/data-nilai/' . $kelas_id . '/' . $matkul_id . '/detail') }}";
+                    window.location.href = "{{ url('/presensi/data-nilai/' . $kelas_id . '/' . $matkul_id . '/' . $jadwal_id . '/detail') }}";
                 }
             });
         </script>

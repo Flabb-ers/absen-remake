@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dosen;
 use App\Models\Kelas;
+use App\Models\Jadwal;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +18,7 @@ class MahasiswaController extends Controller
     public function index()
     {
         $kelass = Kelas::with('prodi','semester','mahasiswa')->get();
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         return view('pages.data-mahasiswa.index', compact('kelass','kelasAll'));
     }
 
@@ -183,7 +184,7 @@ class MahasiswaController extends Controller
         $dosens = Dosen::where('pembimbing_akademik',1)
                         ->where('status',1)
                         ->get();
-        $kelasAll = Kelas::all();
+        $kelasAll = Jadwal::all();
         $kelasAlls = Kelas::where('id_prodi',$namaKelas->id_prodi)->first();
         return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass','namaKelas','dosens','kelasAlls','kelasAll'));
     }
