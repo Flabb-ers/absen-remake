@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Uas;
+use App\Models\Uts;
 use App\Models\Kelas;
 use App\Models\Jadwal;
 use App\Models\Matkul;
@@ -10,23 +10,21 @@ use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class UasController extends Controller
+class UtsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index($kelas_id, $matkul_id, $jadwal_id)
-    {
-        $kelasAll = Jadwal::all();
-        $uass = Uas::where('kelas_id', $kelas_id)
-                ->where('jadwal_id', $jadwal_id)
-                ->where('matkul_id', $matkul_id)
-                ->select('matkul_id', 'kelas_id', 'jadwal_id', DB::raw('GROUP_CONCAT(mahasiswa_id) as mahasiswa_ids, GROUP_CONCAT(nilai) as nilai_total'))
-                ->groupBy('matkul_id', 'kelas_id', 'jadwal_id')
-                ->get();
+    public function index($kelas_id, $matkul_id, $jadwal_id){
+    $kelasAll = Jadwal::all();
+    $utss = Uts::where('kelas_id', $kelas_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->where('matkul_id', $matkul_id)
+            ->select('matkul_id', 'kelas_id', 'jadwal_id', DB::raw('GROUP_CONCAT(mahasiswa_id) as mahasiswa_ids, GROUP_CONCAT(nilai) as nilai_total'))
+            ->groupBy('matkul_id', 'kelas_id', 'jadwal_id')
+            ->get();
 
-        $kelas = Kelas::where('id',$kelas_id)->first();
-        return  view('pages.dosen.data-nilai.uas.index', compact('kelasAll', 'kelas_id', 'matkul_id', 'jadwal_id', 'uass','kelas'));
+    return  view('pages.dosen.data-nilai.uts.index', compact('kelasAll', 'kelas_id', 'matkul_id', 'jadwal_id', 'utss'));  
     }
 
     /**
@@ -44,7 +42,7 @@ class UasController extends Controller
         $jadwal = Jadwal::where('matkuls_id', $matkul_id)
             ->where('kelas_id', $kelas_id)
             ->first();
-        return view('pages.dosen.data-nilai.uas.create', compact('mahasiswas', 'matkul', 'kelasAll', 'jadwal', 'kelas_id', 'matkul_id', 'jadwal_id'));
+        return view('pages.dosen.data-nilai.uts.create', compact('mahasiswas', 'matkul', 'kelasAll', 'jadwal', 'kelas_id', 'matkul_id', 'jadwal_id'));
     }
 
     /**
@@ -64,7 +62,7 @@ class UasController extends Controller
         $nilais = $request->nilai;
 
         foreach ($mahasiswas_id as $index => $mahasiswa_id) {
-            Uas::create([
+            Uts::create([
                 'mahasiswa_id' => $mahasiswa_id,
                 'matkul_id' => $matkul_id,
                 'kelas_id' => $kelas_id,
@@ -74,7 +72,7 @@ class UasController extends Controller
         }
 
         session()->flash('success', 'Data nilai berhasil disimpan!');
-        session()->flash('tab', 'uas');
+        session()->flash('tab', 'uts');
         session()->flash('kelas_id', $kelas_id);
         session()->flash('matkul_id', $matkul_id);
         session()->flash('jadwal_id', $jadwal_id);
@@ -91,14 +89,14 @@ class UasController extends Controller
             ->orderBy('nim')
             ->get();
 
-        $uas = Uas::with('jadwal.dosen', 'matkul', 'kelas.prodi')
+        $uts = Uts::with('jadwal.dosen', 'matkul', 'kelas.prodi')
             ->where('kelas_id', $kelas_id)
             ->where('matkul_id', $matkul_id)
             ->where('jadwal_id', $jadwal_id)
             ->get();
 
         $kelasAll = Jadwal::all();
-        return view('pages.dosen.data-nilai.uas.edit', compact('mahasiswas', 'uas', 'kelas_id', 'matkul_id', 'kelasAll', 'jadwal_id'));
+        return view('pages.dosen.data-nilai.uts.edit', compact('mahasiswas', 'uts', 'kelas_id', 'matkul_id', 'kelasAll', 'jadwal_id'));
     }
 
     /**
@@ -113,7 +111,7 @@ class UasController extends Controller
         ]);
 
         foreach ($request->mahasiswas_id as $index => $mahasiswa_id) {
-            Uas::updateOrCreate(
+            Uts::updateOrCreate(
                 [
                     'mahasiswa_id' => $mahasiswa_id,
                     'kelas_id' => $kelas_id,
@@ -128,7 +126,7 @@ class UasController extends Controller
 
 
         session()->flash('success', 'Data nilai uas berhasil diperbarui.');
-        session()->flash('tab', 'uas');
+        session()->flash('tab', 'uts');
         session()->flash('kelas_id', $kelas_id);
         session()->flash('matkul_id', $matkul_id);
         session()->flash('jadwal_id', $jadwal_id);
@@ -140,7 +138,7 @@ class UasController extends Controller
      */
     public function destroy($kelas_id, $matkul_id, $jadwal_id)
     {
-        $uasList = Uas::where('kelas_id', $kelas_id)
+        $uasList = Uts::where('kelas_id', $kelas_id)
             ->where('matkul_id', $matkul_id)
             ->where('jadwal_id', $jadwal_id)
             ->get();
@@ -150,7 +148,7 @@ class UasController extends Controller
         }
 
         session()->flash('success', 'Data nilai berhasil dihapus.');
-        session()->flash('tab', 'uas');
+        session()->flash('tab', 'uts');
         session()->flash('kelas_id', $kelas_id);
         session()->flash('matkul_id', $matkul_id);
         session()->flash('jadwal_id', $jadwal_id);

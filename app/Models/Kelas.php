@@ -54,6 +54,10 @@ class Kelas extends Model
     {
         return $this->hasMany(Tugas::class);
     }
+    public function uas()
+    {
+        return $this->hasMany(Uas::class);
+    }
     public function pengajuanPresensi()
     {
         return $this->hasMany(PengajuanRekapPresensi::class);
@@ -65,5 +69,8 @@ class Kelas extends Model
     public function pengajuanKontreak()
     {
         return $this->hasMany(PengajuanRekapkontrak::class);
+    }
+    public function uts(){
+        return $this->hasMany(Uts::class);
     }
 }

@@ -10,5 +10,11 @@
 - [ ] **Add header every page**
 - [ ] Add semseter in mahasiswa
 - [x] Add bread crumb
-- [ ] **Redesigen nilai form** 
-= [ ] Add semester in matkul
+- [x] **Redesigen nilai form** 
+- [ ] Add semester in matkul
+- [ ] Add sikap mahasiswa
+- [ ] Add Keaktifan mahasiswa
+- [ ] Add KHS
+- [ ] Add KRS
+- [ ] *Make cursor can't click when akademik and kaprodi don't approve, for KHS*
+- [ ] Add import export 

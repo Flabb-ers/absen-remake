@@ -17,7 +17,7 @@ class TugasController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index($kelas_id, $matkul_id,$jadwal_id)
+    public function index($kelas_id, $matkul_id, $jadwal_id)
     {
         $kelasAll = Jadwal::all();
 
@@ -29,7 +29,7 @@ class TugasController extends Controller
             ->groupBy('tugas_ke', 'jadwal_id')
             ->get();
 
-        return view('pages.dosen.data-nilai.tugas.index', compact('kelasAll', 'tugas', 'kelas_id', 'matkul_id','jadwal_id'));
+        return view('pages.dosen.data-nilai.tugas.index', compact('kelasAll', 'tugas', 'kelas_id', 'matkul_id', 'jadwal_id'));
     }
 
 
@@ -37,7 +37,7 @@ class TugasController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create($kelas_id, $matkul_id,$jadwal_id)
+    public function create($kelas_id, $matkul_id, $jadwal_id)
     {
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)
             ->orderBy('nim', 'asc')
@@ -57,13 +57,13 @@ class TugasController extends Controller
             ->where('kelas_id', $kelas_id)
             ->first();
 
-        return view('pages.dosen.data-nilai.tugas.create', compact('mahasiswas', 'matkul', 'nextTugasKe', 'kelasAll', 'jadwal', 'kelas_id', 'matkul_id','jadwal_id'));
+        return view('pages.dosen.data-nilai.tugas.create', compact('mahasiswas', 'matkul', 'nextTugasKe', 'kelasAll', 'jadwal', 'kelas_id', 'matkul_id', 'jadwal_id'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, $kelas_id, $matkul_id,$jadwal_id)
+    public function store(Request $request, $kelas_id, $matkul_id, $jadwal_id)
     {
 
         $request->validate([
@@ -90,13 +90,18 @@ class TugasController extends Controller
             ]);
         }
 
-        return redirect()->back()->with('success', 'Data tugas berhasil disimpan.');
+        session()->flash('success', 'Data nilai berhasil ditambahkan.');
+        session()->flash('tab', 'tugas');
+        session()->flash('kelas_id', $kelas_id);
+        session()->flash('matkul_id', $matkul_id);
+        session()->flash('jadwal_id', $jadwal_id);
+        return redirect()->back();
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($kelas_id, $matkul_id,$jadwal_id, $tugas_ke)
+    public function edit($kelas_id, $matkul_id, $jadwal_id, $tugas_ke)
     {
 
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)
@@ -111,14 +116,14 @@ class TugasController extends Controller
             ->get();
 
         $kelasAll = Jadwal::all();
-        return view('pages.dosen.data-nilai.tugas.edit', compact('mahasiswas', 'tugas', 'kelas_id', 'matkul_id', 'tugas_ke', 'kelasAll' ,'jadwal_id'));
+        return view('pages.dosen.data-nilai.tugas.edit', compact('mahasiswas', 'tugas', 'kelas_id', 'matkul_id', 'tugas_ke', 'kelasAll', 'jadwal_id'));
     }
 
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $kelas_id, $matkul_id,$jadwal_id, $tugas_ke)
+    public function update(Request $request, $kelas_id, $matkul_id, $jadwal_id, $tugas_ke)
     {
         $request->validate([
             'mahasiswas_id' => 'required|array',
@@ -131,7 +136,7 @@ class TugasController extends Controller
                 [
                     'mahasiswa_id' => $mahasiswa_id,
                     'kelas_id' => $kelas_id,
-                    'jadwal_id'=> $jadwal_id,
+                    'jadwal_id' => $jadwal_id,
                     'matkul_id' => $matkul_id,
                     'tugas_ke' => $tugas_ke,
                 ],
@@ -141,15 +146,21 @@ class TugasController extends Controller
             );
         }
 
-        // Redirect back dengan pesan sukses
-        return redirect()->back()->with('success', 'Data nilai berhasil diperbarui.');
+
+        session()->flash('success', 'Data nilai berhasil diperbarui.');
+        session()->flash('tab', 'tugas');
+        session()->flash('kelas_id', $kelas_id);
+        session()->flash('matkul_id', $matkul_id);
+        session()->flash('jadwal_id', $jadwal_id);
+        return redirect()->back();
     }
+
 
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($kelas_id, $matkul_id,$jadwal_id, $tugas_ke)
+    public function destroy($kelas_id, $matkul_id, $jadwal_id, $tugas_ke)
     {
         $tugasList = Tugas::where('kelas_id', $kelas_id)
             ->where('matkul_id', $matkul_id)
@@ -161,6 +172,11 @@ class TugasController extends Controller
             $tugas->delete();
         }
 
-        return redirect()->back()->with('success', 'Semua tugas dengan tugas ke-' . $tugas_ke . ' berhasil dihapus.');
+        session()->flash('success', 'Data nilai berhasil dihapus.');
+        session()->flash('tab', 'tugas');
+        session()->flash('kelas_id', $kelas_id);
+        session()->flash('matkul_id', $matkul_id);
+        session()->flash('jadwal_id', $jadwal_id);
+        return redirect()->back();
     }
 }

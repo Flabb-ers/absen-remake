@@ -52,4 +52,12 @@ class Matkul extends Model
     {
         return $this->hasMany(Tugas::class);
     }
+    public function uas()
+    {
+        return $this->hasMany(Uas::class);
+    }
+    public function uts()
+    {
+        return $this->hasMany(Uts::class);
+    }
 }

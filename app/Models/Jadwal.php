@@ -59,4 +59,12 @@ class Jadwal extends Model
     {
         return $this->hasMany(PengajuanRekapkontrak::class);
     }
+
+    public function uas(){
+        return $this->hasMany(Uas::class);
+    }
+
+    public function uts(){
+        return $this->hasMany(Uts::class);
+    }
 }

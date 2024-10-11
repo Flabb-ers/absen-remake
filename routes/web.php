@@ -24,6 +24,7 @@ use App\Http\Controllers\PengajuanRekapBeritaController;
 use App\Http\Controllers\PengajuanRekapkontrakController;
 use App\Http\Controllers\PengajuanRekapPresensiController;
 use App\Http\Controllers\UasController;
+use App\Http\Controllers\UtsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,8 +44,8 @@ Route::get('/', function () {
 Route::prefix('/presensi')->group(function () {
     // DASHBOARD
     Route::get('/dashboard', function () {
-        $kelasAll = Jadwal::all(); 
-        return view('pages.dashboard.index',compact('kelasAll'));
+        $kelasAll = Jadwal::all();
+        return view('pages.dashboard.index', compact('kelasAll'));
     });
     // Data Master
     Route::prefix('/data-master')->group(function () {
@@ -86,41 +87,58 @@ Route::prefix('/presensi')->group(function () {
 
 
 
-    // PENGAJUAN PRESENSI
-    Route::resource('/pengajuan-konfirmasi/rekap-presensi', PengajuanRekapPresensiController::class);
-    Route::get('/pengajuan-konfirmasi/presensi-disetujui', [PengajuanRekapPresensiController::class, 'confirm']);
-    Route::get('/pengajuan-konfirmasi/rekap-presensi/{pertemuan}/{matkul_id}/{kelas_id}/{jadwal_id}', [PengajuanRekapPresensiController::class, 'edit']);
-    route::put('/pengajuan-konfirmasi/rekap-presensi/{pertemuan}/{matkul_id}/{kelas_id}/{jadwal_id}', [PengajuanRekapPresensiController::class, 'update']);
+    // PENGAJUAN PRESENSI sini
+    Route::prefix('/pengajuan-konfirmasi')->group(function () {
+        Route::resource('/rekap-presensi', PengajuanRekapPresensiController::class);
+        Route::get('/presensi-disetujui', [PengajuanRekapPresensiController::class, 'confirm']);
+        Route::get('/rekap-presensi/{pertemuan}/{matkul_id}/{kelas_id}/{jadwal_id}', [PengajuanRekapPresensiController::class, 'edit']);
+        route::put('/rekap-presensi/{pertemuan}/{matkul_id}/{kelas_id}/{jadwal_id}', [PengajuanRekapPresensiController::class, 'update']);
 
 
 
-    // PENGAJUAN BERITA
-    Route::resource('/pengajuan-konfirmasi/rekap-berita', PengajuanRekapBeritaController::class);
-    Route::get('/pengajuan-konfirmasi/rekap-berita/{pertemuan}/{matkul_id}/{kelas_id}/{jadwal_id}', [PengajuanRekapBeritaController::class, 'edit']);
-    Route::put('/pengajuan-konfirmasi/rekap-berita/{pertemuan}/{matkul_id}/{kelas_id}/{jadwal_id}', [PengajuanRekapBeritaController::class, 'update']);
-    Route::get('/pengajuan-konfirmasi/berita-disetujui', [PengajuanRekapBeritaController::class, 'confirm']);
+        // PENGAJUAN BERITA
+        Route::resource('/rekap-berita', PengajuanRekapBeritaController::class);
+        Route::get('/rekap-berita/{pertemuan}/{matkul_id}/{kelas_id}/{jadwal_id}', [PengajuanRekapBeritaController::class, 'edit']);
+        Route::put('/rekap-berita/{pertemuan}/{matkul_id}/{kelas_id}/{jadwal_id}', [PengajuanRekapBeritaController::class, 'update']);
+        Route::get('/berita-disetujui', [PengajuanRekapBeritaController::class, 'confirm']);
 
 
-    // PENGAJUAN KONTRAK
-    Route::resource('/pengajuan-konfirmasi/rekap-kontrak', PengajuanRekapkontrakController::class);
-    Route::get('/pengajuan-konfirmasi/rekap-kontrak/{jadwal_id}/{matkul_id}/{kelas_id}', [PengajuanRekapkontrakController::class, 'edit']);
-    Route::put('/pengajuan-konfirmasi/rekap-kontrak/{jadwal_id}/{matkul_id}/{kelas_id}', [PengajuanRekapkontrakController::class, 'update']);
-    Route::get('/pengajuan-konfirmasi/kontrak-disetujui', [PengajuanRekapKontrakController::class, 'confirm']);
+        // PENGAJUAN KONTRAK
+        Route::resource('/rekap-kontrak', PengajuanRekapkontrakController::class);
+        Route::get('/rekap-kontrak/{jadwal_id}/{matkul_id}/{kelas_id}', [PengajuanRekapkontrakController::class, 'edit']);
+        Route::put('/rekap-kontrak/{jadwal_id}/{matkul_id}/{kelas_id}', [PengajuanRekapkontrakController::class, 'update']);
+        Route::get('/kontrak-disetujui', [PengajuanRekapKontrakController::class, 'confirm']);
+    });
 
-    // NILAI
-    Route::get('/data-nilai/{kelas_id}', [NilaiController::class, 'index']);
-    Route::get('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/detail', [NilaiController::class, 'detail']);
 
-    // TUGAS
-    Route::get('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/tugas', [TugasController::class, 'index']);
-    Route::get('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/create', [TugasController::class, 'create']);
-    Route::post('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/', [TugasController::class, 'store']);
-    Route::get('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/{tugas_ke}/edit', [TugasController::class, 'edit'])->name('tugas.edit');
-    Route::put('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/{tugas_ke}', [TugasController::class, 'update'])->name('tugas.update');
-    Route::delete('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/{tugas_ke}/delete', [TugasController::class, 'destroy']);
+    Route::prefix('/data-nilai')->group(function () {
+        // NILAI
+        Route::get('/{kelas_id}', [NilaiController::class, 'index']);
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/detail', [NilaiController::class, 'detail']);
 
-    // UAS
-    Route::get('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/uas',[UasController::class,'index']);
-    Route::get('/data-nilai/{kelas_id}/{matkul_id}/{jadwal_id}/uas/create',[UasController::class,'create']);
+        // TUGAS
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/tugas', [TugasController::class, 'index']);
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/create', [TugasController::class, 'create']);
+        Route::post('/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/', [TugasController::class, 'store']);
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/{tugas_ke}/edit', [TugasController::class, 'edit'])->name('tugas.edit');
+        Route::put('/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/{tugas_ke}', [TugasController::class, 'update'])->name('tugas.update');
+        Route::delete('/{kelas_id}/{matkul_id}/{jadwal_id}/tugas/{tugas_ke}/delete', [TugasController::class, 'destroy']);
 
+        // UAS
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/uas', [UasController::class, 'index']);
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/uas/create', [UasController::class, 'create']);
+        Route::Post('/{kelas_id}/{matkul_id}/{jadwal_id}/uas', [UasController::class, 'store']);
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/uas/edit', [UasController::class, 'edit']);
+        Route::put('/{kelas_id}/{matkul_id}/{jadwal_id}/uas', [UasController::class, 'update']);
+        Route::delete('/{kelas_id}/{matkul_id}/{jadwal_id}/uas/', [UasController::class, 'destroy']);
+
+
+        // UTS
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/uts', [UtsController::class, 'index']);
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/uts/create', [UtsController::class, 'create']);
+        Route::Post('/{kelas_id}/{matkul_id}/{jadwal_id}/uts', [UtsController::class, 'store']);
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/uts/edit', [UtsController::class, 'edit']);
+        Route::put('/{kelas_id}/{matkul_id}/{jadwal_id}/uts', [UtsController::class, 'update']);
+        Route::delete('/{kelas_id}/{matkul_id}/{jadwal_id}/uts', [UtsController::class, 'destroy']);
+    });
 });

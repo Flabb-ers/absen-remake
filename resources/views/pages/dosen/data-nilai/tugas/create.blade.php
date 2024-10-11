@@ -45,7 +45,8 @@
                             </div>
                             <hr>
                             <div class="card-body">
-                                <form method="POST" action="{{ url('/presensi/data-nilai/' . $kelas_id . '/' . $matkul_id . '/' . $jadwal_id . '/tugas') }}">
+                                <form method="POST"
+                                    action="{{ url('/presensi/data-nilai/' . $kelas_id . '/' . $matkul_id . '/' . $jadwal_id . '/tugas') }}">
                                     @csrf
                                     <input type="hidden" name="tugas_ke" id="tugas_ke" value="{{ $nextTugasKe }}">
                                     <input type="hidden" value="{{ $jadwal->id }}" id="jadwal_Id" name="jadwal_id">
@@ -57,8 +58,11 @@
                                             </div>
                                             <div class="d-flex align-items-center">
                                                 <label for="nilai_{{ $mahasiswa->id }}" class="me-2">Nilai:</label>
-                                                <input type="number" name="nilai[]" id="nilai_{{ $mahasiswa->id }}" min="0" max="100" required class="form-control" style="width: 100%;">
-                                                <input type="hidden" value="{{ $mahasiswa->id }}" id="{{ $mahasiswa->id }}" name="mahasiswas_id[]">
+                                                <input type="number" name="nilai[]" id="nilai_{{ $mahasiswa->id }}"
+                                                    min="0" max="100" required class="form-control"
+                                                    style="width: 100%;">
+                                                <input type="hidden" value="{{ $mahasiswa->id }}"
+                                                    id="{{ $mahasiswa->id }}" name="mahasiswas_id[]">
                                             </div>
                                         </div>
                                         <hr>
@@ -88,7 +92,12 @@
                 confirmButtonText: 'Ok'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "{{ url('/presensi/data-nilai/' . $kelas_id . '/' . $matkul_id . '/' . $jadwal_id . '/detail') }}";
+                    let kelas_id = '{{ session('kelas_id') }}';
+                    let matkul_id = '{{ session('matkul_id') }}';
+                    let jadwal_id = '{{ session('jadwal_id') }}';
+                    let activeTab = '{{ session('tab') }}';
+                    window.location.href =
+                        `/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/detail?tab=${activeTab}`;
                 }
             });
         </script>
