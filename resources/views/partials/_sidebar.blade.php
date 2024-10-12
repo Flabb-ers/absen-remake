@@ -76,14 +76,15 @@
                 <ul class="nav flex-column sub-menu">
                     @foreach ($kelasAll->unique('kelas_id') as $kelas)
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('presensi/data-nilai/' . $kelas->kelas->id . '/*') ? 'active' : '' }}"
-                                href="/presensi/data-nilai/{{ $kelas->kelas->id }}">
-                                {{ $kelas->kelas->nama_kelas }}
+                            <a class="nav-link {{ request()->segment(3) == $kelas->kelas->id ? 'active' : '' }}"
+                               id="sidebar-kelas-{{ $kelas->kelas->id }}"
+                               href="/presensi/data-nilai/{{ $kelas->kelas->id }}">
+                               {{ $kelas->kelas->nama_kelas }}
                             </a>
                         </li>
                     @endforeach
                 </ul>
-            </div>
+            </div>            
         </li>
         <li class="nav-item">Wadir dan direkturrrrr</li>
         <li class="nav-item">

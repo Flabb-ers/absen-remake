@@ -70,7 +70,18 @@ class Kelas extends Model
     {
         return $this->hasMany(PengajuanRekapkontrak::class);
     }
-    public function uts(){
+    public function uts()
+    {
         return $this->hasMany(Uts::class);
+    }
+
+    public function etika()
+    {
+        return $this->hasMany(Etika::class);
+    }
+
+    public function aktif()
+    {
+        return $this->hasMany(Aktif::class);
     }
 }

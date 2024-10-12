@@ -21,6 +21,14 @@
                                 <a class="nav-link {{ request()->query('tab', 'tugas') === 'tugas' ? 'active' : '' }}"
                                     id="tab-tugas" href="#">Tugas</a>
                             </li>
+                            <li class="nav-aktif">
+                                <a class="nav-link {{ request()->query('tab', 'tugas') === 'aktif' ? 'active' : '' }}"
+                                    id="tab-aktif" href="#">Keaktifan</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->query('tab', 'tugas') === 'etika' ? 'active' : '' }}"
+                                    id="tab-etika" href="#">Etika</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->query('tab', 'tugas') === 'uts' ? 'active' : '' }}"
                                     id="tab-uts" href="#">UTS</a>
@@ -29,11 +37,7 @@
                                 <a class="nav-link {{ request()->query('tab', 'tugas') === 'uas' ? 'active' : '' }}"
                                     id="tab-uas" href="#">UAS</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link disabled">Sikap</a>
-                            </li>
                         </ul>
-
                         <div class="card" style="margin-left: 1px; border-radius:0px 15px 15px 15px">
                             <div class="card-body">
                                 <div id="tab-content">
@@ -92,6 +96,22 @@
                 e.preventDefault();
                 loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/uas`);
                 history.pushState(null, '', `?tab=uas`);
+                $('.nav-link').removeClass('active');
+                $(this).addClass('active');
+            });
+
+            $('#tab-etika').on('click', function(e) {
+                e.preventDefault();
+                loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/etika`);
+                history.pushState(null, '', `?tab=etika`);
+                $('.nav-link').removeClass('active');
+                $(this).addClass('active');
+            });
+
+            $('#tab-aktif').on('click', function(e) {
+                e.preventDefault();
+                loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/aktif`);
+                history.pushState(null, '', `?tab=aktif`);
                 $('.nav-link').removeClass('active');
                 $(this).addClass('active');
             });

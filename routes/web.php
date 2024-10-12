@@ -4,7 +4,11 @@ use App\Models\Kelas;
 use App\Models\Jadwal;
 use App\Models\PengajuanRekapkontrak;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UasController;
+use App\Http\Controllers\UtsController;
+use App\Http\Controllers\AktifController;
 use App\Http\Controllers\DosenController;
+use App\Http\Controllers\EtikaController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\NilaiController;
 use App\Http\Controllers\ProdiController;
@@ -23,8 +27,6 @@ use App\Http\Controllers\TahunAkademikController;
 use App\Http\Controllers\PengajuanRekapBeritaController;
 use App\Http\Controllers\PengajuanRekapkontrakController;
 use App\Http\Controllers\PengajuanRekapPresensiController;
-use App\Http\Controllers\UasController;
-use App\Http\Controllers\UtsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -140,5 +142,23 @@ Route::prefix('/presensi')->group(function () {
         Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/uts/edit', [UtsController::class, 'edit']);
         Route::put('/{kelas_id}/{matkul_id}/{jadwal_id}/uts', [UtsController::class, 'update']);
         Route::delete('/{kelas_id}/{matkul_id}/{jadwal_id}/uts', [UtsController::class, 'destroy']);
+
+
+        // ETIKA
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/etika', [EtikaController::class, 'index']);
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/etika/create', [EtikaController::class, 'create']);
+        Route::Post('/{kelas_id}/{matkul_id}/{jadwal_id}/etika', [EtikaController::class, 'store']);
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/etika/edit', [EtikaController::class, 'edit']);
+        Route::put('/{kelas_id}/{matkul_id}/{jadwal_id}/etika', [EtikaController::class, 'update']);
+        Route::delete('/{kelas_id}/{matkul_id}/{jadwal_id}/etika', [EtikaController::class, 'destroy']);
+
+
+        // AKTIF
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif', [AktifController::class, 'index']);
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif/create', [AktifController::class, 'create']);
+        Route::Post('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif', [AktifController::class, 'store']);
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif/edit', [AktifController::class, 'edit']);
+        Route::put('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif', [AktifController::class, 'update']);
+        Route::delete('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif', action: [AktifController::class, 'destroy']);
     });
 });
