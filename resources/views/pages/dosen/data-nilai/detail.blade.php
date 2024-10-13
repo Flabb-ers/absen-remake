@@ -1,6 +1,18 @@
 @extends('layouts.main')
 
 @section('container')
+<style>@media (max-width: 767.98px) {
+    .nav-tabs {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        margin-top: 1px;
+    }
+    .nav-item {
+        flex: 1 1 auto;
+    }
+}
+</style>
     <div class="main-panel">
         <div class="content-wrapper">
             <div class="breadcrumb">
@@ -37,8 +49,12 @@
                                 <a class="nav-link {{ request()->query('tab', 'tugas') === 'uas' ? 'active' : '' }}"
                                     id="tab-uas" href="#">UAS</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->query('tab', 'tugas') === 'unggah' ? 'active' : '' }}"
+                                    id="tab-unggah" href="#">Unggah</a>
+                            </li>
                         </ul>
-                        <div class="card" style="margin-left: 1px; border-radius:0px 15px 15px 15px">
+                        <div class="card" style="margin-left: 1px; border-radius:0px 0px 15px 15px">
                             <div class="card-body">
                                 <div id="tab-content">
                                     {{-- Konten akan dimuat di sini --}}
@@ -112,6 +128,13 @@
                 e.preventDefault();
                 loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/aktif`);
                 history.pushState(null, '', `?tab=aktif`);
+                $('.nav-link').removeClass('active');
+                $(this).addClass('active');
+            });
+            $('#tab-unggah').on('click', function(e) {
+                e.preventDefault();
+                loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/unggah`);
+                history.pushState(null, '', `?tab=unggah`);
                 $('.nav-link').removeClass('active');
                 $(this).addClass('active');
             });

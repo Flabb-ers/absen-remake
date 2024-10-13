@@ -52,6 +52,7 @@ Route::prefix('/presensi')->group(function () {
     // Data Master
     Route::prefix('/data-master')->group(function () {
         Route::resource('/data-kelas', KelasController::class)->except(['show']);
+        Route::get('/data-matkul/search', [MatkulController::class, 'search'])->name('data-matkul.search');
         Route::resource('/data-matkul', MatkulController::class)->except(['show']);
         Route::resource('/data-prodi', ProdiController::class)->except(['show']);
         Route::resource('/data-semester', SemesterController::class)->except(['show']);

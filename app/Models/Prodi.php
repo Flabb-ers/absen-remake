@@ -10,6 +10,8 @@ class Prodi extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
+    protected $table = 'prodi';
+
     public function kelas()
     {
         return $this->hasMany(Kelas::class);

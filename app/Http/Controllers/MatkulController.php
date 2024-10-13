@@ -85,4 +85,16 @@ class MatkulController extends Controller
         $matkul->delete();
         return response()->json(['success' => 'Mata kuliah berhasil dihapus']);
     }
+
+    public function search(Request $request)
+{
+    $search = $request->input('search');
+
+    $matkuls = Matkul::where('nama_matkul', 'LIKE', "%$search%")
+                    ->orWhere('kode', 'LIKE', "%$search%")
+                    ->paginate(6);
+
+    return response()->json($matkuls);
+}
+
 }

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Matkul extends Model
 {
@@ -69,5 +70,9 @@ class Matkul extends Model
     public function aktif()
     {
         return $this->hasMany(Aktif::class);
+    }
+    public function jadwal()
+    {
+        return $this->hasMany(Jadwal::class);
     }
 }

@@ -9,16 +9,23 @@
                 </a>
                 <span class="breadcrumb-item" id="dataMasterBreadcrumb">Data Master</span>
                 <span class="breadcrumb-item active">Data Mata Kuliah</span>
-            </div> 
+            </div>
             <div class="row">
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-header bg-white">
-                            <div class="p-2">
+                            <div class="d-flex justify-content-between align-items-center">
                                 <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#tambahModal">
                                     <span class="mdi mdi-plus"></span> Tambah
                                 </button>
+                                <div class="input-group input-group-sm" style="width: 200px;">
+                                    <input type="text" id="search" class="form-control"
+                                        placeholder="Cari Mata Kuliah...">
+                                    <button class="btn btn-outline-secondary" type="button" id="clearSearchButton">
+                                        <span class="mdi mdi-close"></span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">
@@ -84,7 +91,8 @@
                     <form id="tambahForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="nama_matkul" class="form-label">Nama Mata kuliah <span style="color: red;">*</span></label>
+                            <label for="nama_matkul" class="form-label">Nama Mata kuliah <span
+                                    style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="nama_matkul" name="nama_matkul"
                                 placeholder="Nama Mata Kuliah">
                             <div id="namaMatkulError" class="invalid-feedback"></div>
@@ -130,7 +138,8 @@
                         @method('PUT')
                         <input type="hidden" id="editId" name="id">
                         <div class="mb-3">
-                            <label for="edit_nama_matkul" class="form-label">Nama Mata Kuliah <span style="color: red;">*</span></label>
+                            <label for="edit_nama_matkul" class="form-label">Nama Mata Kuliah <span
+                                    style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="edit_nama_matkul"
                                 name="nama_matkul">
                             <div id="editNamaMatkulError" class="invalid-feedback"></div>
@@ -452,6 +461,131 @@
                 $(formId).find('.invalid-feedback').text('');
                 $(formId)[0].reset();
             }
+
+            // Event pencarian
+            $('#search').on('keyup', function() {
+                let searchQuery = $(this).val();
+
+                $.ajax({
+                    url: '{{ route('data-matkul.search') }}',
+                    method: 'GET',
+                    data: {
+                        search: searchQuery
+                    },
+                    success: function(response) {
+                        $('tbody').empty(); // Kosongkan tabel sebelumnya
+                        if (response.data.length > 0) {
+                            response.data.forEach(function(matkul, index) {
+                                $('tbody').append(`
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${matkul.kode}</td>
+                            <td>${matkul.nama_matkul}</td>
+                            <td>${matkul.teori + matkul.praktek}</td>
+                            <td>
+                                <button class="btn btn-primary btn-sm editMatkul" 
+                                    data-id="${matkul.id}" 
+                                    data-nama="${matkul.nama_matkul}" 
+                                    data-kode="${matkul.kode}" 
+                                    data-teori="${matkul.teori}" 
+                                    data-praktek="${matkul.praktek}" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editModal">
+                                    <span class="mdi mdi-pencil"></span> Edit
+                                </button>
+                                <button class="btn btn-danger btn-sm delete-button deleteMatkul" 
+                                    data-id="${matkul.id}" 
+                                    data-nama="${matkul.nama_matkul}">
+                                    <span class="mdi mdi-delete"></span> Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    `);
+                            });
+
+                            // Memperbarui paginasi
+                            updatePagination(response);
+                        } else {
+                            $('tbody').append(
+                                '<tr><td class="text-center" colspan="5">Tidak ada hasil ditemukan</td></tr>'
+                                );
+                        }
+                    },
+                    error: function() {
+                        console.error('Terjadi kesalahan saat mencari mata kuliah.');
+                    }
+                });
+            });
+
+            // Fungsi untuk memperbarui paginasi
+            function updatePagination(response) {
+                $('#pagination').empty(); // Kosongkan paginasi sebelumnya
+                for (let i = 1; i <= response.last_page; i++) {
+                    $('#pagination').append(`
+            <a href="#" class="page-link" data-page="${i}">${i}</a>
+        `);
+                }
+            }
+
+            // Event listener untuk paginasi
+            $(document).on('click', '.page-link', function(e) {
+                e.preventDefault();
+                var page = $(this).data('page');
+                let searchQuery = $('#search').val();
+
+                $.ajax({
+                    url: '{{ route('data-matkul.search') }}',
+                    method: 'GET',
+                    data: {
+                        search: searchQuery,
+                        page: page
+                    },
+                    success: function(response) {
+                        $('tbody').empty(); // Kosongkan tabel sebelumnya
+                        if (response.data.length > 0) {
+                            response.data.forEach(function(matkul, index) {
+                                $('tbody').append(`
+                        <tr>
+                            <td>${index + 1 + (response.current_page - 1) * response.per_page}</td>
+                            <td>${matkul.kode}</td>
+                            <td>${matkul.nama_matkul}</td>
+                            <td>${matkul.teori + matkul.praktek}</td>
+                            <td>
+                                <button class="btn btn-primary btn-sm editMatkul" 
+                                    data-id="${matkul.id}" 
+                                    data-nama="${matkul.nama_matkul}" 
+                                    data-kode="${matkul.kode}" 
+                                    data-teori="${matkul.teori}" 
+                                    data-praktek="${matkul.praktek}" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editModal">
+                                    <span class="mdi mdi-pencil"></span> Edit
+                                </button>
+                                <button class="btn btn-danger btn-sm delete-button deleteMatkul" 
+                                    data-id="${matkul.id}" 
+                                    data-nama="${matkul.nama_matkul}">
+                                    <span class="mdi mdi-delete"></span> Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    `);
+                            });
+
+                            // Memperbarui paginasi
+                            updatePagination(response);
+                        } else {
+                            $('tbody').append(
+                                '<tr><td class="text-center" colspan="5">Tidak ada hasil ditemukan</td></tr>'
+                                );
+                        }
+                    },
+                    error: function() {
+                        console.error('Terjadi kesalahan saat mencari mata kuliah.');
+                    }
+                });
+            });
+
+
 
         });
     </script>

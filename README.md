@@ -18,3 +18,4 @@
 - [ ] Add KRS
 - [ ] *Make cursor can't click when akademik and kaprodi don't approve, for KHS*
 - [ ] Add import export 
+- [ ] Add dosen pa null when dosen on deleted or status = 0, kelas deleted = null in mahasiswa

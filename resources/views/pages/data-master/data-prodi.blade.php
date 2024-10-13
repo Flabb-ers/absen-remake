@@ -9,7 +9,7 @@
                 </a>
                 <span class="breadcrumb-item" id="dataMasterBreadcrumb">Data Master</span>
                 <span class="breadcrumb-item active">Data Program Studi</span>
-            </div> 
+            </div>
             <div class="row">
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
@@ -352,38 +352,36 @@
                 });
             });
 
-
-            // Hapus
-            function confirmDelete(id) {
-                Swal.fire({
-                    title: 'Apakah Anda yakin?',
-                    text: "Prodi ini akan dihapus!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Ya, hapus!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const form = document.getElementById('delete-form-' + id);
-                        const url = form.action;
-
-                        axios.delete(url, {
-                                headers: {
-                                    'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
-                                }
-                            })
-                            .then(response => {
-                                Swal.fire('Terhapus!', response.data.success, 'success').then(() => {
-                                    location.reload();
-                                });
-                            })
-                            .catch(error => {
-                                Swal.fire('Error!', 'Gagal menghapus prodi.', 'error');
-                            });
-                    }
-                });
-            }
         });
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Prodi ini akan dihapus!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById('delete-form-' + id);
+                    const url = form.action;
+
+                    axios.delete(url, {
+                            headers: {
+                                'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
+                            }
+                        })
+                        .then(response => {
+                            Swal.fire('Terhapus!', response.data.success, 'success').then(() => {
+                                location.reload();
+                            });
+                        })
+                        .catch(error => {
+                            Swal.fire('Error!', 'Gagal menghapus prodi.', 'error');
+                        });
+                }
+            });
+        }
     </script>
 @endsection
