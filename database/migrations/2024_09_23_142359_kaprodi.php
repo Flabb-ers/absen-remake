@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('kaprodi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('prodis_id');
+            $table->foreignId('prodis_id')->constrained('prodi')->onDelete('cascade');
             $table->string('nama');
             $table->string('no_telephone');
             $table->integer('status');

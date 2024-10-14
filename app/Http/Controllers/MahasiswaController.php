@@ -17,7 +17,17 @@ class MahasiswaController extends Controller
 
     public function index()
     {
-        $kelass = Kelas::with('prodi','semester','mahasiswa')->get();
+        $kelass = Kelas::with([
+            'prodi' => function ($query) {
+                $query->withTrashed(); 
+            },
+            'semester' => function ($query) {
+                $query->withTrashed();
+            },
+            'mahasiswa'
+        ])
+        ->whereNull('deleted_at')
+        ->get();
         $kelasAll = Jadwal::all();
         return view('pages.data-mahasiswa.index', compact('kelass','kelasAll'));
     }
@@ -172,9 +182,9 @@ class MahasiswaController extends Controller
         $mahasiswa->delete();
         return response()->json(['message' => 'Data mahasiswa berhasil dihapus'], 200);
     }
-    public function kelas($nama_kelas)
+    public function kelas($id)
     {
-        $namaKelas = Kelas::where('nama_kelas',$nama_kelas)->first();
+        $namaKelas = Kelas::where('id',$id)->first();
         $mahasiswas = Mahasiswa::with('kelas.semester')
                     ->where('kelas_id',$namaKelas->id)
                     ->orderBy('nim', 'asc')
@@ -185,8 +195,9 @@ class MahasiswaController extends Controller
                         ->where('status',1)
                         ->get();
         $kelasAll = Jadwal::all();
+        $kelasSem = Kelas::where('id_prodi',$namaKelas->id_prodi)->get();
         $kelasAlls = Kelas::where('id_prodi',$namaKelas->id_prodi)->first();
-        return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass','namaKelas','dosens','kelasAlls','kelasAll'));
+        return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass','namaKelas','dosens','kelasAlls','kelasAll','kelasSem'));
     }
 
 }

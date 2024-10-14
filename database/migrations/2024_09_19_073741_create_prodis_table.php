@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('singkatan');
             $table->string('kode_prodi');
             $table->string('jenjang');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

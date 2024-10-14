@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('dosens', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('nidn')->unique()->nullable();
+            $table->string('nidn')->nullable();
             $table->integer('pembimbing_akademik');
             $table->string('jenis_kelamin');
             $table->string('no_telephone');
@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('tempat_lahir');
             $table->string('email')->unique();
             $table->string('password');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

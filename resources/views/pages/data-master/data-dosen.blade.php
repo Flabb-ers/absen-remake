@@ -312,7 +312,7 @@
                                             <div class="form-check form-check-primary">
                                                 <label class="form-check-label" for="jenis_kelamin_1Edit">
                                                     <input type="radio" class="form-check-input" value="Laki-Laki"
-                                                        name="jenis_kelaminEdit" id="jenis_kelamin_1Edit">
+                                                        name="jenis_kelaminEdit" id="jenis_kelamin_1Edit" required>
                                                     Laki-Laki
                                                 </label>
                                             </div>
@@ -321,7 +321,7 @@
                                             <div class="form-check form-check-primary">
                                                 <label class="form-check-label" for="jenis_kelamin_2Edit">
                                                     <input type="radio" class="form-check-input" value="Perempuan"
-                                                        name="jenis_kelaminEdit" id="jenis_kelamin_2Edit">
+                                                        name="jenis_kelaminEdit" id="jenis_kelamin_2Edit" required>
                                                     Perempuan
                                                 </label>
                                             </div>
@@ -788,7 +788,7 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
-                                text: 'Terjadi kesalahan saat menghapus data.',
+                                text: '',
                             });
                         }
                     });

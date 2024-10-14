@@ -6,6 +6,7 @@ use App\Models\Kelas;
 use App\Models\Prodi;
 use App\Models\Jadwal;
 use App\Models\Semester;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 
 class KelasController extends Controller
@@ -17,9 +18,17 @@ class KelasController extends Controller
     {
         $prodis = Prodi::all();
         $kelasAll = Jadwal::all();
-        $semesters = Semester::orderBy('semester','asc')->get();
-        $kelass = Kelas::with(['semester', 'prodi'])->latest()->paginate(6);
-        return view('pages.data-master.data-kelas', compact('prodis', 'semesters', 'kelass','kelasAll'));
+        $semesters = Semester::orderBy('semester', 'asc')->get();
+        $kelass = Kelas::with(['semester' => function ($query) {
+            $query->withTrashed(); 
+        }, 'prodi' => function ($query) {
+            $query->withTrashed();
+        }])
+            ->whereNull('deleted_at') 
+            ->latest()
+            ->paginate(6);
+
+        return view('pages.data-master.data-kelas', compact('prodis', 'semesters', 'kelass', 'kelasAll'));
     }
 
     /**
@@ -93,6 +102,7 @@ class KelasController extends Controller
     public function destroy($id)
     {
         $hapus = Kelas::findOrFail($id);
+        Mahasiswa::where('kelas_id', $hapus->id)->delete();
         $hapus->delete();
         return response()->json([
             'success' => 'Kelas berhasil dihapus!',

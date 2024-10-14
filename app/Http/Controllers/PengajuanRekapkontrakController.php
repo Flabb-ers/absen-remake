@@ -15,23 +15,57 @@ class PengajuanRekapkontrakController extends Controller
      */
     public function index()
     {
-        $kontraks = PengajuanRekapkontrak::with('kelas', 'jadwal', 'matkul')
+        $kontraks = PengajuanRekapkontrak::with([
+            'kelas.prodi' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas' => function ($query) {
+                $query->withTrashed();
+            },
+            'jadwal' => function ($query) {
+                $query->withTrashed();
+            },
+            'jadwal.dosen' => function ($query) {
+                $query->withTrashed();
+            },
+            'matkul' => function ($query) {
+                $query->withTrashed();
+            }
+        ])
             ->where('status', 0)
             ->latest()
             ->get();
-            $kelasAll = Jadwal::all();
-        return view('pages.pengajuanRekapKontrak.index', compact('kontraks','kelasAll'));
+
+        $kelasAll = Jadwal::all();
+        return view('pages.pengajuanRekapKontrak.index', compact('kontraks', 'kelasAll'));
     }
 
 
     public function confirm()
     {
-        $kontraks = PengajuanRekapkontrak::with('kelas', 'jadwal', 'matkul')
-            ->where('status', 1)
-            ->latest()
-            ->get();
+        $kontraks = PengajuanRekapkontrak::with([
+            'kelas' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas.prodi' => function ($query) {
+                $query->withTrashed();
+            },
+            'jadwal' => function ($query) {
+                $query->withTrashed();
+            },
+            'jadwal.dosen' => function ($query) {
+                $query->withTrashed();
+            },
+            'matkul' => function ($query) {
+                $query->withTrashed();
+            }
+        ])
+        ->where('status', 1)
+        ->latest()
+        ->get();
+        
         $kelasAll = Jadwal::all();
-        return view('pages.pengajuanRekapKontrak.disetujui', compact('kontraks','kelasAll'));
+        return view('pages.pengajuanRekapKontrak.disetujui', compact('kontraks', 'kelasAll'));
     }
 
     /**

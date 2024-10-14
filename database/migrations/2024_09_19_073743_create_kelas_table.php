@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('nama_kelas');
             $table->string('jenis_kelas');
             $table->foreignId('id_prodi')->constrained('prodi')->onDelete('cascade');
-            $table->foreignId('id_semester')->constrained('semesters')->onDelete('cascade');
+            $table->foreignId('id_semester')->constrained('semesters');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -8,6 +8,7 @@ use App\Models\Jadwal;
 use App\Models\Matkul;
 use App\Models\Ruangan;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class MatkulController extends Controller
 {
@@ -24,27 +25,32 @@ class MatkulController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
         $request->validate([
             'nama_matkul' => 'required|string|max:255',
-            'kode' => 'required|unique:matkuls,kode',
+            'kode' => [
+                'required',
+                Rule::unique('matkuls')->whereNull('deleted_at'), // Hanya periksa data yang belum dihapus
+            ],
         ], [
             'nama_matkul.required' => 'Nama mata kuliah harus diisi',
-            'kode.required' => 'Kode haris diisi',
-            'kode.unique' => 'Kode sudah terdaftar'
+            'kode.required' => 'Kode harus diisi',
+            'kode.unique' => 'Kode sudah terdaftar',
         ]);
-
+    
         Matkul::create([
             'nama_matkul' => $request->nama_matkul,
             'kode' => $request->kode,
             'praktek' => $request->praktek,
             'teori' => $request->teori,
-            'tahun'=>$request->tahun
+            'tahun' => $request->tahun,
         ]);
-
+    
         return response()->json(['success' => 'Data mata kuliah berhasil ditambahkan']);
     }
+    
 
 
 
@@ -57,7 +63,10 @@ class MatkulController extends Controller
 
     $request->validate([
         'nama_matkul' => 'required|string|max:255',
-        'kode' => 'required|unique:matkuls,kode,' . $matkul->id,
+        'kode' => [
+            'required',
+            Rule::unique('matkuls')->ignore($matkul->id)->whereNull('deleted_at'),
+        ],
     ], [
         'nama_matkul.required' => 'Nama mata kuliah wajib diisi',
         'kode.required' => 'Kode harus diisi',

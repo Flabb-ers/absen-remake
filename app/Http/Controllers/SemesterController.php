@@ -83,6 +83,7 @@ class SemesterController extends Controller
     public function destroy($id)
     {
         $semester = Semester::findOrFail($id);
+        Kelas::where('id_semester',$semester->id)->delete();
         $semester->delete();
         return response()->json(['success' => 'Semester berhasil dihapus!']);
     }

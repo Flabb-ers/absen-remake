@@ -21,7 +21,6 @@ class TugasController extends Controller
     {
         $kelasAll = Jadwal::all();
 
-
         $tugas = Tugas::select('tugas_ke', 'jadwal_id', DB::raw('MIN(id) as id'))
             ->where('kelas_id', $kelas_id)
             ->where('matkul_id', $matkul_id)

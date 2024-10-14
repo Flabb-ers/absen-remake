@@ -8,7 +8,7 @@
                     <span class="mdi mdi-home"></span> Dashboard
                 </a>
                 <a href="/presensi/data-mahasiswa" class="breadcrumb-item">Mahasiswa</a>
-                <span class="breadcrumb-item">jelas</span>
+                <span class="breadcrumb-item">Kelas</span>
                 <span class="breadcrumb-item">{{ $kelasAlls->nama_kelas }}</span>
             </div>
             <div class="row">
@@ -19,6 +19,9 @@
                                 data-bs-target="#tambahModal">
                                 <span class="mdi mdi-plus"></span> Tambah
                             </button>
+                            @foreach ($kelasSem as $kelSem)
+                                {{ $kelSem->semester->semester }}
+                            @endforeach
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>

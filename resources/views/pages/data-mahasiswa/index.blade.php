@@ -24,7 +24,7 @@
                                             </div>
                                             <p class="card-text mb-4">{{ $kelas->prodi->nama_prodi }} | Semester {{ $kelas->semester->semester }}</p>
                                             <div class="mt-auto">
-                                                <a href="/presensi/data-mahasiswa/{{ $kelas->nama_kelas }}" class="btn btn-warning w-100">
+                                                <a href="/presensi/data-mahasiswa/{{ $kelas->id }}" class="btn btn-warning w-100">
                                                     <i class="mdi mdi-eye"></i> Lihat Detail
                                                 </a>
                                             </div>

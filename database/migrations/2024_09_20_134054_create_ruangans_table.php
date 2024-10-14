@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('ruangans', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -67,7 +67,7 @@ Route::prefix('/presensi')->group(function () {
 
     // MAHASISWA
     Route::resource('/data-mahasiswa', MahasiswaController::class)->except(['show']);
-    Route::get('/data-mahasiswa/{nama_kelas}', [MahasiswaController::class, 'kelas']);
+    Route::get('/data-mahasiswa/{id}', [MahasiswaController::class, 'kelas']);
 
     // JADWAL
     Route::resource('/jadwal-mengajar', JadwalController::class);

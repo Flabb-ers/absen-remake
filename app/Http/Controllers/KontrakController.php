@@ -18,22 +18,41 @@ class KontrakController extends Controller
      */
     public function index()
     {
-        $jadwals = Jadwal::with('dosen', 'matkul', 'kelas.prodi', 'ruangan')->latest()->get();
+        $jadwals = Jadwal::with([
+            'dosen' => function ($query) {
+                $query->withTrashed();
+            },
+            'matkul' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas.prodi' => function ($query) {
+                $query->withTrashed();
+            },
+            'ruangan' => function ($query) {
+                $query->withTrashed();
+            }
+        ])->latest()->get();
+
         $pertemuanCounts = [];
+        $rekapKontrakStatus = [];
+
         foreach ($jadwals as $jadwal) {
             $pertemuan = Kontrak::where('jadwals_id', $jadwal->id)->max('pertemuan');
             $pertemuanCounts[$jadwal->id] = $pertemuan ?? 0;
+
+            $status = PengajuanRekapkontrak::where('jadwal_id', $jadwal->id)
+                ->where('kelas_id', $jadwal->kelas->id)
+                ->where('matkul_id', $jadwal->matkul->id)
+                ->pluck('status')
+                ->first();
+
+            $rekapKontrakStatus[$jadwal->id] = $status;
         }
-
-        $rekapKontrakStatus = PengajuanRekapkontrak::where('jadwal_id', $jadwal->id)
-            ->where('kelas_id', $jadwal->kelas->id)
-            ->where('matkul_id', $jadwal->matkul->id)
-            ->pluck('status')
-            ->first();
-
         $kelasAll = Jadwal::all();
+
         return view('pages.dosen.data-kontrak.index', compact('jadwals', 'pertemuanCounts', 'rekapKontrakStatus', 'kelasAll'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -43,7 +62,7 @@ class KontrakController extends Controller
         $jadwal = Jadwal::with('dosen', 'matkul', 'kelas', 'ruangan')
             ->where('id', $id)
             ->first();
-        $pertemuan = Absen::where('jadwals_id', $id)->max('pertemuan');;
+        $pertemuan = Absen::where('jadwals_id', $id)->max('pertemuan');
         $mahasiswas = Mahasiswa::where('kelas_id', $jadwal->kelas->id)->get();
         $kelasAll = Jadwal::all();
         $tahun = TahunAkademik::where('status', 1)->first();
@@ -76,7 +95,7 @@ class KontrakController extends Controller
         $kontrak = Kontrak::with(['matkul', 'kelas.prodi', 'jadwal.dosen'])
             ->findOrFail($id);
         $kelasAll = Jadwal::all();
-        return view('pages.dosen.data-kontrak.edit', compact('kontrak','kelasAll'));
+        return view('pages.dosen.data-kontrak.edit', compact('kontrak', 'kelasAll'));
     }
 
     /**

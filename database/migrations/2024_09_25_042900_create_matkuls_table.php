@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('kode');
             $table->integer('teori')->nullable();
             $table->integer('praktek')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

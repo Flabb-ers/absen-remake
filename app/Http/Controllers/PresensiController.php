@@ -22,25 +22,25 @@ class PresensiController extends Controller
      * Display a listing of the resource.
      */
 
-     public function index()
-     {
+    public function index()
+    {
         $kelasAll = Jadwal::all();
-         $jadwals = Jadwal::with('dosen', 'matkul', 'kelas.prodi', 'ruangan')->latest()->get();
-         $pertemuanCounts = [];
-         
-         foreach ($jadwals as $jadwal) {
-             $pertemuan = Absen::where('jadwals_id', $jadwal->id)->max('pertemuan');
-             $pertemuanCounts[$jadwal->id] = $pertemuan ?? 0;
-         }
+        $jadwals = Jadwal::with('dosen', 'matkul', 'kelas.prodi', 'ruangan')->latest()->get();
 
-         $pengajuan = PengajuanRekapPresensi::whereIn('jadwals_id', $jadwals->pluck('id'))->get()->groupBy('jadwals_id');
+        $pertemuanCounts = [];
+        foreach ($jadwals as $jadwal) {
+            $pertemuan = Absen::where('jadwals_id', $jadwal->id)->max('pertemuan');
+            $pertemuanCounts[$jadwal->id] = $pertemuan ?? 0;
+        }
 
-         $berita = PengajuanRekapBerita::whereIn('jadwal_id',$jadwals->pluck('id'))->get()->groupBy('jadwal_id');
+        $pengajuan = PengajuanRekapPresensi::whereIn('jadwals_id', $jadwals->pluck('id'))->get()->groupBy('jadwals_id');
 
-     
-         return view('pages.dosen.data-presensi.index', compact('jadwals', 'pertemuanCounts', 'pengajuan','berita','kelasAll'));
-     }
-     
+        $berita = PengajuanRekapBerita::whereIn('jadwal_id', $jadwals->pluck('id'))->get()->groupBy('jadwal_id');
+
+
+        return view('pages.dosen.data-presensi.index', compact('jadwals', 'pertemuanCounts', 'pengajuan', 'berita', 'kelasAll'));
+    }
+
 
 
     public function absen($id)
@@ -51,9 +51,9 @@ class PresensiController extends Controller
         $pertemuan = Absen::where('jadwals_id', $jadwal->id)->max('pertemuan');
         $pertemuan = $pertemuan ? $pertemuan + 1 : 1;
         $mahasiswas = Mahasiswa::where('kelas_id', $jadwal->kelas->id)->get();
-        $tahun = TahunAkademik::where('status',1)->first();
-        $kelasAll = Kelas::all();
-        return view('pages.dosen.data-presensi.presensi', compact('jadwal', 'mahasiswas', 'pertemuan','tahun','kelasAll'));
+        $tahun = TahunAkademik::where('status', 1)->first();
+        $kelasAll = Jadwal::all();
+        return view('pages.dosen.data-presensi.presensi', compact('jadwal', 'mahasiswas', 'pertemuan', 'tahun', 'kelasAll'));
     }
 
     /**
@@ -74,7 +74,7 @@ class PresensiController extends Controller
                     'prodis_id' => $request->prodis_id,
                     'kelas_id' => $request->kelas_id,
                     'mahasiswas_id' => $mahasiswaId,
-                    'tahun'=>$request->tahun,
+                    'tahun' => $request->tahun,
                     'status' => $request->status[$mahasiswaId],
                 ]);
             }
@@ -82,7 +82,7 @@ class PresensiController extends Controller
                 'pertemuan' => $request->pertemuan,
                 'tanggal' => now(),
                 'waktu' => now(),
-                'tahun'=>$request->tahun,
+                'tahun' => $request->tahun,
                 'materi' => $request->materiResume,
                 'jadwals_id' => $request->jadwals_id,
                 'dosens_id' => $request->dosens_id,
@@ -105,26 +105,26 @@ class PresensiController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id, $matkuls_id, $kelas_id,$jadwal_id)
+    public function edit($id, $matkuls_id, $kelas_id, $jadwal_id)
     {
 
         $resume = Resume::where('pertemuan', $id)
             ->where('kelas_id', $kelas_id)
             ->where('matkuls_id', $matkuls_id)
-            ->where('jadwals_id',$jadwal_id)
+            ->where('jadwals_id', $jadwal_id)
             ->first();
 
         $absens = Absen::with('prodi', 'matkul')
             ->where('pertemuan', $id)
             ->where('kelas_id', $kelas_id)
             ->where('matkuls_id', $matkuls_id)
-            ->where('jadwals_id',$jadwal_id)
+            ->where('jadwals_id', $jadwal_id)
             ->get();
 
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)->get();
         $kelasAll = Jadwal::all();
 
-        return view('pages.dosen.data-presensi.edit', compact('resume',  'absens', 'mahasiswas', 'id','kelasAll'));
+        return view('pages.dosen.data-presensi.edit', compact('resume',  'absens', 'mahasiswas', 'id', 'kelasAll'));
     }
 
 
@@ -147,7 +147,7 @@ class PresensiController extends Controller
                 ->where('mahasiswas_id', $mahasiswa_id)
                 ->where('pertemuan', $request->pertemuan)
                 ->where('matkuls_id', $request->matkuls_id)
-                ->where('jadwals_id',$request->jawals_id)
+                ->where('jadwals_id', $request->jawals_id)
                 ->first();
 
             if ($absensi) {
@@ -171,45 +171,122 @@ class PresensiController extends Controller
             ->with('success', 'Data presensi berhasil diperbarui.');
     }
 
-    public function rekap1to7($matkuls_id, $kelas_id) {
-        $absens = Absen::with('dosen', 'kelas', 'matkul', 'prodi', 'mahasiswa')
+    public function rekap1to7($matkuls_id, $kelas_id)
+    {
+        $absens = Absen::with([
+            'dosen' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas.semester' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas' => function ($query) {
+                $query->withTrashed();
+            },
+            'matkul' => function ($query) {
+                $query->withTrashed();
+            },
+            'prodi' => function ($query) {
+                $query->withTrashed();
+            },
+            'mahasiswa' => function ($query) {
+                $query->withTrashed();
+            }
+        ])
             ->where('matkuls_id', $matkuls_id)
             ->where('kelas_id', $kelas_id)
-            ->whereIn('pertemuan', [1, 2, 3, 4, 5, 6, 7]) 
+            ->whereIn('pertemuan', [1, 2, 3, 4, 5, 6, 7])
             ->get();
-    
-        $tahunAkademik = TahunAkademik::where('status',1)->get();
-        
+
+        $tahunAkademik = TahunAkademik::where('status', 1)->get();
+
         return view('pages.dosen.data-presensi.rekap.presensi1-7', compact('absens', 'tahunAkademik'));
     }
-    
-    public function rekap8to14($matkuls_id, $kelas_id) {
-        $absens = Absen::with('dosen', 'kelas', 'matkul', 'prodi', 'mahasiswa')
+
+    public function rekap8to14($matkuls_id, $kelas_id)
+    {
+        $absens = Absen::with([
+            'dosen' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas.semester' => function ($query) {
+                $query->withTrashed();
+            },
+            'matkul' => function ($query) {
+                $query->withTrashed();
+            },
+            'prodi' => function ($query) {
+                $query->withTrashed();
+            },
+            'mahasiswa' => function ($query) {
+                $query->withTrashed();
+            }
+        ])
             ->where('matkuls_id', $matkuls_id)
             ->where('kelas_id', $kelas_id)
             ->whereIn('pertemuan', [8, 9, 10, 11, 12, 13, 14])
             ->get();
-            $tahunAkademik = TahunAkademik::where('status',1)->get();
-        return view('pages.dosen.data-presensi.rekap.presensi8-14', compact('absens','tahunAkademik'));
+
+        $tahunAkademik = TahunAkademik::where('status', 1)->get();
+
+        return view('pages.dosen.data-presensi.rekap.presensi8-14', compact('absens', 'tahunAkademik'));
     }
 
-    public function berita1to7($matkuls_id, $kelas_id) {
-        $beritas = Resume::with('dosen', 'matkul', 'kelas.prodi')
+
+    public function berita1to7($matkuls_id, $kelas_id)
+    {
+        $beritas = Resume::with([
+            'dosen' => function ($query) {
+                $query->withTrashed();
+            },
+            'matkul' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas.prodi' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas.semester' => function ($query) {
+                $query->withTrashed();
+            }
+        ])
             ->where('matkuls_id', $matkuls_id)
             ->where('kelas_id', $kelas_id)
-            ->whereBetween('pertemuan', [1, 7]) 
+            ->whereBetween('pertemuan', [1, 7])
             ->get();
-    
+
         $semester = Semester::where('status', 1)->first();
         if ($semester) {
             $sem = ($semester->semester % 2 == 0) ? "GENAP" : "GANJIL";
         }
-        $tahunAkademik = TahunAkademik::where('status',1)->get();
-        return view('pages.dosen.data-presensi.rekap.berita1-7', compact('beritas', 'tahunAkademik','sem'));
+        $tahunAkademik = TahunAkademik::where('status', 1)->get();
+        return view('pages.dosen.data-presensi.rekap.berita1-7', compact('beritas', 'tahunAkademik', 'sem'));
     }
-    
-    public function berita8to14($matkuls_id, $kelas_id) {
-        $beritas = Resume::with('dosen', 'matkul', 'kelas.prodi')
+
+    public function berita8to14($matkuls_id, $kelas_id)
+    {
+        $beritas = Resume::with([
+            'dosen' => function ($query) {
+                $query->withTrashed();
+            },
+            'matkul' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas.prodi' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas.semester' => function ($query) {
+                $query->withTrashed();
+            }
+        ])
             ->where('matkuls_id', $matkuls_id)
             ->where('kelas_id', $kelas_id)
             ->whereBetween('pertemuan', [8, 14])
@@ -219,8 +296,7 @@ class PresensiController extends Controller
         if ($semester) {
             $sem = ($semester->semester % 2 == 0) ? "GENAP" : "GANJIL";
         }
-        $tahunAkademik = TahunAkademik::where('status',1)->get();
-        return view('pages.dosen.data-presensi.rekap.berita8-14', compact('beritas', 'sem','tahunAkademik'));
+        $tahunAkademik = TahunAkademik::where('status', 1)->get();
+        return view('pages.dosen.data-presensi.rekap.berita8-14', compact('beritas', 'sem', 'tahunAkademik'));
     }
-    
 }

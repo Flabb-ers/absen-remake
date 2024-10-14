@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('mahasiswas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('dosen_pembimbing_id')->constrained('dosens');
+            $table->foreignId('dosen_pembimbing_id')
+                ->nullable()
+                ->constrained('dosens')
+                ->onDelete('set null');
             $table->string('nama_lengkap');
             $table->string('nim');
             $table->string('nisn');
@@ -26,7 +29,8 @@ return new class extends Migration
             $table->string('tempat_lahir');
             $table->string('nama_ibu');
             $table->string('jenis_kelamin');
-            $table->foreignId('kelas_id')->constrained('kelas');
+            $table->foreignId('kelas_id')->constrained()->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

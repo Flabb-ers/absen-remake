@@ -7,6 +7,7 @@ use App\Models\Kelas;
 use App\Models\Jadwal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 
 class DosenController extends Controller
@@ -18,24 +19,39 @@ class DosenController extends Controller
     {
         $kelasAll = Jadwal::all();
         $dosens = Dosen::latest()->get();
-        return view('pages.data-master.data-dosen', compact('dosens','kelasAll'));
+        return view('pages.data-master.data-dosen', compact('dosens', 'kelasAll'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
         $validateData = $request->validate([
             'nama' => 'required',
-            'nidn' => 'numeric|digits:10|nullable|unique:dosens,nidn',
+            'nidn' => [
+                'nullable',
+                'numeric',
+                'digits:10',
+                Rule::unique('dosens')->whereNull('deleted_at'),
+            ],
             'jenis_kelamin' => 'required',
             'pembimbing_akademik' => 'required',
-            'no_telephone' => 'required|string|max:15|unique:dosens,no_telephone',
+            'no_telephone' => [
+                'required',
+                'string',
+                'max:15',
+                Rule::unique('dosens')->whereNull('deleted_at'),
+            ],
             'agama' => 'required|string',
             'tanggal_lahir' => 'required|date',
             'tempat_lahir' => 'required|string|max:255',
-            'email' => 'required|email|unique:dosens,email',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('dosens')->whereNull('deleted_at'),
+            ],
             'password' => 'required'
         ], [
             'nama.required' => 'Nama Dosen harus diisi',
@@ -43,7 +59,7 @@ class DosenController extends Controller
             'nidn.digits' => 'NIDN harus terdiri dari 10 digit',
             'nidn.unique' => 'NIDN sudah terdaftar',
             'jenis_kelamin.required' => 'Jenis kelamin harus dipilih',
-            'pembimbing_akademik.required' => 'Status pembimbing akademik kelamin harus dipilih',
+            'pembimbing_akademik.required' => 'Status pembimbing akademik harus dipilih',
             'no_telephone.required' => 'Nomor WhatsApp harus diisi',
             'no_telephone.unique' => 'Nomor WhatsApp sudah terdaftar',
             'agama.required' => 'Agama harus dipilih',
@@ -66,7 +82,7 @@ class DosenController extends Controller
             'email' => $validateData['email'],
             'status' => 1,
             'password' => Hash::make($validateData['password']),
-            'pembimbing_akademik'=> $validateData['pembimbing_akademik']
+            'pembimbing_akademik' => $validateData['pembimbing_akademik']
         ]);
 
         return response()->json(['success' => 'Data dosen berhasil ditambahkan!'], 200);
@@ -75,27 +91,42 @@ class DosenController extends Controller
 
 
 
+
     public function update(Request $request, $id)
     {
         $dosen = Dosen::findOrFail($id);
-    
+
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nidn' => 'nullable|numeric|digits:10|unique:dosens,nidn,' . $dosen->id,
+            'nidn' => [
+                'nullable',
+                'numeric',
+                'digits:10',
+                Rule::unique('dosens')->ignore($dosen->id)->whereNull('deleted_at'),
+            ],
             'jenis_kelamin' => 'required|string',
             'pembimbing_akademik' => 'required',
-            'no_telephone' => 'required|string|max:15|unique:dosens,no_telephone,' . $dosen->id,
+            'no_telephone' => [
+                'required',
+                'string',
+                'max:15',
+                Rule::unique('dosens')->ignore($dosen->id)->whereNull('deleted_at'),
+            ],
             'agama' => 'required|string',
             'tanggal_lahir' => 'required|date',
             'tempat_lahir' => 'required|string|max:255',
             'status' => 'required|in:0,1',
-            'email' => 'required|email|unique:dosens,email,' . $dosen->id,
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('dosens')->ignore($dosen->id)->whereNull('deleted_at'),
+            ],
         ], [
             'nama.required' => 'Nama dosen harus diisi',
             'nidn.numeric' => 'NIDN harus angka',
             'nidn.digits' => 'NIDN harus terdiri 10 digit',
             'jenis_kelamin.required' => 'Jenis kelamin harus dipilih',
-            'pembimbing_akademik.required' => 'Status pembimbing akademik kelamin harus dipilih',
+            'pembimbing_akademik.required' => 'Status pembimbing akademik harus dipilih',
             'no_telephone.required' => 'Nomor WhatsApp harus diisi',
             'no_telephone.unique' => 'Nomor WhatsApp sudah terdaftar',
             'agama.required' => 'Agama harus dipilih',
@@ -106,7 +137,7 @@ class DosenController extends Controller
             'email.unique' => 'Email sudah digunakan',
             'status.required' => 'Status harus dipilih',
         ]);
-    
+
         $kolomUpdate = [
             'nama',
             'nidn',
@@ -117,20 +148,21 @@ class DosenController extends Controller
             'tempat_lahir',
             'email'
         ];
-        
+
         foreach ($kolomUpdate as $kolom) {
             if ($request->$kolom !== null && $dosen->$kolom !== $request->$kolom) {
                 $dosen->$kolom = $request->$kolom;
             }
         }
-    
+
         $dosen->status = $request->status;
         $dosen->pembimbing_akademik = $request->pembimbing_akademik;
         $dosen->save();
-    
+
         return response()->json(['success' => 'Data dosen berhasil diperbarui']);
     }
-    
+
+
 
 
 

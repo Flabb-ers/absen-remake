@@ -15,9 +15,23 @@ class PengajuanRekapPresensiController extends Controller
      */
     public function index()
     {
-        $presensis = PengajuanRekapPresensi::with(['matkul', 'kelas', 'jadwal' => function ($query) {
-            $query->withTrashed();
-        }])
+        $presensis = PengajuanRekapPresensi::with([
+            'matkul' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas.prodi' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas' => function ($query) {
+                $query->withTrashed();
+            },
+            'jadwal' => function ($query) {
+                $query->withTrashed();
+            },
+            'jadwal.dosen' => function ($query) {
+                $query->withTrashed();
+            }
+        ])
             ->where('status', 0)
             ->latest()
             ->get();
@@ -29,9 +43,23 @@ class PengajuanRekapPresensiController extends Controller
 
     public function confirm()
     {
-        $presensis = PengajuanRekapPresensi::with(['matkul', 'kelas', 'jadwal' => function ($query) {
-            $query->withTrashed();
-        }])
+        $presensis = PengajuanRekapPresensi::with([
+            'matkul' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas.prodi' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas' => function ($query) {
+                $query->withTrashed();
+            },
+            'jadwal' => function ($query) {
+                $query->withTrashed();
+            },
+            'jadwal.dosen' => function ($query) {
+                $query->withTrashed();
+            }
+        ])
             ->where('status', 1)
             ->latest()
             ->get();
@@ -61,7 +89,7 @@ class PengajuanRekapPresensiController extends Controller
         return redirect()->back()->with('success', 'Pengajuan Rekap Presensi Berhasil');
     }
 
-    public function edit($pertemuan, $matkul_id, $kelas_id,$jadwal_id)
+    public function edit($pertemuan, $matkul_id, $kelas_id, $jadwal_id)
     {
         $rentang = [];
 
@@ -71,17 +99,34 @@ class PengajuanRekapPresensiController extends Controller
             $rentang = range(8, 14);
         }
 
-        $absens = Absen::with('dosen', 'kelas', 'matkul', 'prodi', 'mahasiswa')
-            ->where('matkuls_id', $matkul_id)
-            ->where('kelas_id', $kelas_id)
-            ->where('jadwals_id',$jadwal_id)
-            ->whereIn('pertemuan', $rentang)
-            ->get();
+        $absens = Absen::with([
+            'dosen' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas' => function ($query) {
+                $query->withTrashed();
+            },
+            'matkul' => function ($query) {
+                $query->withTrashed();
+            },
+            'prodi' => function ($query) {
+                $query->withTrashed();
+            },
+            'mahasiswa' => function ($query) {
+                $query->withTrashed();
+            }
+        ])
+        ->where('matkuls_id', $matkul_id)
+        ->where('kelas_id', $kelas_id)
+        ->where('jadwals_id', $jadwal_id)
+        ->whereIn('pertemuan', $rentang)
+        ->get();
+        
 
         return view('pages.pengajuanRekapPresensi.rekap', compact('absens', 'rentang'));
     }
 
-    public function update(Request $request, $pertemuan, $matkul_id, $kelas_id,$jadwal_id)
+    public function update(Request $request, $pertemuan, $matkul_id, $kelas_id, $jadwal_id)
     {
         $rentang = [];
         if ($pertemuan == '1-7') {
@@ -94,7 +139,7 @@ class PengajuanRekapPresensiController extends Controller
             $absenRecords = Absen::where('matkuls_id', $matkul_id)
                 ->where('kelas_id', $kelas_id)
                 ->whereIn('pertemuan', $rentang)
-                ->where('jadwals_id',$jadwal_id)
+                ->where('jadwals_id', $jadwal_id)
                 ->get();
 
             $updateData = [];
@@ -116,7 +161,7 @@ class PengajuanRekapPresensiController extends Controller
             Absen::where('matkuls_id', $matkul_id)
                 ->where('kelas_id', $kelas_id)
                 ->whereIn('pertemuan', $rentang)
-                ->where('jadwals_id',$jadwal_id)
+                ->where('jadwals_id', $jadwal_id)
                 ->update($updateData);
 
 

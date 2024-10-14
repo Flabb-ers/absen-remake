@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('semester');
             $table->integer('status');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

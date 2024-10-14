@@ -198,12 +198,13 @@
                     $absenGroupedByMahasiswa[$absen->mahasiswas_id][] = $absen;
                 }
 
-                $jumlahHadirPerKolom = array_fill(1, count($rentang), 0);
+                // Inisialisasi jumlah hadir per kolom sesuai dengan rentang yang ada
+                $jumlahHadirPerKolom = array_fill_keys($rentang, 0);
             @endphp
 
             @foreach ($absenGroupedByMahasiswa as $mahasiswaId => $absenItems)
                 @php
-                    $mahasiswa = $absenItems[0]->mahasiswa;
+                    $mahasiswa = $absenItems[0]->mahasiswa; // Ambil data mahasiswa
                 @endphp
 
                 <tr>
@@ -212,7 +213,7 @@
                     <td colspan="2">{{ $mahasiswa->nama_lengkap }}</td>
 
                     @php
-                        $jumlahHadirPerKolom = array_fill(min($rentang), count($rentang), 0);
+                        $statusPerKolom = []; // Array untuk menyimpan status per pertemuan
                     @endphp
 
                     @foreach ($rentang as $r)
@@ -226,14 +227,15 @@
                                 }
                             }
 
-                            if ($status === 'H' || $status === 'T') {
+                            // Hitung jumlah hadir untuk kolom ini jika kunci ada di jumlahHadirPerKolom
+                            if (isset($jumlahHadirPerKolom[$r]) && ($status === 'H' || $status === 'T')) {
                                 $jumlahHadirPerKolom[$r]++;
                             }
+
+                            $statusPerKolom[$r] = $status; // Simpan status untuk kolom ini
                         @endphp
-                        <td>{{ $status ?: '' }}</td>
+                        <td>{{ $statusPerKolom[$r] ?: '' }}</td>
                     @endforeach
-
-
                 </tr>
             @endforeach
 
@@ -241,7 +243,7 @@
                 <td></td>
                 <td colspan="3">Jumlah Yang Hadir</td>
                 @foreach ($rentang as $r)
-                    <td>{{ $jumlahHadirPerKolom[$r] > 0 ? $jumlahHadirPerKolom[$r] : 0 }}</td>
+                    <td>{{ isset($jumlahHadirPerKolom[$r]) ? $jumlahHadirPerKolom[$r] : 0 }}</td>
                 @endforeach
             </tr>
         </table>
@@ -296,17 +298,18 @@
                 @method('PUT')
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="kaprodi" name="kaprodi"
-                        {{ $absens->where('setuju_kaprodi', 1)->count() == count($rentang) ? 'checked' : '' }}
+                        {{ $absens->every(fn($absen) => $absen->setuju_kaprodi == 1) ? 'checked' : '' }}
                         onchange="confirmSubmission(this)">
                     <label class="form-check-label" for="kaprodi">Kaprodi</label>
                 </div>
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="wakil_direktur" name="wakil_direktur"
-                        {{ $absens->where('setuju_wadir', 1)->count() == count($rentang) ? 'checked' : '' }}
+                        {{ $absens->every(fn($absen) => $absen->setuju_wadir == 1) ? 'checked' : '' }}
                         onchange="confirmSubmission(this)">
                     <label class="form-check-label" for="wakil_direktur">Wakil Direktur</label>
                 </div>
             </form>
+
         </div>
         <div style="margin-top: 30px;">
             <a href="/presensi/pengajuan-konfirmasi/rekap-presensi" class="btn">Kembali</a>
