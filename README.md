@@ -7,7 +7,7 @@
 - [x] **Make Dosen PA and set active - non-active**
 - [x] **Add Password in Mahasiswa**
 - [x] **Add Kontrak && Presensi maximum 14 meetings**
-- [ ] **Add header every page**
+- [x] **Add header every page**
 - [ ] Add semseter in mahasiswa
 - [x] Add bread crumb
 - [x] **Redesigen nilai form** 
