@@ -33,7 +33,7 @@
                                 <a class="nav-link {{ request()->query('tab', 'tugas') === 'tugas' ? 'active' : '' }}"
                                     id="tab-tugas" href="#">Tugas</a>
                             </li>
-                            <li class="nav-aktif">
+                            <li class="nav-item">
                                 <a class="nav-link {{ request()->query('tab', 'tugas') === 'aktif' ? 'active' : '' }}"
                                     id="tab-aktif" href="#">Keaktifan</a>
                             </li>
@@ -50,8 +50,8 @@
                                     id="tab-uas" href="#">UAS</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->query('tab', 'tugas') === 'unggah' ? 'active' : '' }}"
-                                    id="tab-unggah" href="#">Unggah</a>
+                                <a class="nav-link {{ request()->query('tab', 'tugas') === 'rekap' ? 'active' : '' }}"
+                                    id="tab-rekap" href="#">Rekap</a>
                             </li>
                         </ul>
                         <div class="card" style="margin-left: 1px; border-radius:0px 0px 15px 15px">
@@ -131,10 +131,10 @@
                 $('.nav-link').removeClass('active');
                 $(this).addClass('active');
             });
-            $('#tab-unggah').on('click', function(e) {
+            $('#tab-rekap').on('click', function(e) {
                 e.preventDefault();
-                loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/unggah`);
-                history.pushState(null, '', `?tab=unggah`);
+                loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/rekap`);
+                history.pushState(null, '', `?tab=rekap`);
                 $('.nav-link').removeClass('active');
                 $(this).addClass('active');
             });

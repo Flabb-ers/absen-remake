@@ -15,7 +15,7 @@
                 <tbody>
                     @forelse ($aktifs as $aktif)
                         <tr>
-                            <td>Etika Mahasiswa</td>
+                            <td>Keaktifan Mahasiswa</td>
                             <td>
                                 <a href="{{ url('/presensi/data-nilai/' . $kelas_id . '/' . $matkul_id . '/' . $jadwal_id . '/aktif/edit') }}"
                                     class="btn btn-warning btn-sm">

@@ -7,7 +7,7 @@
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="text-center mb-4">NILAI MAHASISWA</h5>
+                            <h5 class="text-center mb-4">NILAI TUGAS MAHASISWA</h5>
                             <div class="row mb-4">
                                 <div class="col-md-5 col-12">
                                     <ul class="list-unstyled">

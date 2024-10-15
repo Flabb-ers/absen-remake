@@ -23,6 +23,18 @@ class Mahasiswa extends Model
     {
         return $this->hasMany(Absen::class, 'absens_id');
     }
+    public function aktif()
+    {
+        return $this->hasMany(Aktif::class);
+    }
+    public function mahasiswa()
+    {
+        return $this->hasMany(Mahasiswa::class);
+    }
+    public function tugas()
+    {
+        return $this->hasMany(Tugas::class, 'absens_id');
+    }
 
     public function pembimbingAkademik()
     {

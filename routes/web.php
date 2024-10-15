@@ -23,6 +23,7 @@ use App\Http\Controllers\DirekturController;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\RekapNilaiController;
 use App\Http\Controllers\TahunAkademikController;
 use App\Http\Controllers\PengajuanRekapBeritaController;
 use App\Http\Controllers\PengajuanRekapkontrakController;
@@ -156,10 +157,13 @@ Route::prefix('/presensi')->group(function () {
 
         // AKTIF
         Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif', [AktifController::class, 'index']);
-        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif/create', [AktifController::class, 'create']);
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/e/create', [AktifController::class, 'create']);
         Route::Post('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif', [AktifController::class, 'store']);
         Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif/edit', [AktifController::class, 'edit']);
         Route::put('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif', [AktifController::class, 'update']);
         Route::delete('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif', action: [AktifController::class, 'destroy']);
+
+        // REKAP NILAI
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/rekap',[RekapNilaiController::class,'index']);
     });
 });

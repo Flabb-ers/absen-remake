@@ -7,7 +7,7 @@
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="text-center mb-4">EDIT NILAI ETIKA MAHASISWA</h5>
+                            <h5 class="text-center mb-4">EDIT NILAI KEAKTIFAN MAHASISWA</h5>
                             <div class="row mb-4">
                                 <div class="col-md-5 col-12">
                                     <ul class="list-unstyled">
@@ -41,7 +41,7 @@
                             <hr>
                             <div class="card-body">
                                 <form method="POST"
-                                    action="{{ url('/presensi/data-nilai/' . $kelas_id . '/' . $matkul_id . '/' . $jadwal_id . '/etika') }}">
+                                    action="{{ url('/presensi/data-nilai/' . $kelas_id . '/' . $matkul_id . '/' . $jadwal_id . '/aktif') }}">
                                     @csrf
                                     @method('PUT')
                                     @foreach ($mahasiswas as $mahasiswa)
