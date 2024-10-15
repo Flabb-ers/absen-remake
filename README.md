@@ -7,7 +7,7 @@
 - [x] **Make Dosen PA and set active - non-active**
 - [x] **Add Password in Mahasiswa**
 - [x] **Add Kontrak && Presensi maximum 14 meetings**
-- [ ] **Add header every page**
+- [x] **Add header every page**
 - [ ] Add semseter in mahasiswa
 - [x] Add bread crumb
 - [x] **Redesigen nilai form** 
@@ -18,4 +18,4 @@
 - [ ] Add KRS
 - [ ] *Make cursor can't click when akademik and kaprodi don't approve, for KHS*
 - [ ] Add import export 
-- [ ] Add dosen pa null when dosen on deleted or status = 0, kelas deleted = null in mahasiswa
+- [x] Add dosen pa null when dosen on deleted or status = 0, kelas deleted = null in mahasiswa
