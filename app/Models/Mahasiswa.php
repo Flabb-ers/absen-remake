@@ -35,6 +35,14 @@ class Mahasiswa extends Model
     {
         return $this->hasMany(Tugas::class, 'absens_id');
     }
+    public function uts()
+    {
+        return $this->hasMany(Uts::class);
+    }
+    public function uas()
+    {
+        return $this->hasMany(Uas::class);
+    }
 
     public function pembimbingAkademik()
     {

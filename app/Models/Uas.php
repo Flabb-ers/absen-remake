@@ -22,4 +22,8 @@ class Uas extends Model
     public function kelas(){
         return $this->belongsTo(Kelas::class,'kelas_id');
     }
+
+    public function mahasiswa(){
+        return $this->belongsTo(Mahasiswa::class,'mahasiswa_id');
+    }
 }
