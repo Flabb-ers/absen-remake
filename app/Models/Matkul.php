@@ -77,4 +77,9 @@ class Matkul extends Model
     {
         return $this->hasMany(Jadwal::class);
     }
+
+    public function pengajuanNilai()
+    {
+        return $this->hasMany(PengajuanRekapNilai::class);
+    }
 }

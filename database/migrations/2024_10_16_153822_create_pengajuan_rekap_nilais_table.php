@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('aktifs', function (Blueprint $table) {
+        Schema::create('pengajuan_rekap_nilais', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('mahasiswa_id');
             $table->foreignId('matkul_id');
-            $table->foreignId('kelas_id');
             $table->foreignId('jadwal_id');
-            $table->float('nilai');
-            $table->boolean('setuju')->default(false);
+            $table->foreignId('kelas_id');
+            $table->string('tahun');
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('aktifs');
+        Schema::dropIfExists('pengajuan_rekap_nilais');
     }
 };

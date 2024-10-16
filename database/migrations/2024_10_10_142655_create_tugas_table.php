@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('jadwal_id');
             $table->integer('tugas_ke');
             $table->float('nilai');
+            $table->boolean('setuju')->default(false);
             $table->timestamps();
         });
     }

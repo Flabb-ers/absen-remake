@@ -147,7 +147,7 @@ class PresensiController extends Controller
                 ->where('mahasiswas_id', $mahasiswa_id)
                 ->where('pertemuan', $request->pertemuan)
                 ->where('matkuls_id', $request->matkuls_id)
-                ->where('jadwals_id', $request->jawals_id)
+                ->where('jadwals_id', $request->jadwals_id)
                 ->first();
 
             if ($absensi) {

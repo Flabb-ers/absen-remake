@@ -157,7 +157,7 @@ Route::prefix('/presensi')->group(function () {
 
         // AKTIF
         Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif', [AktifController::class, 'index']);
-        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/e/create', [AktifController::class, 'create']);
+        Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif/create', [AktifController::class, 'create']);
         Route::Post('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif', [AktifController::class, 'store']);
         Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif/edit', [AktifController::class, 'edit']);
         Route::put('/{kelas_id}/{matkul_id}/{jadwal_id}/aktif', [AktifController::class, 'update']);
@@ -165,5 +165,8 @@ Route::prefix('/presensi')->group(function () {
 
         // REKAP NILAI
         Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/rekap',[RekapNilaiController::class,'index']);
+        Route::post('/rekap',[RekapNilaiController::class,'store']);
+        Route::get('/pengajuan/rekap-nilai',[RekapNilaiController::class,'pengajuan']);
+        Route::get('/pengajuan/rekap-nilai/{kelas_id}/{matkul_id}/{jadwal_id}',[RekapNilaiController::class,'diajukan']);
     });
 });

@@ -1,33 +1,32 @@
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+    }
+
+    th,
+    td {
+        border: 1px solid;
+        padding: 0 8px;
+        text-align: center;
+    }
+
+    td:nth-child(3) {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+    }
+</style>
 
 <div class="container-fluid px-4">
     <div class="card mb-4">
-        <div class="card-header">
+        <div>
             <i class="fa fa-table me-1"></i>
             Rekap Nilai Mahasiswa
         </div>
         <div class="card-body">
-            <style>
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    font-size: 11px;
-                }
-
-                th,
-                td {
-                    border: 1px solid;
-                    padding: 0 8px;
-                    text-align: center;
-                }
-
-                td:nth-child(3) {
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    max-width: 150px;
-                }
-            </style>
-
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -38,7 +37,7 @@
                             <td colspan="{{ $jumlahTugas + 1 }}">Tugas</td>
                             <td colspan="2">Aktif</td>
                             <td colspan="2">Etika</td>
-                            <td colspan="2">Kehadiran</td>
+                            <td colspan="2"></td>
                             <td colspan="4">Ujian</td>
                             <td rowspan="2">Jumlah</td>
                             <td rowspan="2">NA</td>
@@ -52,7 +51,7 @@
                             <td>%K</td>
                             <td>E</td>
                             <td>%E</td>
-                            <td>Tot</td>
+                            <td>TOT</td>
                             <td>%P</td>
                             <td>UTS</td>
                             <td>%MID</td>
@@ -62,7 +61,8 @@
                     </thead>
                     <tbody>
                         @php
-                            function getKeterangan($jumlah) {
+                            function getKeterangan($jumlah)
+                            {
                                 if ($jumlah >= 85 && $jumlah <= 100) {
                                     return 'A';
                                 } elseif ($jumlah >= 80 && $jumlah < 85) {
@@ -113,7 +113,10 @@
                                         }
                                     }
 
-                                    $persentaseTugas = $jumlahTugasDikumpulkan > 0 ? ($totalNilaiTugas / ($jumlahTugas * 100)) * 25 : 0;
+                                    $persentaseTugas =
+                                        $jumlahTugasDikumpulkan > 0
+                                            ? ($totalNilaiTugas / ($jumlahTugas * 100)) * 25
+                                            : 0;
 
                                     $nilaiKeaktifan = $dataAktif[$mahasiswa->id]->nilai ?? 0;
                                     $persentaseKeaktifan = ($nilaiKeaktifan / 100) * 5;
@@ -122,7 +125,8 @@
                                     $persentaseEtika = ($nilaiEtika / 100) * 5;
 
                                     $totalKehadiran = $dataAbsensi[$mahasiswa->id]['total_kegiatan'] ?? 0;
-                                    $persentaseKehadiran = $totalPertemuan > 0 ? ($totalKehadiran / $totalPertemuan) * 15 : 0;
+                                    $persentaseKehadiran =
+                                        $totalPertemuan > 0 ? ($totalKehadiran / $totalPertemuan) * 15 : 0;
 
                                     $nilaiUts = $utss[$mahasiswa->id]->nilai ?? 0;
                                     $persentaseUts = ($nilaiUts / 100) * 25;
@@ -130,8 +134,13 @@
                                     $nilaiUas = $uass[$mahasiswa->id]->nilai ?? 0;
                                     $persentaseUas = ($nilaiUas / 100) * 25;
 
-                                    $jumlahTotal = $persentaseTugas + $persentaseKeaktifan + $persentaseEtika + 
-                                                 $persentaseKehadiran + $persentaseUts + $persentaseUas;
+                                    $jumlahTotal =
+                                        $persentaseTugas +
+                                        $persentaseKeaktifan +
+                                        $persentaseEtika +
+                                        $persentaseKehadiran +
+                                        $persentaseUts +
+                                        $persentaseUas;
                                 @endphp
 
                                 @for ($i = 1; $i <= $jumlahTugas; $i++)
@@ -161,6 +170,15 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="text-end">
+            <form action="/presensi/data-nilai/rekap" method="POST">
+                @csrf
+                <input type="hidden" name="kelas_id" value="{{ $jadwals->kelas_id }}">
+                <input type="hidden" name="matkul_id" value="{{ $jadwals->matkuls_id }}">
+                <input type="hidden" name="jadwal_id" value="{{ $jadwals->id }}">
+                <button type="submit" class="btn btn-primary btn-sm"> <span class="mdi mdi-send"></span> Ajukan Verifikasi</button>
+            </form>
         </div>
     </div>
 </div>

@@ -87,4 +87,8 @@ class Kelas extends Model
     {
         return $this->hasMany(Aktif::class);
     }
+    public function pengajuanNilai()
+    {
+        return $this->hasMany(PengajuanRekapNilai::class);
+    }
 }

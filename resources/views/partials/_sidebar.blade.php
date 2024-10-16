@@ -52,6 +52,24 @@
                 <span class="menu-title">Jadwal Mengajar</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#rekap-nilai" aria-expanded="false"
+                aria-controls="rekap-nilai">
+                <i class="icon-folder menu-icon"></i>
+                <span class="menu-title">Rekap Nilai</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="rekap-nilai">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link"
+                            href="/presensi/data-nilai/pengajuan/rekap-nilai">Diajukan</a>
+                    </li>
+                    <li class="nav-item"> <a class="nav-link"
+                            href="/presensi/pengajuan/nilai-disetujui">Disetujui</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
         <li class="nav-item">Dosen</li>
         <li class="nav-item {{ Request::is('presensi/data-presensi*') ? 'active' : '' }}">
             <a class="nav-link" href="/presensi/data-presensi">
@@ -65,21 +83,20 @@
                 <span class="menu-title">Kontrak</span>
             </a>
         </li>
-        <li class="nav-item {{ Request::is('presensi/data-nilai*') ? 'active' : '' }}">
-            <a class="nav-link" data-bs-toggle="collapse" href="#data-nilai" aria-expanded="false"
-                aria-controls="data-nilai">
+        <li class="nav-item {{ Request::is('presensi/data-nilai/*') && !Request::is('presensi/data-nilai/pengajuan/*') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#data-nilai" aria-expanded="false" aria-controls="data-nilai">
                 <i class="mdi mdi-folder menu-icon"></i>
                 <span class="menu-title">Nilai</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse {{ request()->is('presensi/data-nilai/*') ? 'show' : '' }}" id="data-nilai">
+            <div class="collapse {{ request()->is('presensi/data-nilai/*') && !request()->is('presensi/data-nilai/pengajuan/*') ? 'show' : '' }}" id="data-nilai">
                 <ul class="nav flex-column sub-menu">
                     @foreach ($kelasAll->unique('kelas_id') as $kelas)
                         <li class="nav-item">
                             <a class="nav-link 
-            {{ request()->segment(3) == $kelas->kelas->id ? 'active' : '' }} 
-            {{ request()->is('presensi/data-presensi/*') ? 'disabled' : '' }}
-            {{ request()->is('presensi/data-kontrak/*') ? 'disabled' : '' }}"
+                                {{ request()->segment(3) == $kelas->kelas->id ? 'active' : '' }} 
+                                {{ request()->is('presensi/data-presensi/*') ? 'disabled' : '' }}
+                                {{ request()->is('presensi/data-kontrak/*') ? 'disabled' : '' }}"
                                 id="sidebar-kelas-{{ $kelas->kelas->id }}"
                                 href="{{ request()->is('presensi/data-presensi/*') ? 'javascript:void(0)' : '/presensi/data-nilai/' . $kelas->kelas->id }}">
                                 {{ $kelas->kelas->nama_kelas }}
@@ -89,6 +106,7 @@
                 </ul>
             </div>
         </li>
+        
         <li class="nav-item">Wadir dan direkturrrrr</li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap" aria-expanded="false"

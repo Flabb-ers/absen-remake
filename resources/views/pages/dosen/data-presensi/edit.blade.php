@@ -176,7 +176,6 @@
                 radio.addEventListener('change', updateCounts);
             });
 
-            // Update jumlah awal
             updateCounts();
         });
 

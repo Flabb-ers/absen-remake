@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('kelas_id');
             $table->foreignId('jadwal_id');
             $table->float('nilai');
+            $table->boolean('setuju')->default(false);
             $table->timestamps();
         });
     }
