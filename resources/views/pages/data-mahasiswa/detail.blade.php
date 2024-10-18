@@ -9,19 +9,37 @@
                 </a>
                 <a href="/presensi/data-mahasiswa" class="breadcrumb-item">Mahasiswa</a>
                 <span class="breadcrumb-item">Kelas</span>
-                <span class="breadcrumb-item">{{ $kelasAlls->nama_kelas }}</span>
+                <span class="breadcrumb-item">{{ $namaKelas->nama_kelas }}</span>
             </div>
             <div class="row">
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#tambahModal">
-                                <span class="mdi mdi-plus"></span> Tambah
-                            </button>
-                            @foreach ($kelasSem as $kelSem)
-                                {{ $kelSem->semester->semester }}
-                            @endforeach
+                            <div class="d-flex align-items-center mb-3">
+                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#tambahModal">
+                                    <span class="mdi mdi-plus"></span> Tambah
+                                </button>
+
+                                <div class="dropdown ms-2" id="semesterDropdown" style="display: none;">
+                                    <button class="btn btn-primary dropdown-toggle btn-sm" type="button"
+                                        id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="true"> Semester </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        @foreach ($kelasSem as $kelSem)
+                                            <form action="/presensi/data-mahasiswa/move" method="POST" class="m-0 move-form"
+                                                data-kelas-id="{{ $kelSem->id }}">
+                                                @csrf
+                                                <input type="hidden" name="kelas_id" value="{{ $kelSem->id }}">
+                                                <input type="hidden" name="mahasiswa_ids" class="mahasiswa-ids">
+                                                <button type="submit" class="dropdown-item">Semester
+                                                    {{ $kelSem->semester->semester }}</button>
+                                            </form>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
@@ -42,7 +60,6 @@
                                             <tr>
                                                 <td><input type="checkbox" class="select-checkbox"
                                                         data-id="{{ $mahasiswa->id }}" /></td>
-                                                <!-- Checkbox untuk setiap mahasiswa -->
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $mahasiswa->nim }}</td>
                                                 <td>{{ $mahasiswa->nama_lengkap }}</td>
@@ -850,20 +867,55 @@
         });
     </script>
 
-    <script>
-        $(document).ready(function() {
-            $('#select-all').change(function() {
-                $('.select-checkbox').prop('checked', this.checked);
+<script>
+    $(document).ready(function() {
+        function toggleDropdown() {
+            const anyChecked = $('.select-checkbox:checked').length > 0;
+            $('#semesterDropdown').toggle(anyChecked);
+        }
+
+        $('#select-all').change(function() {
+            const isChecked = this.checked;
+            $('.select-checkbox').prop('checked', isChecked);
+            toggleDropdown();
+        });
+
+        $('.select-checkbox').change(function() {
+            toggleDropdown();
+            if (!this.checked) {
+                $('#select-all').prop('checked', false);
+            }
+            if ($('.select-checkbox:checked').length === $('.select-checkbox').length) {
+                $('#select-all').prop('checked', true);
+            }
+        });
+
+        $('.move-form').submit(function(e) {
+            e.preventDefault()
+            const mahasiswaIds = [];
+
+            $('.select-checkbox:checked').each(function() {
+                mahasiswaIds.push($(this).data('id'));
             });
 
-            $('.select-checkbox').change(function() {
-                if (!this.checked) {
-                    $('#select-all').prop('checked', false);
-                }
-                if ($('.select-checkbox:checked').length === $('.select-checkbox').length) {
-                    $('#select-all').prop('checked', true);
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Apakah Anda yakin ingin memindahkan mahasiswa yang dipilih ke kelas ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, pindahkan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                   
+                    $(this).find('.mahasiswa-ids').val(mahasiswaIds.join(','));
+                    this.submit(); 
                 }
             });
         });
-    </script>
+    });
+</script>
+
 @endsection

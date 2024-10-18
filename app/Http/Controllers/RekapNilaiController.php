@@ -9,6 +9,7 @@ use App\Models\Aktif;
 use App\Models\Etika;
 use App\Models\Tugas;
 use App\Models\Jadwal;
+use App\Models\Kaprodi;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\TahunAkademik;
@@ -208,6 +209,8 @@ class RekapNilaiController extends Controller
             ->get()
             ->keyBy('mahasiswa_id');
 
+        $kaprodi = Kaprodi::Where('prodis_id',$jadwals->first()->kelas->prodi->id)->first();
+
         return view(
             'pages.pengajuanRekapNilai.diajukan',
             compact(
@@ -216,6 +219,7 @@ class RekapNilaiController extends Controller
                 'jumlahTugas',
                 'dataAktif',
                 'dataEtika',
+                'kaprodi',
                 'dataAbsensi',
                 'totalPertemuan',
                 'utss',

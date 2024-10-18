@@ -194,10 +194,25 @@ class MahasiswaController extends Controller
         $dosens = Dosen::where('pembimbing_akademik',1)
                         ->where('status',1)
                         ->get();
+                        
         $kelasAll = Jadwal::all();
         $kelasSem = Kelas::where('id_prodi',$namaKelas->id_prodi)->get();
         $kelasAlls = Kelas::where('id_prodi',$namaKelas->id_prodi)->first();
         return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass','namaKelas','dosens','kelasAlls','kelasAll','kelasSem'));
+    }
+
+
+    public function pindahKelas(Request $request){
+        $request->validate([
+            'mahasiswa_ids' => 'required|string',
+            'kelas_id' => 'required|exists:kelas,id', 
+        ]);
+
+        $mahasiswaIds = explode(',', $request->input('mahasiswa_ids'));
+
+        Mahasiswa::whereIn('id', $mahasiswaIds)->update(['kelas_id' => $request->input('kelas_id')]);
+
+        return redirect('/presensi/data-mahasiswa')->with('success', 'Kelas mahasiswa berhasil diperbarui!');
     }
 
 }

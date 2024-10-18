@@ -69,6 +69,7 @@ Route::prefix('/presensi')->group(function () {
     // MAHASISWA
     Route::resource('/data-mahasiswa', MahasiswaController::class)->except(['show']);
     Route::get('/data-mahasiswa/{id}', [MahasiswaController::class, 'kelas']);
+    Route::post('/data-mahasiswa/move',[MahasiswaController::class,'pindahKelas']);
 
     // JADWAL
     Route::resource('/jadwal-mengajar', JadwalController::class);
@@ -88,8 +89,6 @@ Route::prefix('/presensi')->group(function () {
     Route::resource('/data-kontrak', KontrakController::class);
     Route::get('/data-kontrak/isi-kontrak/{id}', [KontrakController::class, 'create']);
     Route::get('/data-kontrak/rekap/{matkuls_id}/{kelas_id}/{jadwals_id}', [KontrakController::class, 'rekap']);
-
-
 
     // PENGAJUAN PRESENSI sini
     Route::prefix('/pengajuan-konfirmasi')->group(function () {

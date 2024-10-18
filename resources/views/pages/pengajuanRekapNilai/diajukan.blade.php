@@ -54,71 +54,95 @@
             margin: 7px;
             font-weight: normal;
         }
+
+        thead tr td {
+            background-color: #d9d9d9;
+        }
+
+        .signature-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            page-break-inside: avoid;
+        }
+
+        .signature-table td {
+            width: 50%;
+            border: none;
+            padding: 5px;
+            text-align: center;
+            vertical-align: top;
+            background-color: white;
+        }
+
+        .signature-line {
+            display: block;
+            margin-top: 50px;
+        }
     </style>
 </head>
 
 <body>
     <div class="container-fluid">
         @php
-        $totalKehadiranSemuaMahasiswa = 0;
-        $jumlahMahasiswa = count($mahasiswas);
-        
-        foreach ($mahasiswas as $mahasiswa) {
-            // Mengambil total kehadiran dari kolom TOT untuk setiap mahasiswa
-            $totalKehadiran = $dataAbsensi[$mahasiswa->id]['total_kegiatan'] ?? 0;
-            $totalKehadiranSemuaMahasiswa += $totalKehadiran;
-        }
-        
-        // Menghitung rata-rata kehadiran
-        $rataRataKehadiran = $jumlahMahasiswa > 0 ? ($totalKehadiranSemuaMahasiswa / $jumlahMahasiswa) : 0;
-    @endphp
+            $totalKehadiranSemuaMahasiswa = 0;
+            $jumlahMahasiswa = count($mahasiswas);
 
-    <div class="header-info">
-        <div>
-            <h4 style="display: inline-block; width: 140px;">Mata Kuliah</h4>
-            <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
-            <h4 style="display: inline-block;">{{ $jadwals->matkul->nama_matkul }}</h4>
-            <br>
-            <h4 style="display: inline-block; width: 140px;">Dosen</h4>
-            <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
-            <h4 style="display: inline-block;">{{ $jadwals->dosen->nama }}</h4>
-            <br>
-            <h4 style="display: inline-block; width: 140px;">NIDN</h4>
-            <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
-            <h4 style="display: inline-block;">{{ $jadwals->dosen->nidn }}</h4>
-            <br>
-            <h4 style="display: inline-block; width: 140px;">Program Studi</h4>
-            <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
-            <h4 style="display: inline-block;">{{ $jadwals->kelas->prodi->jenjang }} {{ $jadwals->kelas->prodi->nama_prodi }}</h4>
-        </div>
-        <div>
-            <h4 style="display: inline-block; width: 200px;">Kelas</h4>
-            <h4 style="display: inline-block; margin-right: 5px; margin-left: -60px">:</h4>
-            <h4 style="display: inline-block;">
-                @if ($jadwals->kelas->jenis_kelas == 'Reguler')
-                    A
-                @elseif($jadwals->kelas->jenis_kelas == 'Karyawan')
-                    B
-                @else
-                    -
-                @endif
-            </h4>
-            <br>
-            <h4 style="display: inline-block; width: 200px;">Semester</h4>
-            <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
-            <h4 style="display: inline-block;">{{ $jadwals->kelas->semester->semester }}</h4>
-            <br>
-            <h4 style="display: inline-block; width: 200px;">Jumlah TM</h4>
-            <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
-            <h4 style="display: inline-block;">{{ $totalPertemuan }}</h4>
-            <br>
+            foreach ($mahasiswas as $mahasiswa) {
+                $totalKehadiran = $dataAbsensi[$mahasiswa->id]['total_kegiatan'] ?? 0;
+                $totalKehadiranSemuaMahasiswa += $totalKehadiran;
+            }
+
+            $rataRataKehadiran = $jumlahMahasiswa > 0 ? $totalKehadiranSemuaMahasiswa / $jumlahMahasiswa : 0;
+        @endphp
+
+        <div class="header-info">
             <div>
-                <h4 style="display: inline-block; width: 200px;">Rata-rata Kehadiran</h4>
+                <h4 style="display: inline-block; width: 140px;">Mata Kuliah</h4>
                 <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
-                <h4 style="display: inline-block;">{{ number_format($rataRataKehadiran, 2) }}</h4>
+                <h4 style="display: inline-block;">{{ $jadwals->matkul->nama_matkul }}</h4>
+                <br>
+                <h4 style="display: inline-block; width: 140px;">Dosen</h4>
+                <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
+                <h4 style="display: inline-block;">{{ $jadwals->dosen->nama }}</h4>
+                <br>
+                <h4 style="display: inline-block; width: 140px;">NIDN</h4>
+                <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
+                <h4 style="display: inline-block;">{{ $jadwals->dosen->nidn }}</h4>
+                <br>
+                <h4 style="display: inline-block; width: 140px;">Program Studi</h4>
+                <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
+                <h4 style="display: inline-block;">{{ $jadwals->kelas->prodi->jenjang }}
+                    {{ $jadwals->kelas->prodi->nama_prodi }}</h4>
+            </div>
+            <div>
+                <h4 style="display: inline-block; width: 200px;">Kelas</h4>
+                <h4 style="display: inline-block; margin-right: 5px; margin-left: -60px">:</h4>
+                <h4 style="display: inline-block;">
+                    @if ($jadwals->kelas->jenis_kelas == 'Reguler')
+                        A
+                    @elseif($jadwals->kelas->jenis_kelas == 'Karyawan')
+                        B
+                    @else
+                        -
+                    @endif
+                </h4>
+                <br>
+                <h4 style="display: inline-block; width: 200px;">Semester</h4>
+                <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
+                <h4 style="display: inline-block;">{{ $jadwals->kelas->semester->semester }}</h4>
+                <br>
+                <h4 style="display: inline-block; width: 200px;">Jumlah TM</h4>
+                <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
+                <h4 style="display: inline-block;">{{ $totalPertemuan }}</h4>
+                <br>
+                <div>
+                    <h4 style="display: inline-block; width: 200px;">Rata-rata Kehadiran</h4>
+                    <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
+                    <h4 style="display: inline-block;">{{ number_format($rataRataKehadiran, 2) }}</h4>
+                </div>
             </div>
         </div>
-    </div>
         <div class="table-responsive">
             <table>
                 <thead>
@@ -258,6 +282,21 @@
                         </tr>
                     @endforeach
                 </tbody>
+            </table>
+        </div>
+        <div class="signature-section">
+            <table class="signature-table">
+                <tr>
+                    <td>
+                        <p>Mengesahkan</p>
+                        <span class="signature-line">{{ $kaprodi->nama }}</span>
+                    </td>
+                    <td>
+                        <p style="text-align:left;">Purworejo</p>
+                        <p>Dosen Pengampu</p>
+                        <span class="signature-line">.....................................................</span>
+                    </td>
+                </tr>
             </table>
         </div>
     </div>

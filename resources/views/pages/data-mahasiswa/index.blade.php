@@ -8,7 +8,7 @@
                     <span class="mdi mdi-home"></span> Dashboard
                 </a>
                 <span class="breadcrumb-item">Mahasiswa</span>
-            </div> 
+            </div>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
@@ -22,9 +22,11 @@
                                                 <i class="mdi mdi-account-school"></i>
                                                 <span class="ms-1">{{ count($kelas->mahasiswa) }} Mahasiswa</span>
                                             </div>
-                                            <p class="card-text mb-4">{{ $kelas->prodi->nama_prodi }} | Semester {{ $kelas->semester->semester }}</p>
+                                            <p class="card-text mb-4">{{ $kelas->prodi->nama_prodi }} | Semester
+                                                {{ $kelas->semester->semester }}</p>
                                             <div class="mt-auto">
-                                                <a href="/presensi/data-mahasiswa/{{ $kelas->id }}" class="btn btn-warning w-100">
+                                                <a href="/presensi/data-mahasiswa/{{ $kelas->id }}"
+                                                    class="btn btn-warning w-100">
                                                     <i class="mdi mdi-eye"></i> Lihat Detail
                                                 </a>
                                             </div>
@@ -38,4 +40,16 @@
             </div>
         </div>
     </div>
+    @if (session('success'))
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses!',
+                    text: '{{ session('success') }}',
+                    confirmButtonText: 'Tutup'
+                });
+            });
+        </script>
+    @endif
 @endsection
