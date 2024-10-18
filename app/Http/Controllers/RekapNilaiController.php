@@ -14,12 +14,59 @@ use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\TahunAkademik;
 use App\Models\PengajuanRekapNilai;
+use App\Models\Wadir;
 
 class RekapNilaiController extends Controller
 {
     public function index($kelas_id, $matkul_id, $jadwal_id)
     {
-        $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)->orderBy('nim','asc')->get();
+        $mahasiswa_ids = collect();
+
+        $tugas_mahasiswa_ids = Tugas::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->pluck('mahasiswa_id');
+
+        $aktif_mahasiswa_ids = Aktif::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->pluck('mahasiswa_id');
+
+        $etika_mahasiswa_ids = Etika::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->pluck('mahasiswa_id');
+
+        $absen_mahasiswa_ids = Absen::where('kelas_id', $kelas_id)
+            ->where('matkuls_id', $matkul_id)
+            ->where('jadwals_id', $jadwal_id)
+            ->pluck('mahasiswas_id');
+
+        $uts_mahasiswa_ids = Uts::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->pluck('mahasiswa_id');
+
+        $uas_mahasiswa_ids = Uas::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->pluck('mahasiswa_id');
+
+        $mahasiswa_ids = $mahasiswa_ids->concat($tugas_mahasiswa_ids)
+            ->concat($aktif_mahasiswa_ids)
+            ->concat($etika_mahasiswa_ids)
+            ->concat($absen_mahasiswa_ids)
+            ->concat($uts_mahasiswa_ids)
+            ->concat($uas_mahasiswa_ids)
+            ->unique();
+
+
+        $mahasiswas = Mahasiswa::where(function ($query) use ($mahasiswa_ids, $kelas_id) {
+            $query->whereIn('id', $mahasiswa_ids)
+                ->orWhere('kelas_id', $kelas_id);
+        })
+            ->orderBy('nim', 'asc')
+            ->get();
 
         $tugass = Tugas::with('kelas', 'mahasiswa')
             ->where('kelas_id', $kelas_id)
@@ -28,7 +75,6 @@ class RekapNilaiController extends Controller
             ->get();
 
         $groupedTugas = $tugass->groupBy('mahasiswa_id');
-
         $jumlahTugas = max(1, $tugass->pluck('tugas_ke')->unique()->count());
 
         $aktifs = Aktif::with('kelas', 'mahasiswa')
@@ -58,9 +104,7 @@ class RekapNilaiController extends Controller
             ->where('jadwals_id', $jadwal_id)
             ->max('pertemuan');
 
-
-        $jadwals = Jadwal::where('id',$jadwal_id)->first();
-
+        $jadwals = Jadwal::where('id', $jadwal_id)->first();
 
         $dataAbsensi = $dataAbsensi->map(function ($absensiGroup, $mahasiswaId) use ($totalPertemuan) {
             $totalKehadiran = $absensiGroup->whereIn('status', ['H', 'T'])->count();
@@ -131,17 +175,66 @@ class RekapNilaiController extends Controller
     }
 
 
-    public function pengajuan(){
-        
+    public function pengajuan()
+    {
+
 
         $pengajuans = PengajuanRekapNilai::latest()->get();
         $kelasAll = Jadwal::all();
-        return view('pages.pengajuanRekapNilai.index',compact('pengajuans','kelasAll'));
+        return view('pages.pengajuanRekapNilai.index', compact('pengajuans', 'kelasAll'));
     }
 
     public function diajukan($kelas_id, $matkul_id, $jadwal_id)
     {
-        $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)->orderBy('nim','asc')->get();
+
+
+        $mahasiswa_ids = collect();
+
+        $tugas_mahasiswa_ids = Tugas::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->pluck('mahasiswa_id');
+
+        $aktif_mahasiswa_ids = Aktif::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->pluck('mahasiswa_id');
+
+        $etika_mahasiswa_ids = Etika::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->pluck('mahasiswa_id');
+
+        $absen_mahasiswa_ids = Absen::where('kelas_id', $kelas_id)
+            ->where('matkuls_id', $matkul_id)
+            ->where('jadwals_id', $jadwal_id)
+            ->pluck('mahasiswas_id');
+
+        $uts_mahasiswa_ids = Uts::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->pluck('mahasiswa_id');
+
+        $uas_mahasiswa_ids = Uas::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->pluck('mahasiswa_id');
+
+        $mahasiswa_ids = $mahasiswa_ids->concat($tugas_mahasiswa_ids)
+            ->concat($aktif_mahasiswa_ids)
+            ->concat($etika_mahasiswa_ids)
+            ->concat($absen_mahasiswa_ids)
+            ->concat($uts_mahasiswa_ids)
+            ->concat($uas_mahasiswa_ids)
+            ->unique();
+
+
+        $mahasiswas = Mahasiswa::where(function ($query) use ($mahasiswa_ids, $kelas_id) {
+            $query->whereIn('id', $mahasiswa_ids)
+                ->orWhere('kelas_id', $kelas_id);
+        })
+            ->orderBy('nim', 'asc')
+            ->get();
 
         $tugass = Tugas::with('kelas', 'mahasiswa')
             ->where('kelas_id', $kelas_id)
@@ -150,7 +243,6 @@ class RekapNilaiController extends Controller
             ->get();
 
         $groupedTugas = $tugass->groupBy('mahasiswa_id');
-
         $jumlahTugas = max(1, $tugass->pluck('tugas_ke')->unique()->count());
 
         $aktifs = Aktif::with('kelas', 'mahasiswa')
@@ -180,9 +272,7 @@ class RekapNilaiController extends Controller
             ->where('jadwals_id', $jadwal_id)
             ->max('pertemuan');
 
-
-        $jadwals = Jadwal::where('id',$jadwal_id)->first();
-
+        $jadwals = Jadwal::where('id', $jadwal_id)->first();
 
         $dataAbsensi = $dataAbsensi->map(function ($absensiGroup, $mahasiswaId) use ($totalPertemuan) {
             $totalKehadiran = $absensiGroup->whereIn('status', ['H', 'T'])->count();
@@ -209,7 +299,9 @@ class RekapNilaiController extends Controller
             ->get()
             ->keyBy('mahasiswa_id');
 
-        $kaprodi = Kaprodi::Where('prodis_id',$jadwals->first()->kelas->prodi->id)->first();
+        $kaprodi = Kaprodi::Where('prodis_id', $jadwals->first()->kelas->prodi->id)->first();
+
+        $wadir = Wadir::first();
 
         return view(
             'pages.pengajuanRekapNilai.diajukan',
@@ -224,8 +316,13 @@ class RekapNilaiController extends Controller
                 'totalPertemuan',
                 'utss',
                 'uass',
-                'jadwals'
+                'jadwals',
+                'wadir'
             )
         );
+    }
+
+    public function update(Request $request,$kelas_id,$matkul_id,$jadwal_id){
+        dd($request);
     }
 }

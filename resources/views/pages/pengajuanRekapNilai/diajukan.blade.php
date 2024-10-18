@@ -14,7 +14,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         th,
@@ -42,49 +42,93 @@
         .header-info {
             display: flex;
             justify-content: space-between;
-            margin-top: 30px;
-            margin-bottom: 30px;
+            margin-top: 20px;
+            margin-bottom: 20px;
             width: 100%;
             text-align: left;
-            font-weight: bold
+            font-weight: bold;
+            font-size: 11px;
         }
 
         .header-info h4 {
-            font-size: 14px;
-            margin: 7px;
-            font-weight: normal;
+            font-size: 11px;
+            font-weight: bold;
+            margin: 3px;
         }
 
         thead tr td {
             background-color: #d9d9d9;
         }
 
-        .signature-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            page-break-inside: avoid;
-        }
-
-        .signature-table td {
-            width: 50%;
-            border: none;
-            padding: 5px;
-            text-align: center;
-            vertical-align: top;
-            background-color: white;
-        }
-
-        .signature-line {
-            display: block;
+        .signature-section {
             margin-top: 50px;
+            width: 100%;
+            position: relative;
+            height: 200px;
+        }
+
+        .left-signature,
+        .center-signature,
+        .right-signature {
+            width: 200px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .left-signature {
+            position: absolute;
+            left: 10%;
+            text-align: left;
+        }
+
+        .center-signature {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            margin-top: 160px;
+        }
+
+        .right-signature {
+            position: absolute;
+            right: 10%;
+            text-align: left;
+        }
+
+        .signature-title {
+            margin: 0;
+            padding: 0;
+            font-weight: bold;
+        }
+
+        .signature-role {
+            margin: 0;
+            padding: 0;
+            font-weight: bold;
+        }
+
+        .signature-name {
+            margin: 0;
+            padding: 0;
+            margin-top: 80px;
+            font-weight: bold;
+        }
+
+        .right-signature .signature-date {
+            margin: 0;
+            padding: 0;
+            font-weight: bold;
         }
     </style>
+
+
+
 </head>
 
 <body>
     <div class="container-fluid">
         @php
+            use Carbon\Carbon;
             $totalKehadiranSemuaMahasiswa = 0;
             $jumlahMahasiswa = count($mahasiswas);
 
@@ -95,6 +139,16 @@
 
             $rataRataKehadiran = $jumlahMahasiswa > 0 ? $totalKehadiranSemuaMahasiswa / $jumlahMahasiswa : 0;
         @endphp
+
+<div style="text-align:center">
+    <h4 style="font-size:11px; margin: 2px;">DAFTAR NILAI</h4>
+    <h4 style="font-size:11px; margin: 2px;">Semester : @if ($jadwals->kelas->semester->semester % 2 == 0)
+            Genap
+        @else
+            Ganjil
+        @endif {{ $jadwals->tahun }}</h4>
+    <h4 style="font-size:11px; margin: 2px;">Politeknik Sawunggalih Aji</h4>
+</div>
 
         <div class="header-info">
             <div>
@@ -132,6 +186,10 @@
                 <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
                 <h4 style="display: inline-block;">{{ $jadwals->kelas->semester->semester }}</h4>
                 <br>
+                <h4 style="display: inline-block; width: 200px;">Kode Kelas</h4>
+                <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
+                <h4 style="display: inline-block;">{{ $jadwals->kelas->semester->semester }}</h4>
+                <br>
                 <h4 style="display: inline-block; width: 200px;">Jumlah TM</h4>
                 <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
                 <h4 style="display: inline-block;">{{ $totalPertemuan }}</h4>
@@ -143,6 +201,7 @@
                 </div>
             </div>
         </div>
+
         <div class="table-responsive">
             <table>
                 <thead>
@@ -284,21 +343,80 @@
                 </tbody>
             </table>
         </div>
+
         <div class="signature-section">
-            <table class="signature-table">
-                <tr>
-                    <td>
-                        <p>Mengesahkan</p>
-                        <span class="signature-line">{{ $kaprodi->nama }}</span>
-                    </td>
-                    <td>
-                        <p style="text-align:left;">Purworejo</p>
-                        <p>Dosen Pengampu</p>
-                        <span class="signature-line">.....................................................</span>
-                    </td>
-                </tr>
-            </table>
+            <div class="left-signature">
+                <p class="signature-title">Mengesahkan</p>
+                <p class="signature-role">Kaprodi</p>
+                <p class="signature-name">{{ $kaprodi->nama }}</p>
+            </div>
+
+            <div class="right-signature">
+                <p class="signature-date">Purworejo, {{ Carbon::now()->locale('id')->translatedFormat('d F Y') }}</p>
+
+                <p class="signature-role">Dosen Pengampu</p>
+                <p class="signature-name">{{ $jadwals->dosen->nama }}</p>
+            </div>
+
+            <div class="center-signature">
+                <p class="signature-title">Mengetahui</p>
+                <p class="signature-role">Wakil Direktur I</p>
+                <p class="signature-name">{{ $wadir->nama }}</p>
+            </div>
         </div>
+
+        <div style="border: 1px solid black; padding: 10px; margin-top: 100px; width: 240px;">
+    <form id="approvalForm" method="POST"
+        action="/presensi/data-nilai/pengajuan/rekap-nilai/{{ $jadwals->kelas_id }}/{{ $jadwals->matkuls_id }}/{{ $jadwals->id }}">
+        @csrf
+        @method('PUT')
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="konfirmasi" name="konfirmasi"
+                onchange="confirmSubmission(this)">
+            <label class="form-check-label" for="konfirmasi">Konfirmasi</label>
+        </div>
+    </form>
+</div>
+
+<div style="margin-top: 30px;">
+    <a href="/presensi/data-nilai/pengajuan/rekap-nilai" class="btn">Kembali</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmSubmission(checkbox) {
+        const isChecked = checkbox.checked;
+        if (isChecked) {
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Apakah Anda yakin ingin menyetujui nilai ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, setujui',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit form jika konfirmasi positif
+                    document.getElementById('approvalForm').submit();
+                } else {
+                    checkbox.checked = false; // Kembalikan checkbox ke tidak tercentang
+                }
+            });
+        }
+    }
+</script>
+
+@if (session('success'))
+    <script>
+        Swal.fire({
+            title: 'Sukses!',
+            text: '{{ session('success') }}',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    </script>
+@endif
+
     </div>
 </body>
 
