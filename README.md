@@ -8,12 +8,12 @@
 - [x] **Add Password in Mahasiswa**
 - [x] **Add Kontrak && Presensi maximum 14 meetings**
 - [x] **Add header every page**
-- [ ] Add semseter in mahasiswa
+- [x] Add semseter in mahasiswa
 - [x] Add bread crumb
 - [x] **Redesigen nilai form** 
 - [ ] Add semester in matkul
-- [ ] Add sikap mahasiswa
-- [ ] Add Keaktifan mahasiswa
+- [x] Add sikap mahasiswa
+- [x] Add Keaktifan mahasiswa
 - [ ] Add KHS
 - [ ] Add KRS
 - [ ] *Make cursor can't click when akademik and kaprodi don't approve, for KHS*
