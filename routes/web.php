@@ -166,7 +166,9 @@ Route::prefix('/presensi')->group(function () {
         Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/rekap',[RekapNilaiController::class,'index']);
         Route::post('/rekap',[RekapNilaiController::class,'store']);
         Route::get('/pengajuan/rekap-nilai',[RekapNilaiController::class,'pengajuan']);
+        Route::get('/pengajuan/nilai-disetujui',[RekapNilaiController::class,'disetujui']);
         Route::get('/pengajuan/rekap-nilai/{kelas_id}/{matkul_id}/{jadwal_id}',[RekapNilaiController::class,'diajukan']);
         Route::put('/pengajuan/rekap-nilai/{kelas_id}/{matkul_id}/{jadwal_id}',[RekapNilaiController::class,'update']);
+        Route::get('rekap/{kelas_id}/{matkul_id}/{jadwal_id}',[RekapNilaiController::class,'rekap']);
     });
 });

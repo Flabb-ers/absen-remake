@@ -65,7 +65,7 @@
                             href="/presensi/data-nilai/pengajuan/rekap-nilai">Diajukan</a>
                     </li>
                     <li class="nav-item"> <a class="nav-link"
-                            href="/presensi/pengajuan/nilai-disetujui">Disetujui</a>
+                            href="/presensi/data-nilai/pengajuan/nilai-disetujui">Disetujui</a>
                     </li>
                 </ul>
             </div>

@@ -21,4 +21,5 @@
 - [x] Add dosen pa null when dosen on deleted or status = 0, kelas deleted = null in mahasiswa
 - [ ] ADd kode kelas huaaaa
 - [ ] Add Wadir 1 & 2 in data rekapNilaiController
+- [ ] Jika mahasiswa lulus maka akan di hapus, kemudian jika dihapus maka data akan masih aman, kemudian ketika kelas di hapus akan force delete nah itu akan membuat semua mahasiswa terhapus, nah saya ingin ketika mahasiswa direkap mahasiswa yang sudah di hapus ketika misal semester belum tinggi itu hilang ketika sudah tinggi baru masih ada
 

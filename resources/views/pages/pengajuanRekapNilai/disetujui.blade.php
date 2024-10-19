@@ -8,7 +8,7 @@
                 <span class="mdi mdi-home"></span> Dashboard
             </a>
             <span class="breadcrumb-item">Rekap Nilai</span>
-            <span class="breadcrumb-item">Diajukan</span>
+            <span class="breadcrumb-item">Disetujui</span>
         </div> 
         <div class="row">
             <div class="col-lg-12 grid-margin stretch-card">
@@ -36,7 +36,7 @@
                                             <td>{{ $pengajuan->kelas->prodi->nama_prodi }}</td>
                                             <td>{{ $pengajuan->jadwal->dosen->nama }}</td>
                                             <td>{{ $pengajuan->matkul->nama_matkul }}</td>
-                                            <td><a href="/presensi/data-nilai/pengajuan/rekap-nilai/{{ $pengajuan->kelas_id }}/{{$pengajuan->matkul_id}}/{{ $pengajuan->jadwal_id }}" class="btn btn-warning btn-sm"><span class="mdi mdi-eye"></span> Lihat</a></td>
+                                            <td><a href="/presensi/data-nilai/rekap/{{ $pengajuan->kelas_id }}/{{$pengajuan->matkul_id}}/{{ $pengajuan->jadwal_id }}" class="btn btn-success btn-sm"><span class="mdi mdi-file-document"></span>Rekap</a></td>
                                         </tr>
                                     @empty
                                         <tr>
@@ -51,17 +51,5 @@
             </div>
         </div>
     </div>
-</div>
-
-@if(session('success'))
-<script>
-    Swal.fire({
-        title: 'Berhasil!',
-        text: '{{ session('success') }}',
-        icon: 'success',
-        confirmButtonText: 'OK'
-    });
-</script>
-@endif
-
+</div> 
 @endsection

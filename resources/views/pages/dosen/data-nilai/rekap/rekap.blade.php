@@ -119,7 +119,17 @@
             padding: 0;
             font-weight: bold;
         }
+
+        @page {
+            size: A4 landscape;
+            margin: 30px;
+        }
     </style>
+    <script>
+        window.onload = function() {
+            window.print();
+        };
+    </script>
 
 
 
@@ -364,73 +374,3 @@
                 <p class="signature-name">{{ $wadir->nama }}</p>
             </div>
         </div>
-
-        <div class="card shadow-sm" style="width: 240px;margin-top:150px">
-            <div class="card-body">
-                <form id="approvalForm" method="POST"
-                    action="/presensi/data-nilai/pengajuan/rekap-nilai/{{ $jadwals->kelas_id }}/{{ $jadwals->matkuls_id }}/{{ $jadwals->id }}">
-                    @csrf
-                    @method('PUT')
-                    <table class="table text-center">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="font-size: 12px">Persetujuan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="font-size: 12px">Konfirmasi</td>
-                                <td>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="konfirmasi"
-                                            name="konfirmasi">
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </form>
-            </div>
-        </div>
-
-
-        <div style="margin-top: 30px;">
-            <a href="/presensi/data-nilai/pengajuan/rekap-nilai" class="btn">Kembali</a>
-        </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            // Handle checkbox change
-            document.getElementById('konfirmasi').addEventListener('change', function(e) {
-                if (this.checked) {
-                    Swal.fire({
-                        title: 'Apakah Anda yakin?',
-                        text: "Pastikan semua data sudah benar!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        cancelButtonText: 'Batal',
-                        confirmButtonText: 'Ya, submit!',
-                        reverseButtons: false
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            document.getElementById('approvalForm').submit();
-                        } else {
-                            this.checked = false;
-                        }
-                    });
-                }
-            });
-
-            @if (session('success'))
-                Swal.fire({
-                    title: 'Sukses!',
-                    text: '{{ session('success') }}',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-            @endif
-        </script>
-    </div>
-</body>
-
-</html>

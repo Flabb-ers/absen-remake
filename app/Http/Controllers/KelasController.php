@@ -102,7 +102,7 @@ class KelasController extends Controller
     public function destroy($id)
     {
         $hapus = Kelas::findOrFail($id);
-        Mahasiswa::where('kelas_id', $hapus->id)->delete();
+        Mahasiswa::where('kelas_id', $hapus->id)->forceDelete();
         $hapus->delete();
         return response()->json([
             'success' => 'Kelas berhasil dihapus!',

@@ -330,7 +330,7 @@
 
                 Swal.fire({
                     title: 'Apakah Anda yakin?',
-                    text: "Data kelas ini akan dihapus!",
+                    text: "Data kelas dan semua mahasiswa yang ada di kelas ini akan dihapus!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
