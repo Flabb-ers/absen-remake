@@ -19,17 +19,16 @@ class MahasiswaController extends Controller
     {
         $kelass = Kelas::with([
             'prodi' => function ($query) {
-                $query->withTrashed(); 
+                $query->withTrashed();
             },
             'semester' => function ($query) {
                 $query->withTrashed();
             },
             'mahasiswa'
         ])
-        ->whereNull('deleted_at')
-        ->get();
+            ->get();
         $kelasAll = Jadwal::all();
-        return view('pages.data-mahasiswa.index', compact('kelass','kelasAll'));
+        return view('pages.data-mahasiswa.index', compact('kelass', 'kelasAll'));
     }
 
     /**
@@ -182,30 +181,66 @@ class MahasiswaController extends Controller
         $mahasiswa->delete();
         return response()->json(['message' => 'Data mahasiswa berhasil dihapus'], 200);
     }
+
+    // soft delete ketika mahasiswa semester tinggi alias lulus force ketika belum tinggi alias DO/ keluar
+    // public function destroy($id)
+    // {
+    //     try {
+    //         $mahasiswa = Mahasiswa::with('kelas.semester')->findOrFail($id);
+
+    //         $kelasSemester = $mahasiswa->kelas->semester->semester;
+
+    //         $semesterTertinggi = Kelas::with('semester')
+    //             ->get()
+    //             ->max(function ($kelas) {
+    //                 return $kelas->semester->semester;
+    //             });
+
+    //         if ($kelasSemester == $semesterTertinggi) {
+    //             $mahasiswa->delete();
+    //             $message = 'Data mahasiswa di-soft delete karena semester tertinggi';
+    //         } else {
+    //             $mahasiswa->forceDelete();
+    //             $message = 'Data mahasiswa di-force delete karena bukan semester tertinggi';
+    //         }
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => $message
+    //         ], 200);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Gagal menghapus data: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
     public function kelas($id)
     {
-        $namaKelas = Kelas::where('id',$id)->first();
-        $mahasiswas = Mahasiswa::with('kelas.semester')
-                    ->where('kelas_id',$namaKelas->id)
-                    ->orderBy('nim', 'asc')
-                    ->get();
+        $namaKelas = Kelas::where('id', $id)->first();
+        $mahasiswas = Mahasiswa::with('kelas.semester', 'kelas')
+            ->where('kelas_id', $namaKelas->id)
+            ->orderBy('nim', 'asc')
+            ->get();
 
         $kelass = Kelas::with('prodi', 'semester')->get();
-        $dosens = Dosen::where('pembimbing_akademik',1)
-                        ->where('status',1)
-                        ->get();
-                        
+        $dosens = Dosen::where('pembimbing_akademik', 1)
+            ->where('status', 1)
+            ->get();
+
         $kelasAll = Jadwal::all();
-        $kelasSem = Kelas::where('id_prodi',$namaKelas->id_prodi)->get();
-        $kelasAlls = Kelas::where('id_prodi',$namaKelas->id_prodi)->first();
-        return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass','namaKelas','dosens','kelasAlls','kelasAll','kelasSem'));
+        $kelasSem = Kelas::where('id_prodi', $namaKelas->id_prodi)->get();
+        $kelasAlls = Kelas::where('id_prodi', $namaKelas->id_prodi)->first();
+        return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass', 'namaKelas', 'dosens', 'kelasAlls', 'kelasAll', 'kelasSem'));
     }
 
 
-    public function pindahKelas(Request $request){
+    public function pindahKelas(Request $request)
+    {
         $request->validate([
             'mahasiswa_ids' => 'required|string',
-            'kelas_id' => 'required|exists:kelas,id', 
+            'kelas_id' => 'required|exists:kelas,id',
         ]);
 
         $mahasiswaIds = explode(',', $request->input('mahasiswa_ids'));
@@ -214,5 +249,23 @@ class MahasiswaController extends Controller
 
         return redirect('/presensi/data-mahasiswa')->with('success', 'Kelas mahasiswa berhasil diperbarui!');
     }
+
+    public function search(Request $request)
+{
+    $search = $request->search;
+    $kelasId = $request->kelas_id;
+
+    $mahasiswas = Mahasiswa::with(['kelas', 'kelas.semester','kelas.prodi'])
+        ->where('kelas_id', $kelasId)
+        ->where(function ($query) use ($search) {
+            $query->where('nama_lengkap', 'LIKE', "%$search%")
+                  ->orWhere('nim', 'LIKE', "%$search%");
+        })
+        ->get();
+
+    return response()->json([
+        'data' => $mahasiswas
+    ]);
+}
 
 }

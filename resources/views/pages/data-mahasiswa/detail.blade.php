@@ -16,19 +16,23 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
+                                <!-- Tombol Tambah -->
                                 <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#tambahModal">
                                     <span class="mdi mdi-plus"></span> Tambah
                                 </button>
 
+                                <!-- Dropdown Semester -->
                                 <div class="dropdown ms-2" id="semesterDropdown" style="display: none;">
                                     <button class="btn btn-primary dropdown-toggle btn-sm" type="button"
                                         id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="true"> Semester </button>
+                                        aria-expanded="true">
+                                        Semester
+                                    </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                         @foreach ($kelasSem as $kelSem)
-                                            <form action="/presensi/data-mahasiswa/move" method="POST" class="m-0 move-form"
-                                                data-kelas-id="{{ $kelSem->id }}">
+                                            <form action="/presensi/data-mahasiswa/move" method="POST"
+                                                class="m-0 move-form" data-kelas-id="{{ $kelSem->id }}">
                                                 @csrf
                                                 <input type="hidden" name="kelas_id" value="{{ $kelSem->id }}">
                                                 <input type="hidden" name="mahasiswa_ids" class="mahasiswa-ids">
@@ -38,7 +42,19 @@
                                         @endforeach
                                     </div>
                                 </div>
+
+                                <div class="ms-auto">
+                                    <div class="input-group input-group-sm" style="width: 200px;">
+                                        <input type="text" id="search" class="form-control"
+                                            placeholder="Cari Mahasiswa...">
+                                        <input type="hidden" id="kelas_id" value="{{ $mahasiswas->first()->kelas->id }}">
+                                        <button class="btn btn-outline-secondary" type="button" id="clearSearchButton">
+                                            <span class="mdi mdi-close"></span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
+
 
                             <div class="table-responsive">
                                 <table class="table">
@@ -867,55 +883,122 @@
         });
     </script>
 
-<script>
-    $(document).ready(function() {
-        function toggleDropdown() {
-            const anyChecked = $('.select-checkbox:checked').length > 0;
-            $('#semesterDropdown').toggle(anyChecked);
-        }
-
-        $('#select-all').change(function() {
-            const isChecked = this.checked;
-            $('.select-checkbox').prop('checked', isChecked);
-            toggleDropdown();
-        });
-
-        $('.select-checkbox').change(function() {
-            toggleDropdown();
-            if (!this.checked) {
-                $('#select-all').prop('checked', false);
+    <script>
+        $(document).ready(function() {
+            function toggleDropdown() {
+                const anyChecked = $('.select-checkbox:checked').length > 0;
+                $('#semesterDropdown').toggle(anyChecked);
             }
-            if ($('.select-checkbox:checked').length === $('.select-checkbox').length) {
-                $('#select-all').prop('checked', true);
-            }
-        });
 
-        $('.move-form').submit(function(e) {
-            e.preventDefault()
-            const mahasiswaIds = [];
-
-            $('.select-checkbox:checked').each(function() {
-                mahasiswaIds.push($(this).data('id'));
+            $('#select-all').change(function() {
+                const isChecked = this.checked;
+                $('.select-checkbox').prop('checked', isChecked);
+                toggleDropdown();
             });
 
-            Swal.fire({
-                title: 'Konfirmasi',
-                text: 'Apakah Anda yakin ingin memindahkan mahasiswa yang dipilih ke kelas ini?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, pindahkan!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                   
-                    $(this).find('.mahasiswa-ids').val(mahasiswaIds.join(','));
-                    this.submit(); 
+            $('.select-checkbox').change(function() {
+                toggleDropdown();
+                if (!this.checked) {
+                    $('#select-all').prop('checked', false);
+                }
+                if ($('.select-checkbox:checked').length === $('.select-checkbox').length) {
+                    $('#select-all').prop('checked', true);
                 }
             });
-        });
-    });
-</script>
 
+            $('.move-form').submit(function(e) {
+                e.preventDefault()
+                const mahasiswaIds = [];
+
+                $('.select-checkbox:checked').each(function() {
+                    mahasiswaIds.push($(this).data('id'));
+                });
+
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah Anda yakin ingin memindahkan mahasiswa yang dipilih ke kelas ini?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, pindahkan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        $(this).find('.mahasiswa-ids').val(mahasiswaIds.join(','));
+                        this.submit();
+                    }
+                });
+            });
+
+            $('#search').on('keyup', function() {
+                let searchQuery = $(this).val();
+                let kelasId = $('#kelas_id').val();
+                $.ajax({
+                    url: '{{ route('data-mahasiswa.search') }}',
+                    method: 'GET',
+                    data: {
+                        search: searchQuery,
+                        kelas_id: kelasId
+                    },
+                    success: function(response) {
+                        $('tbody').empty(); // Kosongkan tabel sebelumnya
+                        if (response.data.length > 0) {
+                            response.data.forEach(function(mahasiswa, index) {
+                                $('tbody').append(`
+                <tr>
+                    <td><input type="checkbox" class="select-checkbox" data-id="${mahasiswa.id}" /></td>
+                    <td>${index + 1}</td>
+                    <td>${mahasiswa.nim}</td>
+                    <td>${mahasiswa.nama_lengkap}</td>
+                    <td>${mahasiswa.jenis_kelamin}</td>
+                    <td>${mahasiswa.kelas ? mahasiswa.kelas.nama_kelas : 'N/A'}</td>
+                    <td>${mahasiswa.kelas && mahasiswa.kelas.semester ? 'Semester ' + mahasiswa.kelas.semester.semester : 'N/A'}</td>
+                    <td>${mahasiswa.email}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm edit-btn" 
+                            data-id="${mahasiswa.id}" 
+                            data-nama="${mahasiswa.nama_lengkap}" 
+                            data-nim="${mahasiswa.nim}" 
+                            data-nisn="${mahasiswa.nisn}" 
+                            data-pembimbing="${mahasiswa.dosen_pembimbing_id}" 
+                            data-nik="${mahasiswa.nik}" 
+                            data-kelas="${mahasiswa.kelas_id}" 
+                            data-semester="${mahasiswa.kelas.semester ? mahasiswa.kelas.semester.semester : 'N/A'}" 
+                            data-prodi="${mahasiswa.kelas.prodi.nama_prodi}" 
+                            data-jenis="${mahasiswa.kelas.jenis_kelas}" 
+                            data-tanggallahir="${mahasiswa.tanggal_lahir}" 
+                            data-tempatlahir="${mahasiswa.tempat_lahir}" 
+                            data-namaibu="${mahasiswa.nama_ibu}" 
+                            data-telephone="${mahasiswa.no_telephone}" 
+                            data-jeniskelamin="${mahasiswa.jenis_kelamin}" 
+                            data-email="${mahasiswa.email}" 
+                            data-alamat="${mahasiswa.alamat}" 
+                            data-toggle="modal" 
+                            data-target="#editModal">
+                            <span class="mdi mdi-eye"></span> Lihat
+                        </button>
+                        <button class="btn btn-danger btn-sm delete-btn" 
+                            data-id="${mahasiswa.id}">
+                            <span class="mdi mdi-delete"></span> Hapus
+                        </button>
+                    </td>
+                </tr>
+            `);
+                            });
+                        } else {
+                            $('tbody').append(
+                                '<tr><td class="text-center" colspan="9">Tidak ada hasil ditemukan</td></tr>'
+                            );
+                        }
+                    },
+
+                    error: function(xhr) {
+                        console.error('Error:', xhr);
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

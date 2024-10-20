@@ -508,7 +508,7 @@
                         } else {
                             $('tbody').append(
                                 '<tr><td class="text-center" colspan="5">Tidak ada hasil ditemukan</td></tr>'
-                                );
+                            );
                         }
                     },
                     error: function() {
@@ -576,7 +576,7 @@
                         } else {
                             $('tbody').append(
                                 '<tr><td class="text-center" colspan="5">Tidak ada hasil ditemukan</td></tr>'
-                                );
+                            );
                         }
                     },
                     error: function() {

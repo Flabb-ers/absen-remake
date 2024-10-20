@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Models\TahunAkademik;
 use Illuminate\Support\Facades\DB;
 use App\Models\PengajuanRekapNilai;
+use Illuminate\Support\Facades\Log;
 
 class RekapNilaiController extends Controller
 {
@@ -62,10 +63,8 @@ class RekapNilaiController extends Controller
             ->unique();
 
 
-        $mahasiswas = Mahasiswa::where(function ($query) use ($mahasiswa_ids, $kelas_id) {
-            $query->whereIn('id', $mahasiswa_ids)
-                ->orWhere('kelas_id', $kelas_id);
-        })
+        $mahasiswas = Mahasiswa::withTrashed()
+            ->whereIn('id', $mahasiswa_ids)
             ->orderBy('nim', 'asc')
             ->get();
 
@@ -209,6 +208,9 @@ class RekapNilaiController extends Controller
             'kelas' => function ($query) {
                 $query->withTrashed();
             },
+            'kelas.prodi' => function ($query) {
+                $query->withTrashed();
+            },
             'jadwal' => function ($query) {
                 $query->withTrashed();
             },
@@ -268,10 +270,8 @@ class RekapNilaiController extends Controller
             ->unique();
 
 
-        $mahasiswas = Mahasiswa::where(function ($query) use ($mahasiswa_ids, $kelas_id) {
-            $query->whereIn('id', $mahasiswa_ids)
-                ->orWhere('kelas_id', $kelas_id);
-        })
+        $mahasiswas = Mahasiswa::withTrashed()
+            ->whereIn('id', $mahasiswa_ids)
             ->orderBy('nim', 'asc')
             ->get();
 
@@ -430,7 +430,6 @@ class RekapNilaiController extends Controller
                     ->where('jadwal_id', $jadwal_id)
                     ->where('matkul_id', $matkul_id)
                     ->first();
-
                 if ($pengajuan) {
                     $pengajuan->update(['status' => 1]);
                 }
@@ -492,12 +491,9 @@ class RekapNilaiController extends Controller
 
 
         $mahasiswas = Mahasiswa::withTrashed()
-                                ->where(function ($query) use ($mahasiswa_ids, $kelas_id) {
-                                    $query->whereIn('id', $mahasiswa_ids)
-                                        ->orWhere('kelas_id', $kelas_id);
-                                            })
-                                ->orderBy('nim', 'asc')
-                                ->get();
+            ->whereIn('id', $mahasiswa_ids)
+            ->orderBy('nim', 'asc')
+            ->get();
 
         $tugass = Tugas::with(['kelas' => function ($query) {
             $query->withTrashed();
@@ -554,17 +550,17 @@ class RekapNilaiController extends Controller
             ->where('jadwals_id', $jadwal_id)
             ->max('pertemuan');
 
-            $jadwals = Jadwal::with(['kelas' => function ($query) {
-                $query->withTrashed();
-            }, 'kelas.prodi' => function ($query) {
-                $query->withTrashed();
-            }, 'matkul' => function ($query) {
-                $query->withTrashed();
-            }])
+        $jadwals = Jadwal::with(['kelas' => function ($query) {
+            $query->withTrashed();
+        }, 'kelas.prodi' => function ($query) {
+            $query->withTrashed();
+        }, 'matkul' => function ($query) {
+            $query->withTrashed();
+        }])
             ->withTrashed()
             ->where('id', $jadwal_id)
             ->first();
-        
+
         $dataAbsensi = $dataAbsensi->map(function ($absensiGroup, $mahasiswaId) use ($totalPertemuan) {
             $totalKehadiran = $absensiGroup->whereIn('status', ['H', 'T'])->count();
             $persentaseKehadiran = $totalPertemuan > 0 ? ($totalKehadiran / $totalPertemuan) * 15 : 0;

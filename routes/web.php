@@ -70,6 +70,8 @@ Route::prefix('/presensi')->group(function () {
     Route::resource('/data-mahasiswa', MahasiswaController::class)->except(['show']);
     Route::get('/data-mahasiswa/{id}', [MahasiswaController::class, 'kelas']);
     Route::post('/data-mahasiswa/move',[MahasiswaController::class,'pindahKelas']);
+    Route::get('/presensi/data-mahasiswa/search', [MahasiswaController::class, 'search'])->name('data-mahasiswa.search');
+
 
     // JADWAL
     Route::resource('/jadwal-mengajar', JadwalController::class);

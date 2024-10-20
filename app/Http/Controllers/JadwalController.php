@@ -19,7 +19,9 @@ class JadwalController extends Controller
     {
         $kelasAll = Jadwal::all();
         $dosens = Dosen::all();
-        $kelass = Kelas::all();
+        $kelass = Kelas::whereHas('semester', function ($query) {
+            $query->where('status', 1);
+        })->get();
         $matkuls = Matkul::all();
         $jadwals = Jadwal::with('dosen', 'kelas', 'matkul', 'ruangan')->latest()->get();
         $ruangans = Ruangan::all();
