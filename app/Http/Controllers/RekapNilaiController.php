@@ -136,11 +136,33 @@ class RekapNilaiController extends Controller
             ->where('jadwal_id', $jadwal_id)
             ->first();
 
+        $cekNilaiLengkap = Uts::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->exists() &&
+            Uas::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->exists() &&
+            Tugas::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->exists() &&
+            Aktif::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->exists() &&
+            Etika::where('kelas_id', $kelas_id)
+            ->where('matkul_id', $matkul_id)
+            ->where('jadwal_id', $jadwal_id)
+            ->exists();
+
         return view(
             'pages.dosen.data-nilai.rekap.index',
             compact(
                 'mahasiswas',
                 'groupedTugas',
+                'cekNilaiLengkap',
                 'jumlahTugas',
                 'dataAktif',
                 'dataEtika',
@@ -187,7 +209,13 @@ class RekapNilaiController extends Controller
             'kelas' => function ($query) {
                 $query->withTrashed();
             },
+            'kelas.prodi' => function ($query) {
+                $query->withTrashed();
+            },
             'jadwal' => function ($query) {
+                $query->withTrashed();
+            },
+            'jadwal.dosen' => function ($query) {
                 $query->withTrashed();
             },
             'matkul' => function ($query) {
@@ -212,6 +240,9 @@ class RekapNilaiController extends Controller
                 $query->withTrashed();
             },
             'jadwal' => function ($query) {
+                $query->withTrashed();
+            },
+            'jadwal.dosen' => function ($query) {
                 $query->withTrashed();
             },
             'matkul' => function ($query) {
@@ -311,7 +342,7 @@ class RekapNilaiController extends Controller
             ->where('jadwals_id', $jadwal_id)
             ->max('pertemuan');
 
-        $jadwals = Jadwal::where('id', $jadwal_id)->first();
+        $jadwals = Jadwal::with('dosen','matkul','kelas.prodi','kelas.semester','kelas')->where('id', $jadwal_id)->first();
 
         $dataAbsensi = $dataAbsensi->map(function ($absensiGroup, $mahasiswaId) use ($totalPertemuan) {
             $totalKehadiran = $absensiGroup->whereIn('status', ['H', 'T'])->count();
@@ -550,16 +581,27 @@ class RekapNilaiController extends Controller
             ->where('jadwals_id', $jadwal_id)
             ->max('pertemuan');
 
-        $jadwals = Jadwal::with(['kelas' => function ($query) {
-            $query->withTrashed();
-        }, 'kelas.prodi' => function ($query) {
-            $query->withTrashed();
-        }, 'matkul' => function ($query) {
-            $query->withTrashed();
-        }])
+            $jadwals = Jadwal::with([
+                'dosen' => function ($query) {
+                    $query->withTrashed();
+                },
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.semester' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
             ->withTrashed()
             ->where('id', $jadwal_id)
             ->first();
+        
 
         $dataAbsensi = $dataAbsensi->map(function ($absensiGroup, $mahasiswaId) use ($totalPertemuan) {
             $totalKehadiran = $absensiGroup->whereIn('status', ['H', 'T'])->count();

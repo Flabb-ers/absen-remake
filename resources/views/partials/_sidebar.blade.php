@@ -91,21 +91,30 @@
             </a>
             <div class="collapse {{ request()->is('presensi/data-nilai/*') && !request()->is('presensi/data-nilai/pengajuan/*') ? 'show' : '' }}" id="data-nilai">
                 <ul class="nav flex-column sub-menu">
-                    @foreach ($kelasAll->unique('kelas_id') as $kelas)
+                    @if($kelasAll->isNotEmpty()) 
+                        @foreach ($kelasAll->unique('kelas_id') as $kelas)
+                            @if(isset($kelas->kelas)) 
+                                <li class="nav-item">
+                                    <a class="nav-link 
+                                        {{ request()->segment(3) == $kelas->kelas->id ? 'active' : '' }} 
+                                        {{ request()->is('presensi/data-presensi/*') ? 'disabled' : '' }}
+                                        {{ request()->is('presensi/data-kontrak/*') ? 'disabled' : '' }}"
+                                        id="sidebar-kelas-{{ $kelas->kelas->id }}"
+                                        href="{{ request()->is('presensi/data-presensi/*') ? 'javascript:void(0)' : '/presensi/data-nilai/' . $kelas->kelas->id }}">
+                                        {{ $kelas->kelas->nama_kelas }}
+                                    </a>
+                                </li>
+                            @endif
+                        @endforeach
+                    @else
                         <li class="nav-item">
-                            <a class="nav-link 
-                                {{ request()->segment(3) == $kelas->kelas->id ? 'active' : '' }} 
-                                {{ request()->is('presensi/data-presensi/*') ? 'disabled' : '' }}
-                                {{ request()->is('presensi/data-kontrak/*') ? 'disabled' : '' }}"
-                                id="sidebar-kelas-{{ $kelas->kelas->id }}"
-                                href="{{ request()->is('presensi/data-presensi/*') ? 'javascript:void(0)' : '/presensi/data-nilai/' . $kelas->kelas->id }}">
-                                {{ $kelas->kelas->nama_kelas }}
-                            </a>
+                            <a class="nav-link disabled" href="#">Tidak ada kelas tersedia</a>
                         </li>
-                    @endforeach
+                    @endif
                 </ul>
             </div>
         </li>
+        
         
         <li class="nav-item">Wadir dan direkturrrrr</li>
         <li class="nav-item">

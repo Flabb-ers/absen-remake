@@ -246,32 +246,32 @@
                 </thead>
                 <tbody>
                     @php
-                        function getKeterangan($jumlah)
-                        {
-                            if ($jumlah >= 85 && $jumlah <= 100) {
-                                return 'A';
-                            } elseif ($jumlah >= 80 && $jumlah < 85) {
-                                return 'A-';
-                            } elseif ($jumlah >= 75 && $jumlah < 80) {
-                                return 'B+';
-                            } elseif ($jumlah >= 70 && $jumlah < 75) {
-                                return 'B';
-                            } elseif ($jumlah >= 65 && $jumlah < 70) {
-                                return 'B-';
-                            } elseif ($jumlah >= 60 && $jumlah < 65) {
-                                return 'C+';
-                            } elseif ($jumlah >= 55 && $jumlah < 60) {
-                                return 'C';
-                            } elseif ($jumlah >= 50 && $jumlah < 55) {
-                                return 'C-';
-                            } elseif ($jumlah >= 40 && $jumlah < 50) {
-                                return 'D';
-                            } elseif ($jumlah >= 0 && $jumlah < 40) {
-                                return 'E';
-                            } else {
-                                return '-';
-                            }
-                        }
+                        // function getKeterangan($jumlah)
+                        // {
+                        //     if ($jumlah >= 85 && $jumlah <= 100) {
+                        //         return 'A';
+                        //     } elseif ($jumlah >= 80 && $jumlah < 85) {
+                        //         return 'A-';
+                        //     } elseif ($jumlah >= 75 && $jumlah < 80) {
+                        //         return 'B+';
+                        //     } elseif ($jumlah >= 70 && $jumlah < 75) {
+                        //         return 'B';
+                        //     } elseif ($jumlah >= 65 && $jumlah < 70) {
+                        //         return 'B-';
+                        //     } elseif ($jumlah >= 60 && $jumlah < 65) {
+                        //         return 'C+';
+                        //     } elseif ($jumlah >= 55 && $jumlah < 60) {
+                        //         return 'C';
+                        //     } elseif ($jumlah >= 50 && $jumlah < 55) {
+                        //         return 'C-';
+                        //     } elseif ($jumlah >= 40 && $jumlah < 50) {
+                        //         return 'D';
+                        //     } elseif ($jumlah >= 0 && $jumlah < 40) {
+                        //         return 'E';
+                        //     } else {
+                        //         return '-';
+                        //     }
+                        // }
                     @endphp
 
                     @foreach ($mahasiswas as $mahasiswa)
@@ -347,7 +347,7 @@
                             <td>{{ $nilaiUas }}</td>
                             <td>{{ number_format($persentaseUas, 2) }}%</td>
                             <td>{{ number_format($jumlahTotal, 2) }}%</td>
-                            <td>{{ getKeterangan($jumlahTotal) }}</td>
+                            {{-- <td>{{ getKeterangan($jumlahTotal) }}</td> --}}
                         </tr>
                     @endforeach
                 </tbody>

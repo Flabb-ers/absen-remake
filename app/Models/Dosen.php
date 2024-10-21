@@ -12,6 +12,8 @@ class Dosen extends Model
 
     protected $guarded = ['id'];
 
+    protected $dates = ['deleted_at'];
+
     public function matkul()
     {
         return $this->hasMany(Matkul::class);
