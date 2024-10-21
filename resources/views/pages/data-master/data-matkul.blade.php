@@ -462,7 +462,6 @@
                 $(formId)[0].reset();
             }
 
-            // Event pencarian
             $('#search').on('keyup', function() {
                 let searchQuery = $(this).val();
 
@@ -503,7 +502,6 @@
                     `);
                             });
 
-                            // Memperbarui paginasi
                             updatePagination(response);
                         } else {
                             $('tbody').append(
@@ -517,9 +515,8 @@
                 });
             });
 
-            // Fungsi untuk memperbarui paginasi
             function updatePagination(response) {
-                $('#pagination').empty(); // Kosongkan paginasi sebelumnya
+                $('#pagination').empty();
                 for (let i = 1; i <= response.last_page; i++) {
                     $('#pagination').append(`
             <a href="#" class="page-link" data-page="${i}">${i}</a>
@@ -527,7 +524,6 @@
                 }
             }
 
-            // Event listener untuk paginasi
             $(document).on('click', '.page-link', function(e) {
                 e.preventDefault();
                 var page = $(this).data('page');
@@ -541,7 +537,7 @@
                         page: page
                     },
                     success: function(response) {
-                        $('tbody').empty(); // Kosongkan tabel sebelumnya
+                        $('tbody').empty();
                         if (response.data.length > 0) {
                             response.data.forEach(function(matkul, index) {
                                 $('tbody').append(`
@@ -584,9 +580,6 @@
                     }
                 });
             });
-
-
-
         });
     </script>
 @endsection

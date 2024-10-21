@@ -188,7 +188,7 @@
                 <br>
                 <h4 style="display: inline-block; width: 200px;">Kode Kelas</h4>
                 <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
-                <h4 style="display: inline-block;">{{ $jadwals->kelas->semester->semester }}</h4>
+                <h4 style="display: inline-block;">{{ $jadwals->kelas->kode_kelasd }}</h4>
                 <br>
                 <h4 style="display: inline-block; width: 200px;">Jumlah TM</h4>
                 <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>

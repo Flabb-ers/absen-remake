@@ -20,11 +20,11 @@ class KelasController extends Controller
         $kelasAll = Jadwal::all();
         $semesters = Semester::orderBy('semester', 'asc')->get();
         $kelass = Kelas::with(['semester' => function ($query) {
-            $query->withTrashed(); 
+            $query->withTrashed();
         }, 'prodi' => function ($query) {
             $query->withTrashed();
         }])
-            ->whereNull('deleted_at') 
+            ->whereNull('deleted_at')
             ->latest()
             ->paginate(6);
 
@@ -39,11 +39,14 @@ class KelasController extends Controller
         $request->validate([
             'id_prodi' => 'required',
             'id_semester' => 'required',
-            'jenis_kelas' => 'required'
+            'jenis_kelas' => 'required',
+            'kode_kelas' => 'required|unique:kelas,kode_kelas'
         ], [
             'id_prodi.required' => 'Prodi harus dipilih',
             'id_semester.required' => 'Semester harus dipilih',
-            'jenis_kelas.required' => 'Jenis kelas harus dipilih'
+            'jenis_kelas.required' => 'Jenis kelas harus dipilih',
+            'kode_kelas.required' => 'Kode kelas harus diisi',
+            'kode_kelas.unique' => 'Kode kelas sudah terdaftar',
         ]);
 
         $prodi = Prodi::findOrFail($request->id_prodi);
@@ -56,6 +59,7 @@ class KelasController extends Controller
             'id_semester' => $request->id_semester,
             'jenis_kelas' => $request->jenis_kelas,
             'nama_kelas' => $namaKelas,
+            'kode_kelas' => $request->kode
         ]);
 
         return response()->json([
@@ -71,22 +75,44 @@ class KelasController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'id_prodi' => 'required',
-            'id_semester' => 'required',
-            'jenis_kelas' => 'required'
-        ]);
-
         $kelas = Kelas::findOrFail($id);
+
+        if ($kelas->kode_kelas != $request->kode_kelas) {
+            $request->validate([
+                'id_prodi' => 'required',
+                'id_semester' => 'required',
+                'jenis_kelas' => 'required',
+                'kode_kelas' => 'required|unique:kelas,kode_kelas'
+            ], [
+                'id_prodi.required' => 'Prodi harus dipilih',
+                'id_semester.required' => 'Semester harus dipilih',
+                'jenis_kelas.required' => 'Jenis kelas harus dipilih',
+                'kode_kelas.required' => 'Kode kelas harus diisi',
+                'kode_kelas.unique' => 'Kode kelas sudah terdaftar',
+            ]);
+        } else {
+            $request->validate([
+                'id_prodi' => 'required',
+                'id_semester' => 'required',
+                'jenis_kelas' => 'required',
+                'kode_kelas' => 'required'
+            ], [
+                'id_prodi.required' => 'Prodi harus dipilih',
+                'id_semester.required' => 'Semester harus dipilih',
+                'jenis_kelas.required' => 'Jenis kelas harus dipilih',
+                'kode_kelas.required' => 'Kode kelas harus diisi',
+            ]);
+        }
+
         $prodi = Prodi::findOrFail($request->id_prodi);
         $semester = Semester::findOrFail($request->id_semester);
 
-        // Update kelas
         $edited = $kelas->update([
             'id_prodi' => $request->id_prodi,
             'id_semester' => $request->id_semester,
             'jenis_kelas' => $request->jenis_kelas,
             'nama_kelas' => $prodi->singkatan . ' ' . $semester->semester . ($request->jenis_kelas === 'Reguler' ? 'A' : 'B'),
+            'kode_kelas' => $request->kode_kelas
         ]);
 
         return response()->json([
@@ -94,6 +120,7 @@ class KelasController extends Controller
             'kelas' => $edited
         ]);
     }
+
 
 
     /**

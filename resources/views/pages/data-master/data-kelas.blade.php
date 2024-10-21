@@ -9,7 +9,7 @@
                 </a>
                 <span class="breadcrumb-item" id="dataMasterBreadcrumb">Data Master</span>
                 <span class="breadcrumb-item active">Data Kelas</span>
-            </div> 
+            </div>
             <div class="row">
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
@@ -30,6 +30,7 @@
                                             <th> Nama Kelas </th>
                                             <th> Program Studi </th>
                                             <th> Semester </th>
+                                            <th> Kode </th>
                                             <th> Jenis Kelas </th>
                                             <th> Opsi </th>
                                         </tr>
@@ -41,12 +42,15 @@
                                                 <td>{{ $kelas->nama_kelas }}</td>
                                                 <td>{{ $kelas->prodi->nama_prodi }}</td>
                                                 <td>Semester {{ $kelas->semester->semester }}</td>
+                                                {{-- ini --}}
+                                                <td>{{ $kelas->kode }}</td>
                                                 <td>{{ $kelas->jenis_kelas }}</td>
                                                 <td>
                                                     <button class="btn btn-primary btn-sm edit-btn "
                                                         data-id="{{ $kelas->id }}" data-kelas="{{ $kelas->nama_kelas }}"
                                                         data-prodi="{{ $kelas->prodi->id }}"
-                                                        data-semester="{{ $kelas->semester->id }}"
+                                                        data-semester="{{ $kelas->semester->id }}"\ {{-- ini --}}
+                                                        data-kode="{{ $kelas->kode_kelas }}"
                                                         data-jenis="{{ $kelas->jenis_kelas }}" data-toggle="modal"
                                                         data-target="#editModal"> <span class="mdi mdi-pencil"></span>
                                                         Edit</button>
@@ -84,7 +88,12 @@
                 </div>
                 <div class="modal-body">
                     <form id="tambahForm">
-                        @csrf
+                        <div class="mb-3">
+                            <label for="kodeKelas" class="form-label">Kode Keals<span style="color: red;">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="kodeKelas"
+                                placeholder="Kode Kelas">
+                            <div id="kodeKelasError" class="invalid-feedback"></div>
+                        </div>
                         <div class="mb-3">
                             <label for="namaProdi" class="form-label">Program Studi <span
                                     style="color: red;">*</span></label>
@@ -137,6 +146,12 @@
                         @csrf
                         @method('PUT')
                         <input type="hidden" id="editKelasId" name="id">
+                        <div class="mb-3">
+                            <label for="kodeKelas" class="form-label">Kode Kelas<span style="color: red;">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="kodeKelasEdit"
+                                placeholder="Kode Kelas">
+                            <div id="kodeKelasErrorEdit" class="invalid-feedback"></div>
+                        </div>
                         <div class="mb-3">
                             <label for="editNamaProdi" class="form-label">Program Studi <span
                                     style="color: red;">*</span></label>
@@ -192,10 +207,13 @@
                 let idProdi = $('#namaProdi').val();
                 let idSemester = $('#semester').val();
                 let jenisKelas = $('#jenisKelas').val();
+                let kodeKelas = $('#kodeKelas').val();
+                
 
                 $('#namaProdi').removeClass('is-invalid');
                 $('#semester').removeClass('is-invalid');
                 $('#jenisKelas').removeClass('is-invalid');
+                $('#kodeKelas').removeClass('is-invalid');
                 $('#errorProdi').text('');
                 $('#errorSemester').text('');
                 $('#errorJenisKelas').text('');
@@ -206,7 +224,8 @@
                     data: {
                         id_prodi: idProdi,
                         id_semester: idSemester,
-                        jenis_kelas: jenisKelas
+                        jenis_kelas: jenisKelas,
+                        kode_kelas : kodeKelas
                     },
                     success: function(response) {
                         $('#tambahModal').modal('hide');
@@ -237,6 +256,11 @@
                                 $('#jenisKelas').addClass('is-invalid');
                                 $('#errorJenisKelas').text(errors.jenis_kelas[0]);
                             }
+
+                            if (errors.kode_kelas) {
+                                $('#kodeKelas').addClass('is-invalid');
+                                $('#kodeKelasError').text(errors.kode_kelas[0]);
+                            }
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -253,11 +277,13 @@
                 let prodiId = $(this).data('prodi');
                 let semesterId = $(this).data('semester');
                 let jenisKelas = $(this).data('jenis');
+                let kodeKelas = $(this).data('kode');
 
                 $('#editKelasId').val(id);
                 $('#editNamaProdi').val(prodiId);
                 $('#editSemester').val(semesterId);
                 $('#editJenisKelas').val(jenisKelas);
+                $('#kodeKelasEdit').val(kodeKelas);
 
                 $('#editModal').modal('show');
             });
@@ -269,11 +295,13 @@
                 let idProdi = $('#editNamaProdi').val();
                 let idSemester = $('#editSemester').val();
                 let jenisKelas = $('#editJenisKelas').val();
+                let kodekelas = $('#kodeKelasEdit').val();
 
                 // Reset validasi error
                 $('#editNamaProdi').removeClass('is-invalid');
                 $('#editSemester').removeClass('is-invalid');
                 $('#editJenisKelas').removeClass('is-invalid');
+                $('#kodeKelasEdit').removeClass('is-invalid');
                 $('#editErrorProdi').text('');
                 $('#editErrorSemester').text('');
                 $('#editErrorJenisKelas').text('');
@@ -284,7 +312,8 @@
                     data: {
                         id_prodi: idProdi,
                         id_semester: idSemester,
-                        jenis_kelas: jenisKelas
+                        jenis_kelas: jenisKelas,
+                        kode_kelas : kodekelas
                     },
                     success: function(response) {
                         $('#editModal').modal('hide');
@@ -313,6 +342,10 @@
                             if (errors.jenis_kelas) {
                                 $('#editJenisKelas').addClass('is-invalid');
                                 $('#editErrorJenisKelas').text(errors.jenis_kelas[0]);
+                            }
+                            if (errors.kode_kelas) {
+                                $('#kodeKelasEdit').addClass('is-invalid');
+                                $('#kodeKelasErrorEdit').text(errors.kode_kelas[0]);
                             }
                         } else {
                             Swal.fire({
