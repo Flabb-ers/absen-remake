@@ -19,7 +19,7 @@ class WadirController extends Controller
         $wadirs = Wadir::latest()->get();
         $dosens = Dosen::all();
         $kelasAll = Jadwal::all();
-        return view('pages.data-master.data-wadir', compact('wadirs', 'dosens','kelasAll'));
+        return view('pages.data-master.data-wadir', compact('wadirs', 'dosens', 'kelasAll'));
     }
 
 
@@ -32,7 +32,8 @@ class WadirController extends Controller
             'nama' => 'required|unique:wadirs,nama',
             'no_telephone' => 'required|unique:wadirs,no_telephone',
             'email' => 'required|unique:wadirs,email',
-            'password' => 'required'
+            'password' => 'required',
+            'no' => 'required'
         ], [
             'nama.unique' => 'Dosen sudah menjadi wakil direktur',
             'nama.required' => 'Dosen harus diisi',
@@ -40,14 +41,25 @@ class WadirController extends Controller
             'no_telephone.unique' => 'Nomor WhatsApp sudah terdaftar',
             'email.required' => 'Email harus diisi',
             'email.unique' => 'Email sudah terdaftar',
-            'password.required' => 'Password harus diisi'
+            'password.required' => 'Password harus diisi',
+            'no.required' => 'Posisi harus diisi'
         ]);
+
+        if (in_array($request->no, [1, 2]) && Wadir::where('no', $request->no)->exists()) {
+            return response()->json([
+                'errors' => [
+                    'no' => ['Wadir dengan nomor ' . $request->no . ' sudah ada, tidak bisa menambah lagi']
+                ]
+            ], 400);
+        }
+
 
         Wadir::create([
             'nama' => $request->nama,
             'email' => $request->email,
             'no_telephone' => $request->no_telephone,
             'status' => 1,
+            'no' => $request->no,
             'password' => Hash::make($request->password)
         ]);
 
@@ -66,7 +78,8 @@ class WadirController extends Controller
             'nama' => 'required|string|max:255|unique:wadirs,nama,' . $wadir->id,
             'email' => 'required|email|unique:wadirs,email,' . $wadir->id,
             'no_telephone' => 'required|unique:wadirs,no_telephone,' . $wadir->id,
-            'status' => 'required|boolean'
+            'status' => 'required|boolean',
+            'no' => 'required'
         ], [
             'nama.required' => 'Nama wakil direktur wajib diisi',
             'nama.unique' => 'Nama sudah menjadi wakil direktur',
@@ -76,7 +89,8 @@ class WadirController extends Controller
             'no_telephone.required' => 'Nomor WhatsApp wajib diisi',
             'no_telephone.unique' => 'Nomor  WhatsApp sudah terdaftar',
             'status.required' => 'Status wajib dipilih',
-            'status.boolean' => 'Status harus berupa nilai boolean'
+            'status.boolean' => 'Status harus berupa nilai boolean',
+            'no.required' => 'Posisi wajib diisi'
         ]);
 
         if ($wadir->nama !== $request->nama) {
@@ -89,6 +103,9 @@ class WadirController extends Controller
 
         if ($wadir->no_telephone !== $request->no_telephone) {
             $wadir->no_telephone = $request->no_telephone;
+        }
+        if ($wadir->no !== $request->no) {
+            $wadir->no = $request->no;
         }
 
         $wadir->status = $request->status;
@@ -105,7 +122,6 @@ class WadirController extends Controller
     public function destroy($id)
     {
         $wadir = Wadir::findOrFail($id);
-
         $wadir->delete();
         return response()->json(['success' => 'Wadir berhasil dihapus.']);
     }

@@ -9,7 +9,7 @@
                 </a>
                 <span class="breadcrumb-item" id="dataMasterBreadcrumb">Data Master</span>
                 <span class="breadcrumb-item active">Wakil Direktur</span>
-            </div> 
+            </div>
             <div class="row">
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
@@ -28,6 +28,7 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Nama</th>
+                                            <th>Wakil Direktur</th>
                                             <th>Status</th>
                                             <th>Email</th>
                                             <th>Nomor WhatsApp</th>
@@ -39,6 +40,7 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $wadir->nama }}</td>
+                                                <td>Wakil Direktur {{ $wadir->no }}</td>
                                                 @if ($wadir->status == 1)
                                                     <td><span class="bg-success rounded"
                                                             style="width: 15px; height: 15px; display: inline-block;"></span>
@@ -55,6 +57,7 @@
                                                     <button class="btn btn-primary btn-sm edit-button"
                                                         data-id="{{ $wadir->id }}" data-nama="{{ $wadir->nama }}"
                                                         data-email="{{ $wadir->email }}" data-status="{{ $wadir->status }}"
+                                                        data-no="{{ $wadir->no }}" data-status="{{ $wadir->status }}"
                                                         data-nomor = "{{ $wadir->no_telephone }}">
                                                         <span class="mdi mdi-pencil"></span> Edit
                                                     </button>
@@ -102,6 +105,16 @@
                             <div id="dosenError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
+                            <label for="nama" class="form-label">Wakil Direktur <span
+                                    style="color: red;">*</span></label>
+                            <select class="form-select" id="no">
+                                <option selected value="">--Wakil Direktur--</option>
+                                <option value="1">Wakil Direktur 1</option>
+                                <option value="2">Wakil Direktur 2</option>
+                            </select>
+                            <div id="noError" class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
                             <label for="no_telephone" class="form-label">Nomor WhatsApp Aktif <span
                                     style="color: red;">*</span></label>
                             <input type="no_telephone" class="form-control form-control-sm" id="no_telephone"
@@ -117,8 +130,8 @@
                         <div class="mb-3">
                             <label for="password" class="form-label">Password <span style="color: red;">*</span></label>
                             <div class="input-group">
-                                <input type="password" class="form-control form-control-sm" id="password" name="password"
-                                    placeholder="Password" autocomplete="off">
+                                <input type="password" class="form-control form-control-sm" id="password"
+                                    name="password" placeholder="Password" autocomplete="off">
                                 <span class="input-group-text">
                                     <i class="fa fa-eye" id="togglePassword" style="cursor: pointer;"></i>
                                 </span>
@@ -158,11 +171,21 @@
                             <div id="dosenErrorEdit" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="nomorEdit" class="form-label">Nomor WhatsApp< <span style="color: red;">
-                                    *</span>/label>
-                                    <input type="string" class="form-control form-control-sm" id="nomorEdit"
-                                        name="email" placeholder="Nomor WhatsApp">
-                                    <div id="notlperror" class="invalid-feedback"></div>
+                            <label for="nama" class="form-label">Wakil Direktur <span
+                                    style="color: red;">*</span></label>
+                            <select class="form-select" id="noEdit">
+                                <option selected value="">--Wakil Direktur--</option>
+                                <option value="1">Wakil Direktur 1</option>
+                                <option value="2">Wakil Direktur 2</option>
+                            </select>
+                            <div id="noErrorEdit" class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nomorEdit" class="form-label">Nomor WhatsApp<span style="color: red;">
+                                    *</span></label>
+                            <input type="string" class="form-control form-control-sm" id="nomorEdit" name="email"
+                                placeholder="Nomor WhatsApp">
+                            <div id="notlperror" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
                             <label for="emailEdit" class="form-label">Email <span style="color: red;">*</span></label>
@@ -214,7 +237,6 @@
             $('#togglePassword').on('click', function() {
                 let passwordInput = $('#password');
                 let icon = $(this);
-                // Toggle the type attribute
                 if (passwordInput.attr('type') === 'password') {
                     passwordInput.attr('type', 'text');
                     icon.removeClass('fa-eye').addClass('fa-eye-slash');
@@ -229,6 +251,7 @@
                 $('input, select, textarea').removeClass('is-invalid');
                 $('.invalid-feedback').text('');
                 let nama = $('#nama').val();
+                let no = $('#no').val();
                 let email = $('#email').val();
                 let password = $('#password').val();
                 let no_telephone = $('#no_telephone').val();
@@ -242,6 +265,7 @@
                         nama: nama,
                         email: email,
                         password: password,
+                        no: no,
                         no_telephone: no_telephone
                     },
                     success: function(response) {
@@ -276,6 +300,10 @@
                                 $('#no_telephone').addClass('is-invalid');
                                 $('#NotlpError').text(errors.no_telephone[0]);
                             }
+                            if (errors.no) {
+                                $('#no').addClass('is-invalid');
+                                $('#noError').text(errors.no[0]);
+                            }
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -294,12 +322,14 @@
                 var email = $(this).data('email');
                 var status = $(this).data('status');
                 var noTlp = $(this).data('nomor');
+                var no = $(this).data('no');
 
                 $('#wadir_id').val(id);
                 $('#namaEdit').val(nama)
                 $('#emailEdit').val(email);
                 $('#statusEdit').val(status);
                 $('#nomorEdit').val(noTlp);
+                $('#noEdit').val(no);
 
                 if (status == 1) {
                     $('#status_aktifEdit').prop('checked', true);
@@ -314,6 +344,7 @@
                 e.preventDefault();
                 let id = $('#wadir_id').val();
                 let nama = $('#namaEdit').val();
+                let no = $('#noEdit').val();
                 let email = $('#emailEdit').val();
                 let no_telephone = $('#nomorEdit').val();
                 let status = $('input[name="status"]:checked').val();
@@ -325,7 +356,8 @@
                         nama: nama,
                         email: email,
                         status: status,
-                        no_telephone: no_telephone
+                        no_telephone: no_telephone,
+                        no: no
                     },
                     success: function(response) {
                         $('#editModal').modal('hide');
@@ -343,19 +375,38 @@
                         if (response.status === 422) {
                             const errors = response.responseJSON.errors;
 
+
                             if (errors.nama) {
                                 $('#namaEdit').addClass('is-invalid');
                                 $('#dosenErrorEdit').text(errors.nama[0]);
                             }
+
                             if (errors.email) {
                                 $('#emailEdit').addClass('is-invalid');
                                 $('#emailErrorEdit').text(errors.email[0]);
                             }
+
                             if (errors.no_telephone) {
                                 $('#nomorEdit').addClass('is-invalid');
                                 $('#notlperror').text(errors.no_telephone[0]);
                             }
 
+                            if (errors.no) {
+                                $('#noEdit').addClass('is-invalid');
+                                $('#noErrorEdit').text(errors.no[0]);
+                            }
+                        } else if (response.status === 400) {
+                            let errorMessage = 'Posisi tersebut sudah terisi';
+
+                            if (response.responseJSON && response.responseJSON.error) {
+                                errorMessage = response.responseJSON.error;
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: errorMessage,
+                            });
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -364,6 +415,7 @@
                             });
                         }
                     }
+
                 });
             });
 

@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Dosen;
 use App\Models\Kelas;
+use App\Models\Wadir;
 use App\Models\Jadwal;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 
 
 class DosenController extends Controller
@@ -173,7 +174,7 @@ class DosenController extends Controller
     {
         $dosen = Dosen::findOrFail($id);
         $dosen->delete();
-
+        Wadir::where('nama',$dosen->nama)->delete();
         return response()->json(['success' => 'Dosen berhasil dihapus.']);
     }
 }
