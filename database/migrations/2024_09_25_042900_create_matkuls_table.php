@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('matkuls', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('kelas_id')->constrained('kelas');
             $table->string('nama_matkul');
             $table->string('kode');
             $table->integer('teori')->nullable();

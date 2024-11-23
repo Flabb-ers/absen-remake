@@ -358,19 +358,19 @@
             <div class="left-signature">
                 <p class="signature-title">Mengesahkan</p>
                 <p class="signature-role">Kaprodi</p>
-                <p class="signature-name">{{ $kaprodi->nama }}</p>
+                <p class="signature-name">{{ $kaprodi->nama ?? '' }}</p>
             </div>
 
             <div class="right-signature">
                 <p class="signature-date">Purworejo, {{ Carbon::now()->locale('id')->translatedFormat('d F Y') }}</p>
 
                 <p class="signature-role">Dosen Pengampu</p>
-                <p class="signature-name">{{ $jadwals->dosen->nama }}</p>
+                <p class="signature-name">{{ $jadwals->dosen->nama ??'' }}</p>
             </div>
 
             <div class="center-signature">
                 <p class="signature-title">Mengetahui</p>
                 <p class="signature-role">Wakil Direktur I</p>
-                <p class="signature-name">{{ $wadir->nama }}</p>
+                <p class="signature-name">{{ $wadir->nama ??'' }}</p>
             </div>
         </div>

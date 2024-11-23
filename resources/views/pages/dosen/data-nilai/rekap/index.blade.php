@@ -172,7 +172,8 @@
             </div>
         </div>
         <div class="text-end">
-            @if (!$approve && $cekNilaiLengkap)
+            {{-- @if (!$approve && $cekNilaiLengkap) --}}
+            @if (!$approve)
                 <form action="/presensi/data-nilai/rekap" method="POST">
                     @csrf
                     <input type="hidden" name="kelas_id" value="{{ $jadwals->kelas_id }}">

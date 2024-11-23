@@ -107,9 +107,7 @@
                             @endif
                         @endforeach
                     @else
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#">Tidak ada kelas tersedia</a>
-                        </li>
+                            <a class="nav-link disabled" href="#">Belum ada jadwal</a>
                     @endif
                 </ul>
             </div>

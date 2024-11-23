@@ -11,7 +11,7 @@
 - [x] Add semseter in mahasiswa
 - [x] Add bread crumb
 - [x] **Redesigen nilai form** 
-- [ ] Add semester in matkul
+- [ ] Add semester dan prodi in matkul malah salah kocak kocak
 - [x] Add sikap mahasiswa
 - [x] Add Keaktifan mahasiswa
 - [ ] Add KHS
@@ -19,8 +19,8 @@
 - [ ] Add import export 
 - [x] Add dosen pa null when dosen on deleted or status = 0, kelas deleted = null in mahasiswa
 - [x] ADd kode kelas huaaaa
-- [ ] Add Wadir 1 & 2 in data rekapNilaiController
-- [ ] Jika mahasiswa lulus maka akan di hapus, kemudian jika dihapus maka data akan masih aman, kemudian ketika kelas di hapus akan force delete nah itu akan membuat semua mahasiswa terhapus, nah saya ingin ketika mahasiswa direkap mahasiswa yang sudah di hapus ketika misal semester belum tinggi itu hilang ketika sudah tinggi baru masih ada
+- [x] Add Wadir 1 & 2 in data rekapNilaiController
 - [x] `BUG When clear search button on clicked data hasn't reseted, (in mahasiswa and matakuliah) `
 
 - [x] Fix Rekap button can't click when uas uts tugas etika aktif == null
+- [ ] nilai di rekap nilai controller error cek log kemarin tipe data nya integer yang huruf jadi tidak bisa teruskan yabiar tidak lupa

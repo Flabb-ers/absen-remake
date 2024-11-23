@@ -43,17 +43,17 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         @if (($pertemuanCounts[$jadwal->id] ?? 0) < 14)
-                                            {{-- @if ($absens->isEmpty()) --}}
+                                            @if ($absens->isEmpty())
                                             <a href="/presensi/data-presensi/isi-presensi/{{ $jadwal->id }}"
                                                 class="btn btn-dark btn-sm w-100 mb-2">
                                                 <span class="mdi mdi-clipboard-edit-outline"></span> Isi Presensi
                                             </a>
-                                            {{-- @else --}}
+                                            @else
                                             <a href="/presensi/data-presensi/edit/{{ $pertemuanCounts[$jadwal->id] ?? 0 }}/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}/{{ $jadwal->id }}"
                                                 class="btn btn-warning btn-sm w-100 mb-2">
                                                 <span class="mdi mdi-clipboard-edit-outline"></span> Edit Presensi
                                             </a>
-                                            {{-- @endif --}}
+                                            @endif
                                         @else
                                             <button class="btn btn-secondary btn-sm w-100 mb-2" disabled>
                                                 <span class="mdi mdi-clipboard-edit-outline"></span> Presensi Sudah Selesai

@@ -48,4 +48,8 @@ class Mahasiswa extends Model
     {
         return $this->belongsTo(Dosen::class, 'dosen_pembimbing_id');
     }
+
+    public function nilaiHuruf(){
+        return $this->hasMany(NilaiHuruf::class);
+    }
 }

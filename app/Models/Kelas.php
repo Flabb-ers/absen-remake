@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Kelas extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -90,5 +90,10 @@ class Kelas extends Model
     public function pengajuanNilai()
     {
         return $this->hasMany(PengajuanRekapNilai::class);
+    }
+
+    public function nilaiHuruf()
+    {
+        return $this->hasMany(NilaiHuruf::class);
     }
 }

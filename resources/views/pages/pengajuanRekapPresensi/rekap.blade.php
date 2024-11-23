@@ -198,13 +198,12 @@
                     $absenGroupedByMahasiswa[$absen->mahasiswas_id][] = $absen;
                 }
 
-                // Inisialisasi jumlah hadir per kolom sesuai dengan rentang yang ada
                 $jumlahHadirPerKolom = array_fill_keys($rentang, 0);
             @endphp
 
             @foreach ($absenGroupedByMahasiswa as $mahasiswaId => $absenItems)
                 @php
-                    $mahasiswa = $absenItems[0]->mahasiswa; // Ambil data mahasiswa
+                    $mahasiswa = $absenItems[0]->mahasiswa;
                 @endphp
 
                 <tr>
@@ -213,7 +212,7 @@
                     <td colspan="2">{{ $mahasiswa->nama_lengkap }}</td>
 
                     @php
-                        $statusPerKolom = []; // Array untuk menyimpan status per pertemuan
+                        $statusPerKolom = []; 
                     @endphp
 
                     @foreach ($rentang as $r)
@@ -227,12 +226,12 @@
                                 }
                             }
 
-                            // Hitung jumlah hadir untuk kolom ini jika kunci ada di jumlahHadirPerKolom
+                           
                             if (isset($jumlahHadirPerKolom[$r]) && ($status === 'H' || $status === 'T')) {
                                 $jumlahHadirPerKolom[$r]++;
                             }
 
-                            $statusPerKolom[$r] = $status; // Simpan status untuk kolom ini
+                            $statusPerKolom[$r] = $status; 
                         @endphp
                         <td>{{ $statusPerKolom[$r] ?: '' }}</td>
                     @endforeach

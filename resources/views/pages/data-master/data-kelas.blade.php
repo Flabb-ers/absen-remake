@@ -43,7 +43,7 @@
                                                 <td>{{ $kelas->prodi->nama_prodi }}</td>
                                                 <td>Semester {{ $kelas->semester->semester }}</td>
                                                 {{-- ini --}}
-                                                <td>{{ $kelas->kode }}</td>
+                                                <td>{{ $kelas->kode_kelas }}</td>
                                                 <td>{{ $kelas->jenis_kelas }}</td>
                                                 <td>
                                                     <button class="btn btn-primary btn-sm edit-btn "
@@ -91,7 +91,7 @@
                         <div class="mb-3">
                             <label for="kodeKelas" class="form-label">Kode Keals<span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="kodeKelas"
-                                placeholder="Kode Kelas">
+                                placeholder="Kode Kelas" name="kode_kelas">
                             <div id="kodeKelasError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
@@ -208,6 +208,7 @@
                 let idSemester = $('#semester').val();
                 let jenisKelas = $('#jenisKelas').val();
                 let kodeKelas = $('#kodeKelas').val();
+                console.log(kodeKelas);
                 
 
                 $('#namaProdi').removeClass('is-invalid');
@@ -227,6 +228,7 @@
                         jenis_kelas: jenisKelas,
                         kode_kelas : kodeKelas
                     },
+                    
                     success: function(response) {
                         $('#tambahModal').modal('hide');
                         $('#tambahForm')[0].reset();

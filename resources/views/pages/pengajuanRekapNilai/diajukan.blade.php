@@ -188,7 +188,7 @@
                 <br>
                 <h4 style="display: inline-block; width: 200px;">Kode Kelas</h4>
                 <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
-                <h4 style="display: inline-block;">{{ $jadwals->kelas->kode_kelasd }}</h4>
+                <h4 style="display: inline-block;">{{ $jadwals->kelas->kode_kelas }}</h4>
                 <br>
                 <h4 style="display: inline-block; width: 200px;">Jumlah TM</h4>
                 <h4 style="display: inline-block; margin-right: 5px; margin-left:-60px">:</h4>
@@ -348,20 +348,20 @@
             <div class="left-signature">
                 <p class="signature-title">Mengesahkan</p>
                 <p class="signature-role">Kaprodi</p>
-                <p class="signature-name">{{ $kaprodi->nama }}</p>
+                <p class="signature-name">{{ $kaprodi->nama ?? " " }}</p>
             </div>
 
             <div class="right-signature">
                 <p class="signature-date">Purworejo, {{ Carbon::now()->locale('id')->translatedFormat('d F Y') }}</p>
 
                 <p class="signature-role">Dosen Pengampu</p>
-                <p class="signature-name">{{ $jadwals->dosen->nama }}</p>
+                <p class="signature-name">{{ $jadwals->dosen->nama ?? " " }}</p>
             </div>
 
             <div class="center-signature">
                 <p class="signature-title">Mengetahui</p>
                 <p class="signature-role">Wakil Direktur I</p>
-                <p class="signature-name">{{ $wadir->nama }}</p>
+                <p class="signature-name">{{ $wadir->nama ?? " " }}</p>
             </div>
         </div>
 
@@ -398,9 +398,8 @@
             <a href="/presensi/data-nilai/pengajuan/rekap-nilai" class="btn">Kembali</a>
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="{{ asset('vendors/js/sweetalert2.all.min.js') }}"></script>
         <script>
-            // Handle checkbox change
             document.getElementById('konfirmasi').addEventListener('change', function(e) {
                 if (this.checked) {
                     Swal.fire({

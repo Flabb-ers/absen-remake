@@ -82,4 +82,8 @@ class Matkul extends Model
     {
         return $this->hasMany(PengajuanRekapNilai::class);
     }
+    public function nilaiHuruf()
+    {
+        return $this->hasMany(NilaiHuruf::class);
+    }
 }

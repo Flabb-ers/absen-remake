@@ -37,6 +37,7 @@
                                             <th>Kode</th>
                                             <th>Nama Mata Kuliah</th>
                                             <th>SKS</th>
+                                            <th>Kelas</th>
                                             <th>Opsi</th>
                                         </tr>
                                     </thead>
@@ -47,11 +48,14 @@
                                                 <td>{{ $matkul->kode }}</td>
                                                 <td>{{ $matkul->nama_matkul }}</td>
                                                 <td>{{ $matkul->praktek + $matkul->teori }} </td>
+                                                <td>{{ $matkul->kelas->nama_kelas }}</td>
                                                 <td>
                                                     <button class="btn btn-primary btn-sm editMatkul"
                                                         data-id="{{ $matkul->id }}" data-nama="{{ $matkul->nama_matkul }}"
                                                         data-kode="{{ $matkul->kode }}" data-teori="{{ $matkul->teori }}"
-                                                        data-praktek="{{ $matkul->praktek }}" data-bs-toggle="modal"
+                                                        data-praktek="{{ $matkul->praktek }}" 
+                                                        data-kelas="{{ $matkul->kelas_id }}"
+                                                        data-bs-toggle="modal"
                                                         data-bs-target="#editModal">
                                                         <span class="mdi mdi-pencil"></span> Edit
                                                     </button>
@@ -103,6 +107,16 @@
                                 placeholder="Kode">
                             <div id="kodeError" class="invalid-feedback"></div>
                         </div>
+                        <div class="mb-3">
+                            <label for="Kelas" class="form-label">Kelas <span style="color: red;">*</span></label>
+                            <select class="form-select" id="kelas" name="kelas" required>
+                                <option selected>--Kelas--</option>
+                                @foreach ($kelass as $kelas)
+                                    <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="KelasError"></div>
+                        </div>
                         <div class="mb-3 row">
                             <label class="form-label">SKS <span style="color: red;">*</span></label>
                             <div class="col col-md-6">
@@ -146,9 +160,19 @@
                         </div>
                         <div class="mb-3">
                             <label for="kodeEdit" class="form-label">Kode <span style="color: red;">*</span></label>
-                            <input type="text" class="form-control form-control-sm" id="kodeEdit" name="kode"
+                            <input type="text" class="form-control form-control-sm" id="kodeEdit" name="kodeEdit"
                                 placeholder="kode">
                             <div id="kodeErrorEdit" class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_kelas" class="form-label">Kelas <span style="color: red;">*</span></label>
+                            <select class="form-select" id="edit_kelas" name="edit_kelas" required>
+                                <option selected>--Kelas--</option>
+                                @foreach ($kelass as $kelas)
+                                    <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="editkelasError"></div>
                         </div>
                         <div class="mb-3 row">
                             <label class="form-label">SKS <span style="color: red;">*</span></label>
@@ -181,18 +205,18 @@
                 }
             });
 
-            $('#kelas').change(function() {
+            // $('#kelas').change(function() {
 
-                var selectedOption = $(this).find('option:selected');
-                var semester = selectedOption.data('semester');
-                var prodi = selectedOption.data('prodi');
-                var jenisKelas = selectedOption.data(
-                    'jenis-kelas')
+            //     var selectedOption = $(this).find('option:selected');
+            //     var semester = selectedOption.data('semester');
+            //     var prodi = selectedOption.data('prodi');
+            //     var jenisKelas = selectedOption.data(
+            //         'jenis-kelas')
 
-                $('#semester').text('Semester ' + semester);
-                $('#program_studi').text(prodi);
-                $('#jenis_kelas').text(jenisKelas);
-            });
+            //     $('#semester').text('Semester ' + semester);
+            //     $('#program_studi').text(prodi);
+            //     $('#jenis_kelas').text(jenisKelas);
+            // });
             $('#tambahForm').submit(function(e) {
                 e.preventDefault();
 
@@ -200,8 +224,6 @@
                 $('.invalid-feedback').text('');
 
                 let nama_matkul = $('#nama_matkul').val();
-                let dosen_id = $('#nama').val();
-                let ruangan_id = $('#ruangan').val();
                 let kelas_id = $('#kelas').val();
                 let teori = $('#teori').val();
                 let praktek = $('#praktek').val();
@@ -215,8 +237,6 @@
                     data: {
                         nama_matkul: nama_matkul,
                         kode: kode,
-                        dosens_id: dosen_id,
-                        ruangans_id: ruangan_id,
                         kelas_id: kelas_id,
                         teori: teori,
                         praktek: praktek
@@ -250,14 +270,6 @@
                                 $('#kode').addClass('is-invalid');
                                 $('#kodeError').text(errors.kode[0]);
                             }
-                            if (errors.dosens_id) {
-                                $('#nama').addClass('is-invalid');
-                                $('#dosenError').text(errors.dosens_id[0]);
-                            }
-                            if (errors.ruangans_id) {
-                                $('#ruangan').addClass('is-invalid');
-                                $('#ruanganError').text(errors.ruangans_id[0]);
-                            }
                             if (errors.kelas_id) {
                                 $('#kelas').addClass('is-invalid');
                                 $('#kelasError').text(errors.kelas_id[0]);
@@ -286,22 +298,17 @@
                 let id = $(this).data('id');
                 let nama = $(this).data('nama');
                 let kelas = $(this).data('kelas');
-                let dosen = $(this).data('dosen');
-                let ruangan = $(this).data('ruangan');
                 let kode = $(this).data('kode');
                 let praktek = $(this).data('praktek');
                 let teori = $(this).data('teori');
 
-
                 $('#editId').val(id);
                 $('#edit_nama_matkul').val(nama);
                 $('#edit_kelas').val(kelas);
-                $('#edit_dosen').val(dosen);
-                $('#edit_ruangan').val(ruangan);
                 $('#kodeEdit').val(kode);
                 $('#praktekEdit').val(praktek);
                 $('#teoriEdit').val(teori);
-                $('#edit_kelas').trigger('change');
+                // $('#edit_kelas').trigger('change');
             });
 
             $('#editForm').submit(function(e) {
@@ -315,8 +322,6 @@
                 let kode = $('#kodeEdit').val();
                 let praktek = $('#praktekEdit').val();
                 let teori = $('#teoriEdit').val();
-                let dosenId = $('#edit_dosen').val();
-                let ruanganId = $('#edit_ruangan').val();
                 let kelasId = $('#edit_kelas').val();
 
 
@@ -328,8 +333,6 @@
                         kode: kode,
                         teori: teori,
                         praktek: praktek,
-                        dosen_id: dosenId,
-                        ruangan_id: ruanganId,
                         kelas_id: kelasId
                     },
                     success: function(response) {
@@ -368,17 +371,9 @@
                                 $('#edit_sks').addClass('is-invalid');
                                 $('#editSksError').text(errors.sks[0]);
                             }
-                            if (errors.dosen_id) {
-                                $('#edit_dosen').addClass('is-invalid');
-                                $('#dosenError').text(errors.dosen_id[0]);
-                            }
-                            if (errors.ruangan_id) {
-                                $('#edit_ruangan').addClass('is-invalid');
-                                $('#ruanganError').text(errors.ruangan_id[0]);
-                            }
                             if (errors.kelas_id) {
                                 $('#edit_kelas').addClass('is-invalid');
-                                $('#kelasError').text(errors.kelas_id[0]);
+                                $('#editkelasError').text(errors.kelas_id[0]);
                             }
                         } else {
                             Swal.fire({

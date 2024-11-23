@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('wadirs', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
+            $table->integer('no');
             $table->string('no_telephone');
             $table->integer('status');
             $table->string('email')->unique();

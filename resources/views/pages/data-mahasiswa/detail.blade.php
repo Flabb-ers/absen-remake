@@ -47,7 +47,7 @@
                                     <div class="input-group input-group-sm" style="width: 200px;">
                                         <input type="text" id="search" class="form-control"
                                             placeholder="Cari Mahasiswa...">
-                                        <input type="hidden" id="kelas_id" value="{{ $mahasiswas->first()->kelas->id }}">
+                                        <input type="hidden" id="kelas_id" value="{{ $kelasId->first()->id }}">
                                         <button class="btn btn-outline-secondary" type="button" id="clearSearchButton">
                                             <span class="mdi mdi-close"></span>
                                         </button>
@@ -127,6 +127,7 @@
             </div>
         </div>
     </div>
+    
 
     <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -185,38 +186,6 @@
                                 <div id="dosenError" class="invalid-feedback"></div>
                             </div>
                         </div>
-
-                        {{-- <div class="row">
-                            <div class="mb-3 col-12 col-md-3">
-                                <label for="kelas" class="form-label">Kelas <span style="color: red;">*</span></label>
-                                <select class="form-select" id="kelas" name="kelas_id">
-                                        <option value="{{ $namaKelas->id}}"
-                                            data-semester="{{ $namaKelas->semester->semester }}"
-                                            data-prodi="{{ $namaKelas->prodi->nama_prodi }}">{{ $namaKelas->nama_kelas }}
-                                        </option>
-                                </select>
-                                <div id="kelasError" class="invalid-feedback"></div>
-                            </div>
-                            <div class="mb-3 col-12 col-md-3">
-                                <label for="semester" class="form-label">Semester</label>
-                                <div id="semester" class="form-control form-control-sm" readonly
-                                    style="background-color: #f8f9fa; cursor: not-allowed;">Semester </div>
-                            </div>
-                            <div class="mb-3 col-12 col-md-3">
-                                <label for="program_studi" class="form-label">Prodi</label>
-                                <div id="program_studi" class="form-control form-control-sm" readonly
-                                    style="background-color: #f8f9fa; cursor: not-allowed;"></div>
-                            </div>
-                            <div class="mb-3 col-12 col-md-3">
-                                <label for="jenis_kelas" class="form-label">Jenis Kelas</label>
-                                <div id="jenis_kelas" class="form-control form-control-sm" readonly
-                                    style="background-color: #f8f9fa; cursor: not-allowed;"></div>
-                            </div>
-                        </div> --}}
-
-
-                        {{-- yang di ubah --}}
-
 
                         <div class="row">
                             <div class="mb-3 col-12 col-md-4">

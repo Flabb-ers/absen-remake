@@ -8,7 +8,7 @@
                     <span class="mdi mdi-home"></span> Dashboard
                 </a>
                 <span class="breadcrumb-item" id="dataMasterBreadcrumb">Jadwal Mengajar</span>
-            </div> 
+            </div>
             <div class="row">
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
@@ -49,6 +49,7 @@
                                                         data-kelas="{{ $jadwal->kelas->id }}"
                                                         data-ruangan="{{ $jadwal->ruangan->id }}"
                                                         data-tahun="{{ $jadwal->tahun }}"
+                                                    
                                                         data-jam_mulai="{{ $jadwal->waktu_mulai }}"
                                                         data-jam_selesai="{{ $jadwal->waktu_selesai }}"
                                                         data-hari="{{ $jadwal->hari }}" data-bs-toggle="modal"
@@ -91,29 +92,31 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="matkul" class="form-label">Matkul <span style="color: red;">*</span></label>
-                                    <select class="form-select" id="matkul" name="matkul">
-                                        <option selected>--Matkul--</option>
-                                        @foreach ($matkuls as $matkul)
-                                            <option value="{{ $matkul->id }}" data-teori="{{ $matkul->teori }}"
-                                                data-praktek="{{ $matkul->praktek }}">
-                                                {{ $matkul->nama_matkul }}
-                                            </option>
+                                    <label for="kelas" class="form-label">Kelas <span
+                                            style="color: red;">*</span></label>
+                                    <select class="form-select" id="kelas" name="kelas">
+                                        <option selected>--Kelas--</option>
+                                        @foreach ($kelass as $kelas)
+                                            <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
                                         @endforeach
                                     </select>
-                                    <div class="invalid-feedback" id="namaMatkulError"></div>
+                                    <div class="invalid-feedback" id="kelasError"></div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="sks" class="form-label">SKS </label>
-                                    <input type="text" class="form-control form-control-sm" id="sks" name="sks"
-                                        disabled>
+                                    <label for="tahun" class="form-label">Tahun Akademik <span
+                                            style="color: red;">*</span></label>
+                                    <input type="text" class="form-control form-control-sm" id="tahun" name="tahun"
+                                        disabled value="{{ $tahun->tahun_akademik }}">
                                 </div>
                             </div>
+
+
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="dosen" class="form-label">Dosen <span style="color: red;">*</span></label>
+                                    <label for="dosen" class="form-label">Dosen <span
+                                            style="color: red;">*</span></label>
                                     <select class="form-select" id="dosen" name="dosen">
                                         <option selected>--Dosen--</option>
                                         @foreach ($dosens as $dosen)
@@ -186,26 +189,31 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="kelas" class="form-label">Kelas <span style="color: red;">*</span></label>
-                                    <select class="form-select" id="kelas" name="kelas">
-                                        <option selected>--Kelas--</option>
-                                        @foreach ($kelass as $kelas)
-                                            <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
+                                    <label for="matkul" class="form-label">Matkul <span
+                                            style="color: red;">*</span></label>
+                                    <select class="form-select" id="matkul" name="matkul">
+                                        <option selected>--Matkul--</option>
+                                        @foreach ($matkuls as $matkul)
+                                            <option value="{{ $matkul->id }}" data-kelas-id="{{ $matkul->kelas_id }}"
+                                                data-teori="{{ $matkul->teori }}" data-praktek="{{ $matkul->praktek }}">
+                                                {{ $matkul->nama_matkul }}
+                                            </option>
                                         @endforeach
                                     </select>
-                                    <div class="invalid-feedback" id="kelasError"></div>
+                                    <div class="invalid-feedback" id="namaMatkulError"></div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="tahun" class="form-label">Tahun Akademik <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" id="tahun"
-                                        name="tahun" disabled value="{{ $tahun->tahun_akademik }}">
+                                    <label for="sks" class="form-label">SKS </label>
+                                    <input type="text" class="form-control form-control-sm" id="sks"
+                                        name="sks" disabled>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="ruangan" class="form-label">Ruangan <span style="color: red;">*</span></label>
+                                    <label for="ruangan" class="form-label">Ruangan <span
+                                            style="color: red;">*</span></label>
                                     <select class="form-select" id="ruangan" name="ruangan">
                                         <option selected>--Ruangan--</option>
                                         @foreach ($ruangans as $ruangan)
@@ -220,7 +228,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="jamMulai" class="form-label">Jam Mulai <span style="color: red;">*</span></label>
+                                    <label for="jamMulai" class="form-label">Jam Mulai <span
+                                            style="color: red;">*</span></label>
                                     <input type="time" class="form-control form-control-sm" id="jamMulai"
                                         name="jam_mulai">
                                     <div class="invalid-feedback" id="jamMulaiError"></div>
@@ -228,7 +237,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="jamSelesai" class="form-label">Jam Selesai <span style="color: red;">*</span></label>
+                                    <label for="jamSelesai" class="form-label">Jam Selesai <span
+                                            style="color: red;">*</span></label>
                                     <input type="time" class="form-control form-control-sm" id="jamSelesai"
                                         name="jam_selesai">
                                     <div class="invalid-feedback" id="jamSelesaiError"></div>
@@ -260,30 +270,32 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="editMatkul" class="form-label">Matkul <span style="color: red;">*</span></label>
-                                    <select class="form-select" id="editMatkul" name="matkul" required>
-                                        <option selected>--Matkul--</option>
-                                        @foreach ($matkuls as $matkul)
-                                            <option value="{{ $matkul->id }}" data-teori="{{ $matkul->teori }}"
-                                                data-praktek="{{ $matkul->praktek }}">
-                                                {{ $matkul->nama_matkul }}
+                                    <label for="editKelas" class="form-label">Kelas <span
+                                            style="color: red;">*</span></label>
+                                    <select class="form-select" id="editKelas" name="kelas" required>
+                                        <option selected>--Kelas--</option>
+                                        @foreach ($kelass as $kelas)
+                                            <option value="{{ $kelas->id }}"
+                                                {{ old('kelas', $kelas->id) == $kelas->id ? 'selected' : '' }}>
+                                                {{ $kelas->nama_kelas }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    <div class="invalid-feedback" id="editNamaMatkulError"></div>
+                                    <div class="invalid-feedback" id="editKelasError"></div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="editSks" class="form-label">SKS <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" id="editSks"
-                                        name="sks" disabled>
-                                    <div class="invalid-feedback" id="editSksError"></div>
+                                    <label for="tahunEdit" class="form-label">Tahun Akademik <span
+                                            style="color: red;">*</span></label>
+                                    <input type="text" class="form-control form-control-sm" id="tahunEdit"
+                                        name="tahunEdit" disabled>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="editDosen" class="form-label">Dosen <span style="color: red;">*</span></label>
+                                    <label for="editDosen" class="form-label">Dosen <span
+                                            style="color: red;">*</span></label>
                                     <select class="form-select" id="editDosen" name="dosen" required>
                                         <option selected>--Dosen--</option>
                                         @foreach ($dosens as $dosen)
@@ -352,30 +364,39 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="editKelas" class="form-label">Kelas <span style="color: red;">*</span></label>
-                                    <select class="form-select" id="editKelas" name="kelas" required>
-                                        <option selected>--Kelas--</option>
-                                        @foreach ($kelass as $kelas)
-                                            <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
+                                    <label for="editMatkul" class="form-label">Matkul <span
+                                            style="color: red;">*</span></label>
+                                    <select class="form-select" id="editMatkul" name="matkul" required>
+                                        <option selected>--Matkul--</option>
+                                        @foreach ($matkuls as $matkul)
+                                            <option value="{{ $matkul->id }}" data-kelas-id="{{ $matkul->kelas_id }}"
+                                                data-praktek="{{ $matkul->praktek }}"
+                                                data-teori="{{ $matkul->teori }}"
+                                                {{ old('matkul', $matkul->id) == $matkul->id ? 'selected' : '' }}>
+                                                {{ $matkul->nama_matkul }}
+                                            </option>
                                         @endforeach
                                     </select>
-                                    <div class="invalid-feedback" id="editKelasError"></div>
+                                    <div class="invalid-feedback" id="editNamaMatkulError"></div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="tahunEdit" class="form-label">Tahun Akademik <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" id="tahunEdit"
-                                        name="tahunEdit" disabled>
+                                    <label for="editSks" class="form-label">SKS <span
+                                            style="color: red;">*</span></label>
+                                    <input type="text" class="form-control form-control-sm" id="editSks"
+                                        name="sks" disabled>
+                                    <div class="invalid-feedback" id="editSksError"></div>
                                 </div>
                             </div>
+
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="editRuangan" class="form-label">Ruangan <span style="color: red;">*</span></label>
+                                    <label for="editRuangan" class="form-label">Ruangan <span
+                                            style="color: red;">*</span></label>
                                     <select class="form-select" id="editRuangan" name="ruangan" required>
                                         <option selected>--Ruangan--</option>
                                         @foreach ($ruangans as $ruangan)
@@ -390,7 +411,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="editJamMulai" class="form-label">Jam Mulai <span style="color: red;">*</span></label>
+                                    <label for="editJamMulai" class="form-label">Jam Mulai <span
+                                            style="color: red;">*</span></label>
                                     <input type="time" class="form-control form-control-sm" id="editJamMulai"
                                         name="jam_mulai" required>
                                     <div class="invalid-feedback" id="editJamMulaiError"></div>
@@ -398,7 +420,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="editJamSelesai" class="form-label">Jam Selesai <span style="color: red;">*</span></label>
+                                    <label for="editJamSelesai" class="form-label">Jam Selesai <span
+                                            style="color: red;">*</span></label>
                                     <input type="time" class="form-control form-control-sm" id="editJamSelesai"
                                         name="jam_selesai" required>
                                     <div class="invalid-feedback" id="editJamSelesaiError"></div>
@@ -428,6 +451,85 @@
                 const totalSKS = teori + praktek;
                 $('#sks').val(totalSKS);
             });
+
+            $('#kelas').on('change', function() {
+                const selectedKelas = $(this).val();
+                const $matkulDropdown = $('#matkul');
+                const $matkulOptions = $matkulDropdown.find('option');
+
+                const previousMatkul = $matkulDropdown.val();
+                if (!selectedKelas) {
+                    $matkulOptions.show();
+                    $matkulDropdown.val('');
+                    return;
+                }
+
+                let foundSelected = false;
+                $matkulOptions.each(function() {
+                    const kelasId = $(this).data('kelas-id');
+                    if (!kelasId || kelasId == selectedKelas) {
+                        $(this).show();
+                        if ($(this).val() === previousMatkul) {
+                            foundSelected = true;
+                        }
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                if (foundSelected) {
+                    $matkulDropdown.val(previousMatkul);
+                } else {
+                    $matkulDropdown.val('');
+                }
+            })
+            
+            const selectedKelas = $('#editKelas').val();
+            const $matkulDropdown = $('#editMatkul');
+            const previousMatkul = $matkulDropdown.val();
+
+            filterMatkul(selectedKelas, previousMatkul);
+
+            $('#editKelas').on('change', function() {
+                const selectedKelas = $(this).val();
+                $matkulDropdown.val('--Matkul--');
+                filterMatkul(selectedKelas, '');
+            });
+
+            function filterMatkul(kelasId, selectedMatkul) {
+                const $matkulOptions = $matkulDropdown.find('option');
+
+                if (!kelasId || kelasId === '--Kelas--') {
+                    $matkulOptions.show();
+                    $matkulDropdown.val('');
+                    return;
+                }
+                let foundSelected = false;
+                $matkulOptions.each(function() {
+                    const mataKuliahKelasId = $(this).data('kelas-id');
+                    if (!mataKuliahKelasId || mataKuliahKelasId == kelasId) {
+                        $(this).show();
+                        if ($(this).val() === selectedMatkul) {
+                            foundSelected = true;
+                        }
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                if (foundSelected) {
+                    $matkulDropdown.val(selectedMatkul);
+                } else {
+                    $matkulDropdown.val('--Matkul--');
+                }
+            }
+
+            $matkulDropdown.on('click', function() {
+                const selectedMatkul = $matkulDropdown.val();
+                const kelasId = $('#editKelas').val();
+                filterMatkul(kelasId, selectedMatkul);
+            });
+
 
             $('#tambahForm').submit(function(e) {
                 e.preventDefault();
@@ -503,7 +605,6 @@
                             }
 
                         } else if (response.status === 400) {
-                            // Menangani error 400
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error!',
@@ -697,7 +798,6 @@
                 clearValidation('#editForm');
             });
 
-            // Function to clear validation
             function clearValidation(formId) {
                 $(formId).find('input, select').removeClass('is-invalid');
                 $(formId).find('.invalid-feedback').text('');

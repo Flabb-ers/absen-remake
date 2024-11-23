@@ -92,7 +92,7 @@ class ProdiController extends Controller
     public function destroy($id)
     {
         $prodi = Prodi::findOrFail($id);
-        Kelas::where('id_prodi', $prodi->id)->delete();
+        Kelas::where('s', $prodi->id)->delete();
         Kaprodi::where('prodis_id',$prodi->id)->delete();
         $prodi->delete();
         return response()->json(['success' => 'Program studi berhasil dihapus!']);

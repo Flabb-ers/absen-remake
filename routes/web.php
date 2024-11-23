@@ -71,6 +71,7 @@ Route::prefix('/presensi')->group(function () {
     Route::get('/data-mahasiswa/{id}', [MahasiswaController::class, 'kelas']);
     Route::post('/data-mahasiswa/move',[MahasiswaController::class,'pindahKelas']);
     Route::get('/presensi/data-mahasiswa/search', [MahasiswaController::class, 'search'])->name('data-mahasiswa.search');
+    Route::post('/data-mahasiswa/import', [MahasiswaController::class,'import'])->name('data-mahasiswa-import');
 
 
     // JADWAL

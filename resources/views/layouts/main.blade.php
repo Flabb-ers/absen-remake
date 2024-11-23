@@ -71,7 +71,6 @@
     <!-- End custom js for this page-->
     {{-- axsios --}}
     <script src="{{ asset('vendors/js/axios.min.js') }}" ></script>
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script>
         document.getElementById('clearSearchButton').addEventListener('click', function() {
             document.getElementById('search').value = '';

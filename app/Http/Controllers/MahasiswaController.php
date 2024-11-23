@@ -8,6 +8,9 @@ use App\Models\Jadwal;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class MahasiswaController extends Controller
 {
@@ -182,39 +185,6 @@ class MahasiswaController extends Controller
         return response()->json(['message' => 'Data mahasiswa berhasil dihapus'], 200);
     }
 
-    // soft delete ketika mahasiswa semester tinggi alias lulus force ketika belum tinggi alias DO/ keluar
-    // public function destroy($id)
-    // {
-    //     try {
-    //         $mahasiswa = Mahasiswa::with('kelas.semester')->findOrFail($id);
-
-    //         $kelasSemester = $mahasiswa->kelas->semester->semester;
-
-    //         $semesterTertinggi = Kelas::with('semester')
-    //             ->get()
-    //             ->max(function ($kelas) {
-    //                 return $kelas->semester->semester;
-    //             });
-
-    //         if ($kelasSemester == $semesterTertinggi) {
-    //             $mahasiswa->delete();
-    //             $message = 'Data mahasiswa di-soft delete karena semester tertinggi';
-    //         } else {
-    //             $mahasiswa->forceDelete();
-    //             $message = 'Data mahasiswa di-force delete karena bukan semester tertinggi';
-    //         }
-
-    //         return response()->json([
-    //             'success' => true,
-    //             'message' => $message
-    //         ], 200);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Gagal menghapus data: ' . $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
 
     public function kelas($id)
     {
@@ -228,11 +198,11 @@ class MahasiswaController extends Controller
         $dosens = Dosen::where('pembimbing_akademik', 1)
             ->where('status', 1)
             ->get();
-
+        $kelasId = Kelas::where('id', $id);
         $kelasAll = Jadwal::all();
         $kelasSem = Kelas::where('id_prodi', $namaKelas->id_prodi)->get();
         $kelasAlls = Kelas::where('id_prodi', $namaKelas->id_prodi)->first();
-        return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass', 'namaKelas', 'dosens', 'kelasAlls', 'kelasAll', 'kelasSem'));
+        return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass', 'namaKelas', 'dosens', 'kelasAlls', 'kelasAll', 'kelasSem', 'kelasId'));
     }
 
 
@@ -251,21 +221,108 @@ class MahasiswaController extends Controller
     }
 
     public function search(Request $request)
-{
-    $search = $request->search;
-    $kelasId = $request->kelas_id;
+    {
+        $search = $request->search;
+        $kelasId = $request->kelas_id;
 
-    $mahasiswas = Mahasiswa::with(['kelas', 'kelas.semester','kelas.prodi'])
-        ->where('kelas_id', $kelasId)
-        ->where(function ($query) use ($search) {
-            $query->where('nama_lengkap', 'LIKE', "%$search%")
-                  ->orWhere('nim', 'LIKE', "%$search%");
-        })
-        ->get();
+        $mahasiswas = Mahasiswa::with(['kelas', 'kelas.semester', 'kelas.prodi'])
+            ->where('kelas_id', $kelasId)
+            ->where(function ($query) use ($search) {
+                $query->where('nama_lengkap', 'LIKE', "%$search%")
+                    ->orWhere('nim', 'LIKE', "%$search%");
+            })
+            ->get();
 
-    return response()->json([
-        'data' => $mahasiswas
-    ]);
-}
+        return response()->json([
+            'data' => $mahasiswas
+        ]);
+    }
 
+
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls'
+        ]);
+    
+        $file = $request->file('file')->path();
+        $spreadsheet = IOFactory::load($file);
+        $sheet = $spreadsheet->getActiveSheet();
+    
+        $dataMahasiswa = [];
+        $errors = [];
+    
+        foreach ($sheet->getRowIterator(2) as $row) {
+            $namaLengkap = $sheet->getCell("B{$row->getRowIndex()}")->getValue();
+            $nim = $sheet->getCell("C{$row->getRowIndex()}")->getValue();
+            $nisn = $sheet->getCell("D{$row->getRowIndex()}")->getValue();
+            $nik = $sheet->getCell("E{$row->getRowIndex()}")->getValue();
+            $email = $sheet->getCell("F{$row->getRowIndex()}")->getValue();
+            $alamat = $sheet->getCell("G{$row->getRowIndex()}")->getValue();
+            $password = $sheet->getCell("H{$row->getRowIndex()}")->getValue();
+            $noTelephone = $sheet->getCell("I{$row->getRowIndex()}")->getValue();
+            $tanggalLahir = $sheet->getCell("J{$row->getRowIndex()}")->getValue();
+            $tempatLahir = $sheet->getCell("K{$row->getRowIndex()}")->getValue();
+            $namaIbu = $sheet->getCell("L{$row->getRowIndex()}")->getValue();
+            $jenisKelamin = $sheet->getCell("M{$row->getRowIndex()}")->getValue();
+            $kelasId = $sheet->getCell("N{$row->getRowIndex()}")->getValue();
+            $pembimbingAkademik = $sheet->getCell("O{$row->getRowIndex()}")->getValue();
+    
+            $tanggalLahir = Date::excelToDateTimeObject($tanggalLahir);
+    
+            // Validasi untuk setiap baris
+            if (empty($namaLengkap)) {
+                $errors[] = "Nama lengkap tidak boleh kosong pada baris {$row->getRowIndex()}";
+            }
+            if (empty($nim) || Mahasiswa::where('nim', $nim)->exists()) {
+                $errors[] = "NIM kosong atau sudah terdaftar pada baris {$row->getRowIndex()}";
+            }
+            if (!empty($email) && Mahasiswa::where('email', $email)->exists()) {
+                $errors[] = "Email sudah terdaftar pada baris {$row->getRowIndex()}";
+            }
+            if (empty($kelasId) || !Kelas::where('id', $kelasId)->exists()) {
+                $errors[] = "Kelas ID tidak valid pada baris {$row->getRowIndex()}";
+            }
+    
+            // Jika ada error, skip baris ini
+            if (!empty($errors)) {
+                continue;
+            }
+    
+            // Data valid akan dimasukkan ke array
+            $dataMahasiswa[] = [
+                'nama_lengkap' => $namaLengkap,
+                'nim' => $nim,
+                'nisn' => $nisn,
+                'nik' => $nik,
+                'email' => $email,
+                'alamat' => $alamat,
+                'password' => Hash::make($password),
+                'no_telephone' => $noTelephone,
+                'tanggal_lahir' => $tanggalLahir,
+                'tempat_lahir' => $tempatLahir,
+                'nama_ibu' => $namaIbu,
+                'jenis_kelamin' => $jenisKelamin,
+                'kelas_id' => $kelasId,
+                'dosen_pembimbing_id' => $pembimbingAkademik,
+            ];
+        }
+    
+        if (count($dataMahasiswa) > 0) {
+            Mahasiswa::insert($dataMahasiswa);
+        }
+    
+        // Jika ada error, masukkan ke session
+        if (count($errors) > 0) {
+            return redirect()->route('data-mahasiswa.index')->withErrors($errors);
+        }
+    
+        return redirect()->route('data-mahasiswa.index')->with('success', 'Data mahasiswa berhasil diimpor');
+    }
+    
+    
+    
+    
+    
 }
