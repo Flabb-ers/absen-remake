@@ -83,17 +83,20 @@
                 <span class="menu-title">Kontrak</span>
             </a>
         </li>
-        <li class="nav-item {{ Request::is('presensi/data-nilai/*') && !Request::is('presensi/data-nilai/pengajuan/*') ? 'active' : '' }}">
-            <a class="nav-link" data-bs-toggle="collapse" href="#data-nilai" aria-expanded="false" aria-controls="data-nilai">
+        <li
+            class="nav-item {{ Request::is('presensi/data-nilai/*') && !Request::is('presensi/data-nilai/pengajuan/*') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#data-nilai" aria-expanded="false"
+                aria-controls="data-nilai">
                 <i class="mdi mdi-folder menu-icon"></i>
                 <span class="menu-title">Nilai</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse {{ request()->is('presensi/data-nilai/*') && !request()->is('presensi/data-nilai/pengajuan/*') ? 'show' : '' }}" id="data-nilai">
+            <div class="collapse {{ request()->is('presensi/data-nilai/*') && !request()->is('presensi/data-nilai/pengajuan/*') ? 'show' : '' }}"
+                id="data-nilai">
                 <ul class="nav flex-column sub-menu">
-                    @if($kelasAll->isNotEmpty()) 
+                    @if ($kelasAll->isNotEmpty())
                         @foreach ($kelasAll->unique('kelas_id') as $kelas)
-                            @if(isset($kelas->kelas)) 
+                            @if (isset($kelas->kelas))
                                 <li class="nav-item">
                                     <a class="nav-link 
                                         {{ request()->segment(3) == $kelas->kelas->id ? 'active' : '' }} 
@@ -107,13 +110,13 @@
                             @endif
                         @endforeach
                     @else
-                            <a class="nav-link disabled" href="#">Belum ada jadwal</a>
+                        <a class="nav-link disabled" href="#">Belum ada jadwal</a>
                     @endif
                 </ul>
             </div>
         </li>
-        
-        
+
+
         <li class="nav-item">Wadir dan direkturrrrr</li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap" aria-expanded="false"
@@ -169,5 +172,46 @@
                 </ul>
             </div>
         </li>
+        <li class="nav-item">Mahasiswa</li>
+        <li class="nav-item {{ Request::is('presensi/mahasiswa/nilai') ? 'active' : '' }}">
+            <a class="nav-link" href="/presensi/mahasiswa/nilai">
+                <i class="mdi mdi-clipboard-edit-outline menu-icon"></i>
+                <span class="menu-title">Nilai</span>
+            </a>
+        </li>
+
+        {{-- @php
+            $uniqueSemesters = $semesters
+                ->map(function ($item) {
+                    return [
+                        'semester' => $item->kelas->semester->semester,
+                        'kelas_id' => $item->kelas->id,
+                    ];
+                })
+                ->unique(fn($value) => $value['semester']);
+        @endphp
+
+        <li
+            class="nav-item {{ Request::is('presensi/mahasiswa/nilai/*') && !Request::is('presensi/mahasiswa/nilai') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#riwayat" aria-expanded="false"
+                aria-controls="riwayat">
+                <i class="icon-folder menu-icon"></i>
+                <span class="menu-title">Riwayat Nilai</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="riwayat">
+                <ul class="nav flex-column sub-menu">
+                    @foreach ($uniqueSemesters as $semester)
+                        <li
+                            class="nav-item {{ Request::is('presensi/mahasiswa/riwayat/' . $semester['kelas_id']) ? 'active' : '' }}">
+                            <a class="nav-link" href="/presensi/mahasiswa/riwayat/{{ $semester['kelas_id'] }}">
+                                Semester {{ $semester['semester'] }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </li> --}}
+
     </ul>
 </nav>

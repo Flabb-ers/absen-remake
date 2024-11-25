@@ -86,10 +86,9 @@
             let matkul_id = "{{ $matkul_id }}";
             let jadwal_id = "{{ $jadwal_id }}";
 
-            let activeTab = "{{ request()->query('tab', 'tugas') }}"; // Default ke 'tugas'
+            let activeTab = "{{ request()->query('tab', 'tugas') }}";
             loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/${activeTab}`);
 
-            // Event listener untuk klik tab tugas
             $('#tab-tugas').on('click', function(e) {
                 e.preventDefault();
                 loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/tugas`);
@@ -98,7 +97,6 @@
                 $(this).addClass('active');
             });
 
-            // Event listener untuk klik tab UTS
             $('#tab-uts').on('click', function(e) {
                 e.preventDefault();
                 loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/uts`);
@@ -107,7 +105,6 @@
                 $(this).addClass('active');
             });
 
-            // Event listener untuk klik tab UAS
             $('#tab-uas').on('click', function(e) {
                 e.preventDefault();
                 loadTabContent(`/presensi/data-nilai/${kelas_id}/${matkul_id}/${jadwal_id}/uas`);

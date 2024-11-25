@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('mahasiswa_id')->references('id')->on('mahasiswas');
             $table->foreignId('kelas_id')->references('id')->on('kelas');
             $table->foreignId('matkul_id')->references('id')->on('matkuls');
-            $table->integer('nilai_total');
+            $table->double('nilai_total');
             $table->string('nilai_huruf');
             $table->timestamps();
         });

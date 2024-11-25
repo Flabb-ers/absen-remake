@@ -25,6 +25,7 @@ use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\RekapNilaiController;
 use App\Http\Controllers\TahunAkademikController;
+use App\Http\Controllers\NilaiMahasiswaController;
 use App\Http\Controllers\PengajuanRekapBeritaController;
 use App\Http\Controllers\PengajuanRekapkontrakController;
 use App\Http\Controllers\PengajuanRekapPresensiController;
@@ -173,5 +174,12 @@ Route::prefix('/presensi')->group(function () {
         Route::get('/pengajuan/rekap-nilai/{kelas_id}/{matkul_id}/{jadwal_id}',[RekapNilaiController::class,'diajukan']);
         Route::put('/pengajuan/rekap-nilai/{kelas_id}/{matkul_id}/{jadwal_id}',[RekapNilaiController::class,'update']);
         Route::get('rekap/{kelas_id}/{matkul_id}/{jadwal_id}',[RekapNilaiController::class,'rekap']);
+    });
+
+    // HALAMAN MAHASISWA
+    Route::prefix('/mahasiswa')->group(function () {
+        Route::get('/nilai', [NilaiMahasiswaController::class,'index']);
+        Route::get('/riwayat/{kelas_id}', [NilaiMahasiswaController::class,'riwayat']);
+        Route::get('/khs', [NilaiMahasiswaController::class,'khs']);
     });
 });

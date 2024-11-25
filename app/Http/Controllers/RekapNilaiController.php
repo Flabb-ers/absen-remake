@@ -475,7 +475,6 @@ class RekapNilaiController extends Controller
                 ->exists();
             Log::info('Uts setuju: ' . ($utsSetuju ? 'Yes' : 'No'));
 
-            // Jika semua setuju, lanjutkan proses pengajuan
             if ($tugasSetuju && $etikaSetuju && $aktifSetuju && $uasSetuju && $utsSetuju) {
                 Log::info('Semua setuju, melanjutkan ke pengajuan rekap nilai');
 
@@ -704,64 +703,57 @@ class RekapNilaiController extends Controller
 
     private function calculateTotalNilai($mahasiswa_id, $kelas_id, $matkul_id, $jadwal_id)
 {
-    // Menghitung total nilai tugas (tugas)
     $tugas = Tugas::where('mahasiswa_id', $mahasiswa_id)
         ->where('kelas_id', $kelas_id)
         ->where('matkul_id', $matkul_id)
         ->where('jadwal_id', $jadwal_id)
-        ->sum('nilai');  // Gunakan sum karena mungkin lebih dari satu nilai tugas
+        ->sum('nilai'); 
 
-    // Mengambil nilai keaktifan (Aktif)
     $keaktifan = Aktif::where('mahasiswa_id', $mahasiswa_id)
         ->where('kelas_id', $kelas_id)
         ->where('matkul_id', $matkul_id)
         ->where('jadwal_id', $jadwal_id)
         ->value('nilai');
 
-    // Mengambil nilai etika (Etika)
     $etika = Etika::where('mahasiswa_id', $mahasiswa_id)
         ->where('kelas_id', $kelas_id)
         ->where('matkul_id', $matkul_id)
         ->where('jadwal_id', $jadwal_id)
         ->value('nilai');
 
-    // Menghitung total kehadiran berdasarkan status 'H' (hadir) atau 'T' (tidak hadir)
     $totalPertemuan = Absen::where('kelas_id', $kelas_id)
         ->where('matkuls_id', $matkul_id)
         ->where('jadwals_id', $jadwal_id)
-        ->max('pertemuan');  // Ambil pertemuan terakhir (tertinggi)
+        ->max('pertemuan');
 
     $kehadiran = Absen::where('mahasiswas_id', $mahasiswa_id)
         ->where('kelas_id', $kelas_id)
         ->where('matkuls_id', $matkul_id)
         ->where('jadwals_id', $jadwal_id)
         ->whereIn('status', ['H', 'T'])
-        ->count();  // Hitung jumlah kehadiran dan ketidakhadiran
+        ->count(); 
 
-    // Menghitung persentase kehadiran
     $persentaseKehadiran = $totalPertemuan > 0 ? ($kehadiran / $totalPertemuan) * 100 : 0;
 
-    // Mengambil nilai UTS
     $uts = Uts::where('mahasiswa_id', $mahasiswa_id)
         ->where('kelas_id', $kelas_id)
         ->where('matkul_id', $matkul_id)
         ->where('jadwal_id', $jadwal_id)
         ->value('nilai');
 
-    // Mengambil nilai UAS
     $uas = Uas::where('mahasiswa_id', $mahasiswa_id)
         ->where('kelas_id', $kelas_id)
         ->where('matkul_id', $matkul_id)
         ->where('jadwal_id', $jadwal_id)
         ->value('nilai');
 
-    // Total nilai dihitung berdasarkan bobot
-    return ($tugas * 0.25) +  // Tugas: 25%
-           ($keaktifan * 0.05) +  // Keaktifan: 5%
-           ($etika * 0.05) +  // Etika: 5%
-           ($persentaseKehadiran * 0.15) +  // Kehadiran: 15%
-           ($uts * 0.25) +  // UTS: 25%
-           ($uas * 0.25);  // UAS: 25%
+
+    return ($tugas * 0.25) +  
+           ($keaktifan * 0.05) + 
+           ($etika * 0.05) +  
+           ($persentaseKehadiran * 0.15) + 
+           ($uts * 0.25) + 
+           ($uas * 0.25); 
 }
 
 
