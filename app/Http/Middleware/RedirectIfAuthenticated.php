@@ -17,7 +17,9 @@ class RedirectIfAuthenticated
      */
     public function handle(Request $request, Closure $next, string ...$guards): Response
     {
-        $guards = empty($guards) ? [null] : $guards;
+        $guards = empty($guards) ? 
+            ['admin', 'direktur', 'wakil_direktur', 'kaprodi', 'mahasiswa', 'dosen'] : 
+            $guards;
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {

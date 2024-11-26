@@ -34,14 +34,36 @@ return [
     | Supported: "session"
     |
     */
-
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'admins',
+        ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+        'direktur' => [
+            'driver' => 'session',
+            'provider' => 'direkturs',
+        ],
+        'wakil_direktur' => [
+            'driver' => 'session',
+            'provider' => 'wadirs',
+        ],
+        'kaprodi' => [
+            'driver' => 'session',
+            'provider' => 'kaprodis',
+        ],
+        'mahasiswa' => [
+            'driver' => 'session',
+            'provider' => 'mahasiswas',
+        ],
+        'dosen' => [
+            'driver' => 'session',
+            'provider' => 'dosens',
         ],
     ],
-
     /*
     |--------------------------------------------------------------------------
     | User Providers
@@ -60,15 +82,30 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'admins' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\Models\Admin::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'direkturs' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Direktur::class,
+        ],
+        'wadirs' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Wadir::class,
+        ],
+        'kaprodis' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Kaprodi::class,
+        ],
+        'mahasiswas' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Mahasiswa::class,
+        ],
+        'dosens' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Dosen::class,
+        ],
     ],
 
     /*
@@ -90,15 +127,39 @@ return [
     |
     */
 
+
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
+        'admins' => [
+            'provider' => 'admins',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'direkturs' => [
+            'provider' => 'direkturs',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'wadirs' => [
+            'provider' => 'wadirs',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'kaprodis' => [
+            'provider' => 'kaprodis',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'mahasiswas' => [
+            'provider' => 'mahasiswas',
             'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,
         ],
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Password Confirmation Timeout

@@ -40,7 +40,10 @@ class NilaiMahasiswaController extends Controller
                 ->with(['kelas.prodi']);
         }])->get();
 
-        return view("pages.mahasiswa.nilai.index", compact("kelasAll", "combinedData", "semesters"));
+        // sesion mahasiswa
+        $sem =1;
+
+        return view("pages.mahasiswa.nilai.index", compact("kelasAll", "combinedData", "semesters",'sem'));
     }
 
     /**
@@ -73,7 +76,7 @@ class NilaiMahasiswaController extends Controller
     }
 
 
-    public function khs()
+    public function khs($semester)
     {
         $ipks = NilaiHuruf::with(['matkul', 'kelas.prodi'])
             ->where('mahasiswa_id', 1)
@@ -87,8 +90,8 @@ class NilaiMahasiswaController extends Controller
             ->whereHas('kelas.prodi', function ($query) {
                 $query->where('id', 1);
             })
-            ->whereHas('kelas', function ($query) {
-                $query->where('id_semester', 1);
+            ->whereHas('kelas', function ($query) use ($semester) {
+                $query->where('id_semester', $semester);
             })
             ->get();
 

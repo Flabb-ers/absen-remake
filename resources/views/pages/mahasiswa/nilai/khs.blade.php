@@ -9,7 +9,6 @@
     td {
         border: 1px solid black;
         padding: 8px;
-        /* Anda dapat mengubah ini jika ingin padding di seluruh tabel */
     }
 
     th {
@@ -24,13 +23,14 @@
     td:nth-child(6),
     td:nth-child(7) {
         padding: 0;
+        margin-top: -5px
     }
 
     .container {
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
     }
 
     .left,
@@ -52,15 +52,25 @@
         font-family: 'Monotype Corsiva', cursive;
     }
 </style>
-<div style="text-align: center;font-size:18px">
-    <div style="font-weight: bold">YAYASAN SAWUNGGALIH AJI PURWOREJO</div>
-    <div class="monotype-corsiva">SAWUNGGALIH AJI FUNDATION PURWOREJO</div>
-    <div style="font-weight: bold">POLITEKNIK SAWUNGGALIH AJI</div>
-    <div class="monotype-corsiva">SAWUNGGALIH AJI POLYTECHNIC</div>
-    <div>JL. Wismoaji No.8 Kutoarjo Purworejo</div>
-    <div>Telp.(0275) 642466. 3140444 Fax.(0275) 642467</div>
+<div style="display: flex; align-items: center; justify-content: space-between; font-size: 1em">
+    <!-- Logo -->
+    <div style="flex-shrink: 0; margin-right: -100px">
+        <img src="{{ asset('images/file.png') }}" alt="Logo" style="height: 100px; width: auto">
+    </div>
+
+    <!-- Teks -->
+    <div style="text-align: center; flex: 1;" >
+        <div style="font-weight: bold">YAYASAN SAWUNGGALIH AJI PURWOREJO</div>
+        <div class="monotype-corsiva">SAWUNGGALIH AJI FUNDATION PURWOREJO</div>
+        <div style="font-weight: bold">POLITEKNIK SAWUNGGALIH AJI</div>
+        <div class="monotype-corsiva">SAWUNGGALIH AJI POLYTECHNIC</div>
+        <div>JL. Wismoaji No.8 Kutoarjo Purworejo</div>
+        <div>Telp.(0275) 642466. 3140444 Fax.(0275) 642467</div>
+    </div>
 </div>
-<hr style="border: 1px solid black; margin-bottom: 20px;">
+
+
+<hr style="border: 1px solid black; margin-bottom: 15px;">
 <div style="font-weight: bold; text-align:center;margin-bottom:20px">
     <div style="text-decoration: underline">KARTU HASIL STUDI</div>
     <div class="monotype-corsiva">Study Result File</div>
@@ -111,27 +121,27 @@
 </div>
 <table>
     <tr>
-        <td style="text-align:center">
+        <td style="text-align:center;font-weight:bold">
             <div>No</div>
             <div class="monotype-corsiva">No</div>
         </td>
-        <td colspan="2" style="text-align:center">
+        <td colspan="2" style="text-align:center;font-weight:bold">
             <div>Kode</div>
             <div class="monotype-corsiva">Code</div>
         </td>
-        <td style="text-align:center">
+        <td style="text-align:center;font-weight:bold">
             <div>MATA KULIAH</div>
             <div class="monotype-corsiva">Courses</div>
         </td>
-        <td style="text-align:center">
+        <td style="text-align:center;font-weight:bold">
             <div>SKS</div>
             <div class="monotype-corsiva">Semester Credit</div>
         </td>
-        <td style="text-align:center">
+        <td style="text-align:center;font-weight:bold">
             <div>NILAI</div>
             <div class="monotype-corsiva">Grade</div>
         </td>
-        <td style="text-align:center">
+        <td style="text-align:center;font-weight:bold">
             <div>KREDIT</div>
             <div class="monotype-corsiva">Credit</div>
         </td>
@@ -174,7 +184,7 @@
     <tr>
         <td></td>
         <td></td>
-        <td colspan="2">
+        <td colspan="2" style="padding-top:0;padding-bottom:0">
             <div>JUMLAH</div>
             <div>Total</div>
         </td>
@@ -185,7 +195,7 @@
     <tr>
         <td></td>
         <td></td>
-        <td colspan="2">
+        <td colspan="2" style="padding-top:0;padding-bottom:0">
             <div>Kumulatif</div>
             <div>Cumulative</div>
         </td>
@@ -196,28 +206,30 @@
     <tr>
         <td colspan="2"></td>
 
-        <td colspan="2">
+        <td colspan="2" style="margin-top: -5px;padding-top:0;padding-bottom:0">
             <div>Indeks Prestasi Semester</div>
             <div>IPS : {{ number_format(round($kreditIps / $sksIps, 2), 2, '.', '') }}</div>
             <div class="monotype-corsiva">Grade Point</div>
         </td>
-        <td colspan="2">
+        <td colspan="2" style="margin-top: -5px;padding-top:0;padding-bottom:0">
             <div>Indeks Prestasi Kumulatif</div>
             <div>IPK : {{ number_format(round($kreditIpk / $sksIpk, 2), 2, '.', '') }}</div>
             <div class="monotype-corsiva">Cumulative GPA</div>
         </td>
     </tr>
 </table>
-<div style="text-align: right">Purworejo, {{ now()->format('d M y') }}</div>
+<div style="margin-left:386px;margin-top:10px">
+    Purworejo, {{ now()->translatedFormat('d F Y') }}
+</div>
 <div class="container">
     <div class="left">
         <div>Ketua Progam Studi,</div>
-        <div class="monotype-corsiva" style="margin-bottom:90px">Head of Study Programmed</div>
+        <div class="monotype-corsiva" style="margin-bottom:80px">Head of Study Programmed</div>
         <div style="font-weight:bold">{{ $kaprodi->nama }}</div>
     </div>
     <div class="right">
         <div>Pembina Akademik,</div>
-        <div class="monotype-corsiva" style="margin-bottom:90px">Academic Supervisor</div>
+        <div class="monotype-corsiva" style="margin-bottom:80px">Academic Supervisor</div>
         <div>{{ $ipss->first()->mahasiswa->pembimbingAkademik->nama }}</div>
     </div>
 </div>
@@ -273,3 +285,6 @@
         return $result;
     }
 @endphp
+<script>
+    window.print()
+</script>

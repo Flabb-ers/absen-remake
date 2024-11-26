@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Admin;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Dosen;
@@ -167,6 +168,12 @@ class DatabaseSeeder extends Seeder
         ]);
         Ruangan::create([
             'nama'=>'A.1.2'
+        ]);
+
+        Admin::create([
+            'nama'=> 'Admin',
+            'email'=>'admin@email.com',
+            'password'=> Hash::make('admin123'),
         ]);
 
     }

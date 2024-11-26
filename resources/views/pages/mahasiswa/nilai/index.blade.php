@@ -17,10 +17,11 @@
                                 $allNilaiFilled = $combinedData->every(function($data) {
                                     return $data['nilai'] && $data['nilai']->nilai_total && $data['nilai']->nilai_huruf;
                                 });
+
                             @endphp
 
                             @if ($allNilaiFilled)
-                                <a href="/cetak-khs" class="btn btn-primary mb-3">Cetak KHS</a>
+                                <a href="/presensi/mahasiswa/khs/{{$sem}}" class="btn btn-primary mb-3">Cetak KHS</a>
                             @endif
 
                             <div class="table-responsive">

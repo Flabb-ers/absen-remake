@@ -6,212 +6,218 @@
                 <span class="menu-title">Dashboard</span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#data-master" aria-expanded="false"
-                aria-controls="data-master">
-                <i class="mdi mdi-folder menu-icon"></i>
-                <span class="menu-title">Data Master</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="data-master">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-matkul">Data Matkul</a>
-                    </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-prodi">Data Prodi</a>
-                    </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-semester">Data
-                            Semester</a>
-                    </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-kelas">Data Kelas</a>
-                    </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-tahun-akademik">Tahun
-                            Akademik</a>
-                    </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-ruangan">Data Ruangan</a>
-                    </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-dosen">Dosen</a>
-                    </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-kaprodi">Kaprodi</a>
-                    </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-wadir">Wakil Direktur</a>
-                    </li>
-                    <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-direktur">Direktur</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item {{ Request::is('presensi/data-mahasiswa*') ? 'active' : '' }}">
-            <a class="nav-link" href="/presensi/data-mahasiswa">
-                <i class="mdi mdi-account-group menu-icon"></i>
-                <span class="menu-title">Mahasiswa</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/presensi/jadwal-mengajar">
-                <i class="mdi mdi-calendar-month-outline menu-icon"></i>
-                <span class="menu-title">Jadwal Mengajar</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#rekap-nilai" aria-expanded="false"
-                aria-controls="rekap-nilai">
-                <i class="icon-folder menu-icon"></i>
-                <span class="menu-title">Rekap Nilai</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="rekap-nilai">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link"
-                            href="/presensi/data-nilai/pengajuan/rekap-nilai">Diajukan</a>
-                    </li>
-                    <li class="nav-item"> <a class="nav-link"
-                            href="/presensi/data-nilai/pengajuan/nilai-disetujui">Disetujui</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item">Dosen</li>
-        <li class="nav-item {{ Request::is('presensi/data-presensi*') ? 'active' : '' }}">
-            <a class="nav-link" href="/presensi/data-presensi">
-                <i class="mdi mdi-clipboard-edit-outline menu-icon"></i>
-                <span class="menu-title">Presensi</span>
-            </a>
-        </li>
-        <li class="nav-item {{ Request::is('presensi/data-kontrak*') ? 'active' : '' }}">
-            <a class="nav-link" href="/presensi/data-kontrak">
-                <i class="mdi mdi-clipboard-edit-outline menu-icon"></i>
-                <span class="menu-title">Kontrak</span>
-            </a>
-        </li>
-        <li
-            class="nav-item {{ Request::is('presensi/data-nilai/*') && !Request::is('presensi/data-nilai/pengajuan/*') ? 'active' : '' }}">
-            <a class="nav-link" data-bs-toggle="collapse" href="#data-nilai" aria-expanded="false"
-                aria-controls="data-nilai">
-                <i class="mdi mdi-folder menu-icon"></i>
-                <span class="menu-title">Nilai</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse {{ request()->is('presensi/data-nilai/*') && !request()->is('presensi/data-nilai/pengajuan/*') ? 'show' : '' }}"
-                id="data-nilai">
-                <ul class="nav flex-column sub-menu">
-                    @if ($kelasAll->isNotEmpty())
-                        @foreach ($kelasAll->unique('kelas_id') as $kelas)
-                            @if (isset($kelas->kelas))
-                                <li class="nav-item">
-                                    <a class="nav-link 
+        @if (Auth::guard('admin')->check())
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#data-master" aria-expanded="false"
+                    aria-controls="data-master">
+                    <i class="mdi mdi-folder menu-icon"></i>
+                    <span class="menu-title">Data Master</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="data-master">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-matkul">Data
+                                Matkul</a>
+                        </li>
+                        <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-prodi">Data Prodi</a>
+                        </li>
+                        <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-semester">Data
+                                Semester</a>
+                        </li>
+                        <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-kelas">Data Kelas</a>
+                        </li>
+                        <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-tahun-akademik">Tahun
+                                Akademik</a>
+                        </li>
+                        <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-ruangan">Data
+                                Ruangan</a>
+                        </li>
+                        <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-dosen">Dosen</a>
+                        </li>
+                        <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-kaprodi">Kaprodi</a>
+                        </li>
+                        <li class="nav-item"> <a class="nav-link" href="/presensi/data-master/data-wadir">Wakil
+                                Direktur</a>
+                        </li>
+                        <li class="nav-item"> <a class="nav-link"
+                                href="/presensi/data-master/data-direktur">Direktur</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item {{ Request::is('presensi/data-mahasiswa*') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/data-mahasiswa">
+                    <i class="mdi mdi-account-group menu-icon"></i>
+                    <span class="menu-title">Mahasiswa</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/presensi/jadwal-mengajar">
+                    <i class="mdi mdi-calendar-month-outline menu-icon"></i>
+                    <span class="menu-title">Jadwal Mengajar</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#rekap-nilai" aria-expanded="false"
+                    aria-controls="rekap-nilai">
+                    <i class="icon-folder menu-icon"></i>
+                    <span class="menu-title">Rekap Nilai</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="rekap-nilai">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item"> <a class="nav-link"
+                                href="/presensi/data-nilai/pengajuan/rekap-nilai">Diajukan</a>
+                        </li>
+                        <li class="nav-item"> <a class="nav-link"
+                                href="/presensi/data-nilai/pengajuan/nilai-disetujui">Disetujui</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        @elseif(Auth::guard('dosen')->check())
+            <li class="nav-item">Dosen</li>
+            <li class="nav-item {{ Request::is('presensi/data-presensi*') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/data-presensi">
+                    <i class="mdi mdi-clipboard-edit-outline menu-icon"></i>
+                    <span class="menu-title">Presensi</span>
+                </a>
+            </li>
+            <li class="nav-item {{ Request::is('presensi/data-kontrak*') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/data-kontrak">
+                    <i class="mdi mdi-clipboard-edit-outline menu-icon"></i>
+                    <span class="menu-title">Kontrak</span>
+                </a>
+            </li>
+            <li
+                class="nav-item {{ Request::is('presensi/data-nilai/*') && !Request::is('presensi/data-nilai/pengajuan/*') ? 'active' : '' }}">
+                <a class="nav-link" data-bs-toggle="collapse" href="#data-nilai" aria-expanded="false"
+                    aria-controls="data-nilai">
+                    <i class="mdi mdi-folder menu-icon"></i>
+                    <span class="menu-title">Nilai</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse {{ request()->is('presensi/data-nilai/*') && !request()->is('presensi/data-nilai/pengajuan/*') ? 'show' : '' }}"
+                    id="data-nilai">
+                    <ul class="nav flex-column sub-menu">
+                        @if ($kelasAll->isNotEmpty())
+                            @foreach ($kelasAll->unique('kelas_id') as $kelas)
+                                @if (isset($kelas->kelas))
+                                    <li class="nav-item">
+                                        <a class="nav-link 
                                         {{ request()->segment(3) == $kelas->kelas->id ? 'active' : '' }} 
                                         {{ request()->is('presensi/data-presensi/*') ? 'disabled' : '' }}
                                         {{ request()->is('presensi/data-kontrak/*') ? 'disabled' : '' }}"
-                                        id="sidebar-kelas-{{ $kelas->kelas->id }}"
-                                        href="{{ request()->is('presensi/data-presensi/*') ? 'javascript:void(0)' : '/presensi/data-nilai/' . $kelas->kelas->id }}">
-                                        {{ $kelas->kelas->nama_kelas }}
-                                    </a>
-                                </li>
-                            @endif
-                        @endforeach
-                    @else
-                        <a class="nav-link disabled" href="#">Belum ada jadwal</a>
-                    @endif
-                </ul>
-            </div>
-        </li>
+                                            id="sidebar-kelas-{{ $kelas->kelas->id }}"
+                                            href="{{ request()->is('presensi/data-presensi/*') ? 'javascript:void(0)' : '/presensi/data-nilai/' . $kelas->kelas->id }}">
+                                            {{ $kelas->kelas->nama_kelas }}
+                                        </a>
+                                    </li>
+                                @endif
+                            @endforeach
+                        @else
+                            <a class="nav-link disabled" href="#">Belum ada jadwal</a>
+                        @endif
+                    </ul>
+                </div>
+            </li>
 
 
-        <li class="nav-item">Wadir dan direkturrrrr</li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap" aria-expanded="false"
-                aria-controls="pengajuan-rekap">
-                <i class="icon-folder menu-icon"></i>
-                <span class="menu-title">Rekap Presensi</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="pengajuan-rekap">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link"
-                            href="/presensi/pengajuan-konfirmasi/rekap-presensi">Diajukan</a>
-                    </li>
-                    <li class="nav-item"> <a class="nav-link"
-                            href="/presensi/pengajuan-konfirmasi/presensi-disetujui">Disetujui</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap-berita" aria-expanded="false"
-                aria-controls="pengajuan-rekap-berita">
-                <i class="icon-folder menu-icon"></i>
-                <span class="menu-title">Rekap Berita Acara</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="pengajuan-rekap-berita">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link"
-                            href="/presensi/pengajuan-konfirmasi/rekap-berita">Diajukan</a>
-                    </li>
-                    <li class="nav-item"> <a class="nav-link"
-                            href="/presensi/pengajuan-konfirmasi/berita-disetujui">Disetujui</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap-kontrak" aria-expanded="false"
-                aria-controls="pengajuan-rekap-kontrak">
-                <i class="icon-folder menu-icon"></i>
-                <span class="menu-title">Rekap Kontrak Kuliah</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="pengajuan-rekap-kontrak">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link"
-                            href="/presensi/pengajuan-konfirmasi/rekap-kontrak">Diajukan</a>
-                    </li>
-                    <li class="nav-item"> <a class="nav-link"
-                            href="/presensi/pengajuan-konfirmasi/kontrak-disetujui">Disetujui</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item">Mahasiswa</li>
-        <li class="nav-item {{ Request::is('presensi/mahasiswa/nilai') ? 'active' : '' }}">
-            <a class="nav-link" href="/presensi/mahasiswa/nilai">
-                <i class="mdi mdi-clipboard-edit-outline menu-icon"></i>
-                <span class="menu-title">Nilai</span>
-            </a>
-        </li>
-
-        {{-- @php
-            $uniqueSemesters = $semesters
-                ->map(function ($item) {
-                    return [
-                        'semester' => $item->kelas->semester->semester,
-                        'kelas_id' => $item->kelas->id,
-                    ];
-                })
-                ->unique(fn($value) => $value['semester']);
-        @endphp
-
-        <li
-            class="nav-item {{ Request::is('presensi/mahasiswa/nilai/*') && !Request::is('presensi/mahasiswa/nilai') ? 'active' : '' }}">
-            <a class="nav-link" data-bs-toggle="collapse" href="#riwayat" aria-expanded="false"
-                aria-controls="riwayat">
-                <i class="icon-folder menu-icon"></i>
-                <span class="menu-title">Riwayat Nilai</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="riwayat">
-                <ul class="nav flex-column sub-menu">
-                    @foreach ($uniqueSemesters as $semester)
-                        <li
-                            class="nav-item {{ Request::is('presensi/mahasiswa/riwayat/' . $semester['kelas_id']) ? 'active' : '' }}">
-                            <a class="nav-link" href="/presensi/mahasiswa/riwayat/{{ $semester['kelas_id'] }}">
-                                Semester {{ $semester['semester'] }}
-                            </a>
+            <li class="nav-item">Wadir dan direkturrrrr</li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap" aria-expanded="false"
+                    aria-controls="pengajuan-rekap">
+                    <i class="icon-folder menu-icon"></i>
+                    <span class="menu-title">Rekap Presensi</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="pengajuan-rekap">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item"> <a class="nav-link"
+                                href="/presensi/pengajuan-konfirmasi/rekap-presensi">Diajukan</a>
                         </li>
-                    @endforeach
-                </ul>
-            </div>
-        </li> --}}
+                        <li class="nav-item"> <a class="nav-link"
+                                href="/presensi/pengajuan-konfirmasi/presensi-disetujui">Disetujui</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap-berita" aria-expanded="false"
+                    aria-controls="pengajuan-rekap-berita">
+                    <i class="icon-folder menu-icon"></i>
+                    <span class="menu-title">Rekap Berita Acara</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="pengajuan-rekap-berita">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item"> <a class="nav-link"
+                                href="/presensi/pengajuan-konfirmasi/rekap-berita">Diajukan</a>
+                        </li>
+                        <li class="nav-item"> <a class="nav-link"
+                                href="/presensi/pengajuan-konfirmasi/berita-disetujui">Disetujui</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap-kontrak" aria-expanded="false"
+                    aria-controls="pengajuan-rekap-kontrak">
+                    <i class="icon-folder menu-icon"></i>
+                    <span class="menu-title">Rekap Kontrak Kuliah</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="pengajuan-rekap-kontrak">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item"> <a class="nav-link"
+                                href="/presensi/pengajuan-konfirmasi/rekap-kontrak">Diajukan</a>
+                        </li>
+                        <li class="nav-item"> <a class="nav-link"
+                                href="/presensi/pengajuan-konfirmasi/kontrak-disetujui">Disetujui</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        @elseif(Auth::guard('mahasiswa')->check())
+            <li class="nav-item {{ Request::is('presensi/mahasiswa/nilai') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/mahasiswa/nilai">
+                    <i class="mdi mdi-clipboard-edit-outline menu-icon"></i>
+                    <span class="menu-title">Nilai</span>
+                </a>
+            </li>
 
+            @php
+                $uniqueSemesters = $semesters
+                    ->map(function ($item) {
+                        return [
+                            'semester' => $item->kelas->semester->semester,
+                            'kelas_id' => $item->kelas->id,
+                        ];
+                    })
+                    ->unique(fn($value) => $value['semester']);
+            @endphp
+
+            <li
+                class="nav-item {{ Request::is('presensi/mahasiswa/nilai/*') && !Request::is('presensi/mahasiswa/nilai') ? 'active' : '' }}">
+                <a class="nav-link" data-bs-toggle="collapse" href="#riwayat" aria-expanded="false"
+                    aria-controls="riwayat">
+                    <i class="icon-folder menu-icon"></i>
+                    <span class="menu-title">Riwayat Nilai</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="riwayat">
+                    <ul class="nav flex-column sub-menu">
+                        @foreach ($uniqueSemesters as $semester)
+                            <li
+                                class="nav-item {{ Request::is('presensi/mahasiswa/riwayat/' . $semester['kelas_id']) ? 'active' : '' }}">
+                                <a class="nav-link" href="/presensi/mahasiswa/riwayat/{{ $semester['kelas_id'] }}">
+                                    Semester {{ $semester['semester'] }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </li>
+        @endif
     </ul>
 </nav>

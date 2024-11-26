@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Wadir extends Authenticatable
+class Admin extends Authenticatable
 {
     use HasFactory;
+
+    protected $table = 'admin';
 
     protected $guarded = ['id'];
 }

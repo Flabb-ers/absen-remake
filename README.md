@@ -14,7 +14,7 @@
 - [ ] Add semester dan prodi in matkul malah salah kocak kocak
 - [x] Add sikap mahasiswa
 - [x] Add Keaktifan mahasiswa
-- [ ] Add KHS
+- [x] Add KHS
 - [ ] Add KRS
 - [ ] Add import export 
 - [x] Add dosen pa null when dosen on deleted or status = 0, kelas deleted = null in mahasiswa
@@ -23,4 +23,5 @@
 - [x] `BUG When clear search button on clicked data hasn't reseted, (in mahasiswa and matakuliah) `
 
 - [x] Fix Rekap button can't click when uas uts tugas etika aktif == null
-- [ ] nilai di rekap nilai controller error cek log kemarin tipe data nya integer yang huruf jadi tidak bisa teruskan yabiar tidak lupa
+- [x] nilai di rekap nilai controller error cek log kemarin tipe data nya integer yang huruf jadi tidak bisa teruskan yabiar tidak lupa
+- [x] add auth

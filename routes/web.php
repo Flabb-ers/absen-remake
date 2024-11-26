@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UasController;
 use App\Http\Controllers\UtsController;
 use App\Http\Controllers\AktifController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\EtikaController;
 use App\Http\Controllers\KelasController;
@@ -42,15 +43,22 @@ use App\Http\Controllers\PengajuanRekapPresensiController;
 */
 
 Route::get('/', function () {
-    return redirect('/presensi/dashboard');
+    return redirect('/login');
 });
 
-Route::prefix('/presensi')->group(function () {
+// AUTH
+route::get('/login',[AuthController::class,'showLogin'])->name('login')->middleware('guest');
+route::post('/login',[AuthController::class,'processLogin'])->middleware('guest');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+
+
+Route::prefix('/presensi')->middleware('auth:admin')->group(function () {
     // DASHBOARD
     Route::get('/dashboard', function () {
         $kelasAll = Jadwal::all();
         return view('pages.dashboard.index', compact('kelasAll'));
-    });
+    })->name('dashboard');
     // Data Master
     Route::prefix('/data-master')->group(function () {
         Route::resource('/data-kelas', KelasController::class)->except(['show']);
@@ -180,6 +188,6 @@ Route::prefix('/presensi')->group(function () {
     Route::prefix('/mahasiswa')->group(function () {
         Route::get('/nilai', [NilaiMahasiswaController::class,'index']);
         Route::get('/riwayat/{kelas_id}', [NilaiMahasiswaController::class,'riwayat']);
-        Route::get('/khs', [NilaiMahasiswaController::class,'khs']);
+        Route::get('/khs/{semester}', [NilaiMahasiswaController::class,'khs']);
     });
 });
