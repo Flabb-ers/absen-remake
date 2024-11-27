@@ -25,3 +25,6 @@
 - [x] Fix Rekap button can't click when uas uts tugas etika aktif == null
 - [x] nilai di rekap nilai controller error cek log kemarin tipe data nya integer yang huruf jadi tidak bisa teruskan yabiar tidak lupa
 - [x] add auth
+
+- [x] di rekap presensi  dan kontrank untuk nama tanda tangan belum di ubah
+- [ ] **plan besok cek auth nilai kalau sudah cek khs dan buat history persemester**

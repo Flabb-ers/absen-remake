@@ -236,12 +236,12 @@
         <div class="signature-section">
             <div class="signature-box left">
                 <h5 style="margin-bottom:50px">Mengetahui</h5>
-                <h5>.....................................................</h5>
+                <h5 style="font-weight: bold">{{ $kaprodi->nama }}</h5>
                 <h5>Kaprodi</h5>
             </div>
             <div class="signature-box right">
                 <h5 style="margin-left: 100px;margin-bottom:50px">Purworejo,</h5>
-                <h5 style="margin-left: 100px;">.....................................................</h5>
+                <h5 style="margin-left: 100px;font-weight:bold">{{ $dosenPengampu->nama }}</h5>
                 <h5 style="margin-left: 100px;">Dosen Pengampu</h5>
             </div>
         </div>

@@ -212,7 +212,7 @@
                     <td colspan="2">{{ $mahasiswa->nama_lengkap }}</td>
 
                     @php
-                        $statusPerKolom = []; 
+                        $statusPerKolom = [];
                     @endphp
 
                     @foreach ($rentang as $r)
@@ -226,12 +226,11 @@
                                 }
                             }
 
-                           
                             if (isset($jumlahHadirPerKolom[$r]) && ($status === 'H' || $status === 'T')) {
                                 $jumlahHadirPerKolom[$r]++;
                             }
 
-                            $statusPerKolom[$r] = $status; 
+                            $statusPerKolom[$r] = $status;
                         @endphp
                         <td>{{ $statusPerKolom[$r] ?: '' }}</td>
                     @endforeach
@@ -260,63 +259,43 @@
             </div>
         </div>
 
-
-
-        {{-- @php
-        
-            $isKaprodi = auth()->guard('kaprodi')->check(); // Cek jika pengguna adalah kaprodi
-            $isWadir = auth()->guard('wakil_direktur')->check(); // Cek jika pengguna adalah wakil direktur
-
-            $kaprodiApproved = true; // Contoh: status approve Kaprodi
-            $wakilDiterApproved = false; // Contoh: status approve Wakil Direktur
-        @endphp
-
-        <div style="border: 1px solid black; padding: 10px; margin-top: 20px; width:240px">
-            <form action="">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="kaprodi"
-                        {{ $isKaprodi ? ($kaprodiApproved ? 'checked readonly' : '') : 'disabled' }}>
-                    <label class="form-check-label" for="kaprodi">Kaprodi</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="wakil_direktur"
-                        {{ $isWadir ? ($wakilDiterApproved ? 'checked readonly' : '') : 'disabled' }}>
-                    <label class="form-check-label" for="wakil_direktur">Wakil Direktur</label>
-                </div>
-            </form>
-        </div> --}}
-
         <div style="border: 1px solid black; padding: 10px; margin-top: 20px; width:240px">
             @php
                 $rentangUrl = min($rentang) . '-' . max($rentang);
+                $noWadir = Session::get('user.wadir');
+                $roleWadir = Auth::guard('wakil_direktur')->check();
+                $isWadir = ($noWadir == 1) && $roleWadir;
+                $isKaprodi = Auth::guard('kaprodi')->check();
             @endphp
 
             <form id="attendanceForm" method="POST"
                 action="/presensi/pengajuan-konfirmasi/rekap-presensi/{{ $rentangUrl }}/{{ $absens->first()->matkuls_id }}/{{ $absens->first()->kelas_id }}/{{ $absens->first()->jadwals_id }}">
                 @csrf
                 @method('PUT')
+
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="kaprodi" name="kaprodi"
                         {{ $absens->every(fn($absen) => $absen->setuju_kaprodi == 1) ? 'checked' : '' }}
-                        onchange="confirmSubmission(this)">
+                        onchange="confirmSubmission(this)" @if (!$isKaprodi) disabled @endif>
                     <label class="form-check-label" for="kaprodi">Kaprodi</label>
                 </div>
+
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="wakil_direktur" name="wakil_direktur"
                         {{ $absens->every(fn($absen) => $absen->setuju_wadir == 1) ? 'checked' : '' }}
-                        onchange="confirmSubmission(this)">
+                        onchange="confirmSubmission(this)" @if (!$isWadir) disabled @endif>
                     <label class="form-check-label" for="wakil_direktur">Wakil Direktur</label>
                 </div>
             </form>
-
         </div>
+
         <div style="margin-top: 30px;">
             <a href="/presensi/pengajuan-konfirmasi/rekap-presensi" class="btn">Kembali</a>
         </div>
     </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('vendors/js/sweetalert2.all.min.js') }}"></script>
     <script>
         function confirmSubmission(checkbox) {
             const isChecked = checkbox.checked;

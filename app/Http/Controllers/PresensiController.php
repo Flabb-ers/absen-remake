@@ -4,17 +4,20 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Absen;
+use App\Models\Dosen;
 use App\Models\Kelas;
 use App\Models\Jadwal;
 use App\Models\Resume;
+use App\Models\Kaprodi;
 use App\Models\Kontrak;
+use App\Models\Semester;
 use App\Models\Mahasiswa;
+use Illuminate\Http\Request;
+use App\Models\TahunAkademik;
+use Illuminate\Support\Facades\DB;
 use App\Models\PengajuanRekapBerita;
 use App\Models\PengajuanRekapPresensi;
-use App\Models\Semester;
-use App\Models\TahunAkademik;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class PresensiController extends Controller
 {
@@ -22,10 +25,21 @@ class PresensiController extends Controller
      * Display a listing of the resource.
      */
 
+     protected $userid;
+
+     public function __construct(){
+        $this->middleware(function ($request, $next) {
+            $this->userid = Session::get('user.id');
+            return $next($request);
+        });
+     }
     public function index()
     {
-        $kelasAll = Jadwal::all();
-        $jadwals = Jadwal::with('dosen', 'matkul', 'kelas.prodi', 'ruangan')->latest()->get();
+        $kelasAll = Jadwal::where('dosens_id',$this->userid)->get();
+        $jadwals = Jadwal::with('dosen', 'matkul', 'kelas.prodi', 'ruangan')
+            ->where('dosens_id', $this->userid)
+            ->latest()
+            ->get();
 
         $pertemuanCounts = [];
         foreach ($jadwals as $jadwal) {
@@ -46,13 +60,14 @@ class PresensiController extends Controller
     public function absen($id)
     {
         $jadwal = Jadwal::with('dosen', 'matkul', 'kelas', 'ruangan')
+            ->where('dosens_id', $this->userid)
             ->where('id', $id)
             ->first();
         $pertemuan = Absen::where('jadwals_id', $jadwal->id)->max('pertemuan');
         $pertemuan = $pertemuan ? $pertemuan + 1 : 1;
         $mahasiswas = Mahasiswa::where('kelas_id', $jadwal->kelas->id)->get();
         $tahun = TahunAkademik::where('status', 1)->first();
-        $kelasAll = Jadwal::all();
+        $kelasAll = Jadwal::where('dosens_id',$this->userid)->get();
         return view('pages.dosen.data-presensi.presensi', compact('jadwal', 'mahasiswas', 'pertemuan', 'tahun', 'kelasAll'));
     }
 
@@ -122,7 +137,7 @@ class PresensiController extends Controller
             ->get();
 
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)->get();
-        $kelasAll = Jadwal::all();
+        $kelasAll = Jadwal::where('dosens_id',$this->userid)->get();
 
         return view('pages.dosen.data-presensi.edit', compact('resume',  'absens', 'mahasiswas', 'id', 'kelasAll'));
     }
@@ -199,8 +214,9 @@ class PresensiController extends Controller
             ->get();
 
         $tahunAkademik = TahunAkademik::where('status', 1)->get();
-
-        return view('pages.dosen.data-presensi.rekap.presensi1-7', compact('absens', 'tahunAkademik'));
+        $dosenPengampu = Dosen::where('id',$absens->first()->dosens_id)->first();
+        $kaprodi = Kaprodi::where('prodis_id',$absens->first()->prodis_id)->first();
+        return view('pages.dosen.data-presensi.rekap.presensi1-7', compact('absens', 'tahunAkademik','dosenPengampu','kaprodi'));
     }
 
     public function rekap8to14($matkuls_id, $kelas_id)
@@ -231,8 +247,10 @@ class PresensiController extends Controller
             ->get();
 
         $tahunAkademik = TahunAkademik::where('status', 1)->get();
+        $dosenPengampu = Dosen::where('id',$absens->first()->dosens_id)->first();
+        $kaprodi = Kaprodi::where('prodis_id',$absens->first()->prodis_id)->first();
 
-        return view('pages.dosen.data-presensi.rekap.presensi8-14', compact('absens', 'tahunAkademik'));
+        return view('pages.dosen.data-presensi.rekap.presensi8-14', compact('absens', 'tahunAkademik','dosenPengampu','kaprodi'));
     }
 
 

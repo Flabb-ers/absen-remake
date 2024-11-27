@@ -122,7 +122,7 @@
 
         .signature-line {
             display: block;
-            margin-top: 50px;
+            margin-top: 80px;
         }
 
         .mengetahui {
@@ -336,7 +336,7 @@
                 <tr>
                     <td>
                         <p>Dosen Pengampu</p>
-                        <span class="signature-line">.....................................................</span>
+                        <span class="signature-line"  style="font-weight: bold"r>{{ $kontraks->first()->jadwal->dosen->nama }}</span>
                     </td>
                     <td>
                         <p>Komting Mahasiswa</p>
@@ -351,11 +351,11 @@
                 <tr>
                     <td>
                         <p>Kaprodi</p>
-                        <span class="signature-line">.....................................................</span>
+                        <span class="signature-line"  style="font-weight: bold">{{ $kaprodi->nama }}</span>
                     </td>
                     <td>
                         <p>Wakil Direktur</p>
-                        <span class="signature-line">.....................................................</span>
+                        <span class="signature-line" style="font-weight: bold">{{ $wadir->nama }}</span>
                     </td>
                 </tr>
             </table>

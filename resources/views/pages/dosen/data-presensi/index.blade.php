@@ -18,7 +18,7 @@
                 @forelse ($jadwals as $jadwal)
                     <div class="col-lg-4 col-md-6 col-sm-12 grid-margin stretch-card">
                         <div class="card text-bg-light mb-3">
-                            <div class="card-header">{{ $jadwal->matkul->nama_matkul }}</div>
+                            <div class="card-header"> [PRESENSI] {{ $jadwal->matkul->nama_matkul }} </div>
                             <div class="card-body">
                                 <ul class="info-list">
                                     <li><strong>Dosen:</strong> {{ $jadwal->dosen->nama }}</li>
@@ -53,7 +53,7 @@
                                                 class="btn btn-warning btn-sm w-100 mb-2">
                                                 <span class="mdi mdi-clipboard-edit-outline"></span> Edit Presensi
                                             </a>
-                                            @endif
+                                            @wendif
                                         @else
                                             <button class="btn btn-secondary btn-sm w-100 mb-2" disabled>
                                                 <span class="mdi mdi-clipboard-edit-outline"></span> Presensi Sudah Selesai

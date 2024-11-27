@@ -20,7 +20,7 @@
                 @forelse ($jadwals as $jadwal)
                     <div class="col-lg-4 col-md-6 col-sm-12 grid-margin stretch-card">
                         <div class="card text-bg-light mb-3">
-                            <div class="card-header">{{ $jadwal->matkul->nama_matkul }}</div>
+                            <div class="card-header">[KONTRAK] {{ $jadwal->matkul->nama_matkul }}</div>
                             <div class="card-body">
                                 <ul class="info-list">
                                     <li><strong>Dosen:</strong> {{ $jadwal->dosen->nama }}</li>

@@ -76,7 +76,6 @@
                 </div>
             </li>
         @elseif(Auth::guard('dosen')->check())
-            <li class="nav-item">Dosen</li>
             <li class="nav-item {{ Request::is('presensi/data-presensi*') ? 'active' : '' }}">
                 <a class="nav-link" href="/presensi/data-presensi">
                     <i class="mdi mdi-clipboard-edit-outline menu-icon"></i>
@@ -105,11 +104,9 @@
                                 @if (isset($kelas->kelas))
                                     <li class="nav-item">
                                         <a class="nav-link 
-                                        {{ request()->segment(3) == $kelas->kelas->id ? 'active' : '' }} 
-                                        {{ request()->is('presensi/data-presensi/*') ? 'disabled' : '' }}
-                                        {{ request()->is('presensi/data-kontrak/*') ? 'disabled' : '' }}"
+                                        {{ request()->segment(3) == $kelas->kelas->id ? 'active' : '' }} "
                                             id="sidebar-kelas-{{ $kelas->kelas->id }}"
-                                            href="{{ request()->is('presensi/data-presensi/*') ? 'javascript:void(0)' : '/presensi/data-nilai/' . $kelas->kelas->id }}">
+                                            href="{{ request()->is('presensi/data-kontrak/*') || request()->is('presensi/data-presensi/*') ? 'javascript:void(0)' : '/presensi/data-nilai/' . $kelas->kelas->id }}">
                                             {{ $kelas->kelas->nama_kelas }}
                                         </a>
                                     </li>
@@ -121,9 +118,7 @@
                     </ul>
                 </div>
             </li>
-
-
-            <li class="nav-item">Wadir dan direkturrrrr</li>
+            @elseif(auth::guard('wakil_direktur')->check() || auth::guard('kaprodi')->check())
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap" aria-expanded="false"
                     aria-controls="pengajuan-rekap">
@@ -186,7 +181,7 @@
                 </a>
             </li>
 
-            @php
+            {{-- @php
                 $uniqueSemesters = $semesters
                     ->map(function ($item) {
                         return [
@@ -217,7 +212,7 @@
                         @endforeach
                     </ul>
                 </div>
-            </li>
+            </li> --}}
         @endif
     </ul>
 </nav>

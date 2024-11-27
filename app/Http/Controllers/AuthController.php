@@ -49,12 +49,14 @@ class AuthController extends Controller
             $user = Dosen::where('email', $request->username)->first();
             $guard = 'dosen';
         }
-
         if ($user && Hash::check($request->password, $user->password)) {
             Auth::guard($guard)->login($user);
             session(['user' => [
-                'nama' => $user->nama,
+                'id'=> $user->id,
+                'nama' => $user->nama ?? $user->nama_lengkap,
                 'role' => $role,
+                'wadir'=> $user->no,
+                'prodiId'=>$user->prodis_id,
                 'email' => $user->email,
             ]]);
             return redirect()->route('dashboard');
@@ -64,10 +66,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        // Dapatkan role dari session
         $role = session('user.role');
 
-        // Logout sesuai dengan guard yang sesuai
         switch ($role) {
             case 'admin':
                 Auth::guard('admin')->logout();

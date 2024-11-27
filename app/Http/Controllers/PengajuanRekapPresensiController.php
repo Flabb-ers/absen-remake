@@ -7,14 +7,28 @@ use App\Models\Kelas;
 use App\Models\Jadwal;
 use Illuminate\Http\Request;
 use App\Models\PengajuanRekapPresensi;
+use Illuminate\Support\Facades\Session;
+
 
 class PengajuanRekapPresensiController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+    protected $prodiId;
+
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->prodiId = Session::get('user.prodiId');
+            return $next($request);
+        });
+    }
+
     public function index()
     {
+        $prodiId = $this->prodiId;
         $presensis = PengajuanRekapPresensi::with([
             'matkul' => function ($query) {
                 $query->withTrashed();
@@ -33,6 +47,11 @@ class PengajuanRekapPresensiController extends Controller
             }
         ])
             ->where('status', 0)
+            ->when($prodiId, function ($query) use ($prodiId) {
+                return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
+                    $query->where('id', $prodiId);
+                });
+            })
             ->latest()
             ->get();
 
@@ -43,6 +62,7 @@ class PengajuanRekapPresensiController extends Controller
 
     public function confirm()
     {
+        $prodiId = $this->prodiId;
         $presensis = PengajuanRekapPresensi::with([
             'matkul' => function ($query) {
                 $query->withTrashed();
@@ -61,6 +81,11 @@ class PengajuanRekapPresensiController extends Controller
             }
         ])
             ->where('status', 1)
+            ->when($prodiId, function ($query) use ($prodiId) {
+                return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
+                    $query->where('id', $prodiId);
+                });
+            })
             ->latest()
             ->get();
 
@@ -91,6 +116,7 @@ class PengajuanRekapPresensiController extends Controller
 
     public function edit($pertemuan, $matkul_id, $kelas_id, $jadwal_id)
     {
+        $prodiId = $this->prodiId;
         $rentang = [];
 
         if ($pertemuan == '1-7') {
@@ -116,12 +142,17 @@ class PengajuanRekapPresensiController extends Controller
                 $query->withTrashed();
             }
         ])
-        ->where('matkuls_id', $matkul_id)
-        ->where('kelas_id', $kelas_id)
-        ->where('jadwals_id', $jadwal_id)
-        ->whereIn('pertemuan', $rentang)
-        ->get();
-        
+            ->where('matkuls_id', $matkul_id)
+            ->where('kelas_id', $kelas_id)
+            ->where('jadwals_id', $jadwal_id)
+            ->whereIn('pertemuan', $rentang)
+            ->when($prodiId, function ($query) use ($prodiId) {
+                return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
+                    $query->where('id', $prodiId);
+                });
+            })
+            ->get();
+
 
         return view('pages.pengajuanRekapPresensi.rekap', compact('absens', 'rentang'));
     }
@@ -142,45 +173,43 @@ class PengajuanRekapPresensiController extends Controller
                 ->where('jadwals_id', $jadwal_id)
                 ->get();
 
-            $updateData = [];
+            $allKaprodiApproved = true;
+            $allWadirApproved = true;
 
-            if ($request->has('kaprodi')) {
-                $updateData['setuju_kaprodi'] = true;
-            } else {
-                $updateData['setuju_kaprodi'] = false;
+            foreach ($absenRecords as $absen) {
+                $setujuKaprodi = $request->has('kaprodi') ? true : false;
+                $setujuWadir = $request->has('wakil_direktur') ? true : false;
+
+                if ($setujuKaprodi && !$absen->setuju_kaprodi) {
+                    $absen->setuju_kaprodi = true;
+                }
+                if ($setujuWadir && !$absen->setuju_wadir) {
+                    $absen->setuju_wadir = true;
+                }
+
+                if (!$absen->setuju_kaprodi) {
+                    $allKaprodiApproved = false;
+                }
+                if (!$absen->setuju_wadir) {
+                    $allWadirApproved = false;
+                }
+
+                $absen->save();
             }
-
-            if ($request->has('wakil_direktur')) {
-                $updateData['setuju_wadir'] = true;
-            } else {
-
-                $updateData['setuju_wadir'] = false;
-            }
-
-
-            Absen::where('matkuls_id', $matkul_id)
-                ->where('kelas_id', $kelas_id)
-                ->whereIn('pertemuan', $rentang)
-                ->where('jadwals_id', $jadwal_id)
-                ->update($updateData);
-
-
-            if ($updateData['setuju_kaprodi'] && $updateData['setuju_wadir']) {
-                $statusPresensi = 1;
-            } else {
-                $statusPresensi = 0;
-            }
+            $statusPresensi = ($allKaprodiApproved && $allWadirApproved) ? 1 : 0;
 
             $presensi = PengajuanRekapPresensi::where('matkul_id', $matkul_id)
                 ->where('kelas_id', $kelas_id)
                 ->where('pertemuan', $pertemuan)
                 ->first();
 
-            $presensi->update(['status' => $statusPresensi]);
+            if ($presensi) {
+                $presensi->update(['status' => $statusPresensi]);
+            }
 
             return redirect()->back()->with('success', 'Status persetujuan berhasil diperbarui');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal memperbarui status persetujuan');
+            return redirect()->back()->with('error', 'Gagal memperbarui status persetujuan: ' . $e->getMessage());
         }
     }
 }

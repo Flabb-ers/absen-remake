@@ -80,7 +80,7 @@
                             </div>
                             <hr>
                             <div class="card-body">
-                                <button type="button" class="btn btn-secondary mb-3 btn-sm" id="hadirSemua">Hadir
+                                <button type="button" class="btn btn-success mb-3 btn-sm" id="hadirSemua">Hadir
                                     Semua</button>
                                 <form method="POST" action="{{ route('data-presensi.store') }}">
                                     @csrf

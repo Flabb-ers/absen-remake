@@ -9,14 +9,24 @@ use App\Models\Semester;
 use Illuminate\Http\Request;
 use App\Models\TahunAkademik;
 use App\Models\PengajuanRekapBerita;
+use Illuminate\Support\Facades\Session;
 
 class PengajuanRekapBeritaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    protected $prodiId;
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->prodiId = Session::get('user.prodiId');
+            return $next($request);
+        });
+    }
     public function index()
     {
+        $prodiId = $this->prodiId;
         $beritas = PengajuanRekapBerita::with([
             'matkul' => function ($query) {
                 $query->withTrashed();
@@ -35,6 +45,11 @@ class PengajuanRekapBeritaController extends Controller
             }
         ])
             ->where('status', 0)
+            ->when($prodiId, function ($query) use ($prodiId) {
+                return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
+                    $query->where('id', $prodiId);
+                });
+            })
             ->latest()
             ->get();
 
@@ -46,6 +61,7 @@ class PengajuanRekapBeritaController extends Controller
 
     public function confirm()
     {
+        $prodiId = $this->prodiId;
         $beritas = PengajuanRekapBerita::with([
             'matkul' => function ($query) {
                 $query->withTrashed();
@@ -64,6 +80,11 @@ class PengajuanRekapBeritaController extends Controller
             }
         ])
             ->where('status', 1)
+            ->when($prodiId, function ($query) use ($prodiId) {
+                return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
+                    $query->where('id', $prodiId);
+                });
+            })
             ->latest()
             ->get();
 
@@ -101,6 +122,7 @@ class PengajuanRekapBeritaController extends Controller
      */
     public function edit($pertemuan, $matkul_id, $kelas_id, $jadwal_id)
     {
+        $prodiId = $this->prodiId;
         $range = [];
         if ($pertemuan == '1-7') {
             $range = range(1, 7);
@@ -113,6 +135,11 @@ class PengajuanRekapBeritaController extends Controller
             ->where('kelas_id', $kelas_id)
             ->where('jadwals_id', $jadwal_id)
             ->whereIn('pertemuan', $range)
+            ->when($prodiId, function ($query) use ($prodiId) {
+                return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
+                    $query->where('id', $prodiId);
+                });
+            })
             ->get();
 
         $semester = Semester::where('status', 1)->first();
@@ -142,31 +169,31 @@ class PengajuanRekapBeritaController extends Controller
                 ->whereIn('pertemuan', $rentang)
                 ->get();
 
-            $updateData = [];
+            $allKaprodiApproved = true;
+            $allWadirApproved = true;
 
-            if ($request->has('kaprodi')) {
-                $updateData['setuju_kaprodi'] = true;
-            } else {
-                $updateData['setuju_kaprodi'] = false;
+            foreach ($resumeRecords as $resume) {
+                $setujuKaprodi = $request->has('kaprodi') ? true : false;
+                $setujuWadir = $request->has('wakil_direktur') ? true : false;
+
+                if ($setujuKaprodi && !$resume->setuju_kaprodi) {
+                    $resume->setuju_kaprodi = true;
+                }
+                if ($setujuWadir && !$resume->setuju_wadir) {
+                    $resume->setuju_wadir = true;
+                }
+
+                if (!$resume->setuju_kaprodi) {
+                    $allKaprodiApproved = false;
+                }
+                if (!$resume->setuju_wadir) {
+                    $allWadirApproved = false;
+                }
+
+                $resume->save();
             }
 
-            if ($request->has('wakil_direktur')) {
-                $updateData['setuju_wadir'] = true;
-            } else {
-                $updateData['setuju_wadir'] = false;
-            }
-
-            Resume::where('matkuls_id', $matkul_id)
-                ->where('kelas_id', $kelas_id)
-                ->whereIn('pertemuan', $rentang)
-                ->where('jadwals_id', $jadwal_id)
-                ->update($updateData);
-
-            if ($updateData['setuju_kaprodi'] && $updateData['setuju_wadir']) {
-                $statusBerita = 1;
-            } else {
-                $statusBerita = 0;
-            }
+            $statusBerita = ($allKaprodiApproved && $allWadirApproved) ? 1 : 0;
 
             $pengajuan = PengajuanRekapBerita::where('matkuls_id', $matkul_id)
                 ->where('kelas_id', $kelas_id)
@@ -180,7 +207,7 @@ class PengajuanRekapBeritaController extends Controller
 
             return redirect()->back()->with('success', 'Status persetujuan berhasil diperbarui');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal memperbarui status persetujuan');
+            return redirect()->back()->with('error', 'Gagal memperbarui status persetujuan: ' . $e->getMessage());
         }
     }
 

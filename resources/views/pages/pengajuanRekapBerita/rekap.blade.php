@@ -245,6 +245,10 @@
         <div style="border: 1px solid black; padding: 10px; margin-top: 20px; width: 240px">
             @php
                 $rentangUrl = min($range) . '-' . max($range);
+                $noWadir = Session::get('user.wadir');
+                $roleWadir = Auth::guard('wakil_direktur')->check();
+                $isWadir = ($noWadir == 1) && $roleWadir;
+                $isKaprodi = Auth::guard('kaprodi')->check();
             @endphp
 
             <form id="approvalForm" method="POST"
@@ -254,13 +258,13 @@
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="kaprodi" name="kaprodi"
                         {{ $beritas->where('setuju_kaprodi', 1)->count() == count($range) ? 'checked' : '' }}
-                        onchange="confirmSubmission(this)">
+                        onchange="confirmSubmission(this)"  @if (!$isKaprodi) disabled @endif>
                     <label class="form-check-label" for="kaprodi">Kaprodi</label>
                 </div>
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="wakil_direktur" name="wakil_direktur"
                         {{ $beritas->where('setuju_wadir', 1)->count() == count($range) ? 'checked' : '' }}
-                        onchange="confirmSubmission(this)">
+                        onchange="confirmSubmission(this)" @if (!$isWadir) disabled @endif>
                     <label class="form-check-label" for="wakil_direktur">Wakil Direktur</label>
                 </div>
             </form>
@@ -269,7 +273,7 @@
             <a href="/presensi/pengajuan-konfirmasi/rekap-berita" class="btn">Kembali</a>
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="{{ asset('vendors/js/sweetalert2.all.min.js') }}"></script>
         <script>
             function confirmSubmission(checkbox) {
                 const isChecked = checkbox.checked;

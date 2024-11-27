@@ -22,6 +22,9 @@
                             @elseif(Auth::guard('mahasiswa')->check())
                                 <h4>Dashboard Mahasiswa</h4>
                                 <p>Konten khusus untuk Mahasiswa</p>
+                            @elseif(Auth::guard('kaprodi')->check())
+                                <h4>Dashboard Kaprodi</h4>
+                                <p>Konten khusus untuk Kaprodi</p>
                             @else
                                 <p>Anda harus login terlebih dahulu.</p>
                             @endif

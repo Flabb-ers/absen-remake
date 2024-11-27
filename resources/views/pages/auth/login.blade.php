@@ -46,10 +46,10 @@
                             </div>
                             <h4>Hello! let's get started</h4>
                             <h6 class="font-weight-light">Login to continue.</h6>
-                            
-                            <!-- Menampilkan pesan kesalahan -->
+
                             @if ($errors->any())
                                 <div class="alert alert-danger">
+                                    <strong>Oops! Ada yang tidak beres:</strong>
                                     <ul>
                                         @foreach ($errors->all() as $error)
                                             <li>{{ $error }}</li>

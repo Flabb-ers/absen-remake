@@ -375,6 +375,12 @@
         </div>
 
         <div style="border: 1px solid black; padding: 10px; margin-top: 30px; width:240px">
+            @php
+                $noWadir = Session::get('user.wadir');
+                $roleWadir = Auth::guard('wakil_direktur')->check();
+                $isWadir = ($noWadir == 1) && $roleWadir;
+                $isKaprodi = Auth::guard('kaprodi')->check();
+            @endphp
             <form id="attendanceForm" method="POST"
                 action="/presensi/pengajuan-konfirmasi/rekap-kontrak/{{ $kontraks->first()->jadwals_id }}/{{ $kontraks->first()->matkuls_id }}/{{ $kontraks->first()->kelas_id }}">
                 @csrf
@@ -383,14 +389,14 @@
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="kaprodi" name="kaprodi"
                         {{ $kontraks->every(fn($kontrak) => $kontrak->setuju_kaprodi) ? 'checked' : '' }}
-                        onchange="confirmSubmission(this)">
+                        onchange="confirmSubmission(this)" @if (!$isKaprodi) disabled @endif>
                     <label class="form-check-label" for="kaprodi">Kaprodi</label>
                 </div>
 
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="wakil_direktur" name="wakil_direktur"
                         {{ $kontraks->every(fn($kontrak) => $kontrak->setuju_wadir) ? 'checked' : '' }}
-                        onchange="confirmSubmission(this)">
+                        onchange="confirmSubmission(this)" @if (!$isWadir) disabled @endif>
                     <label class="form-check-label" for="wakil_direktur">Wakil Direktur</label>
                 </div>
             </form>
@@ -398,11 +404,11 @@
 
 
         <div style="margin-top: 30px;">
-            <a href="/presensi/pengajuan-konfirmasi/rekap-presensi" class="btn">Kembali</a>
+            <a href="/presensi/pengajuan-konfirmasi/rekap-kontrak" class="btn">Kembali</a>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('vendors/js/sweetalert2.all.min.js') }}"></script>
     <script>
         function confirmSubmission(checkbox) {
             const isChecked = checkbox.checked;
@@ -420,7 +426,7 @@
                 if (result.isConfirmed) {
                     document.getElementById('attendanceForm').submit();
                 } else {
-                    checkbox.checked = !isChecked; // Mengembalikan ke keadaan sebelumnya
+                    checkbox.checked = !isChecked; 
                 }
             });
         }
