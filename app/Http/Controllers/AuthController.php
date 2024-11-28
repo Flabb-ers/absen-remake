@@ -53,6 +53,7 @@ class AuthController extends Controller
             Auth::guard($guard)->login($user);
             session(['user' => [
                 'id'=> $user->id,
+                'kelasId' =>$user->kelas_id,
                 'nama' => $user->nama ?? $user->nama_lengkap,
                 'role' => $role,
                 'wadir'=> $user->no,

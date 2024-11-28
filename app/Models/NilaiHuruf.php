@@ -20,4 +20,8 @@ class NilaiHuruf extends Model
     public function mahasiswa(){
         return $this->belongsTo(Mahasiswa::class,'mahasiswa_id');
     }
+
+    public function semester(){
+        return $this->belongsTo(Semester::class,'semester_id');
+    }
 }

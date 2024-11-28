@@ -402,13 +402,11 @@ class RekapNilaiController extends Controller
         try {
             Log::info('Update process started', compact('kelas_id', 'matkul_id', 'jadwal_id'));
 
-            // Cek apakah ada input konfirmasi
             if ($request->has('konfirmasi')) {
                 $updateData['setuju'] = true;
                 Log::info('Konfirmasi diterima, setuju diubah menjadi true');
             }
 
-            // Melakukan update pada tabel Tugas, Etika, Aktif, Uas, Uts
             Log::info('Melakukan update pada tabel Tugas');
             Tugas::where('kelas_id', $kelas_id)
                 ->where('jadwal_id', $jadwal_id)
@@ -439,7 +437,6 @@ class RekapNilaiController extends Controller
                 ->where('matkul_id', $matkul_id)
                 ->update($updateData);
 
-            // Memeriksa apakah ada data yang sudah disetujui
             $tugasSetuju = Tugas::where('kelas_id', $kelas_id)
                 ->where('jadwal_id', $jadwal_id)
                 ->where('matkul_id', $matkul_id)
@@ -478,13 +475,13 @@ class RekapNilaiController extends Controller
             if ($tugasSetuju && $etikaSetuju && $aktifSetuju && $uasSetuju && $utsSetuju) {
                 Log::info('Semua setuju, melanjutkan ke pengajuan rekap nilai');
 
-                $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)->get();
+                $mahasiswas = Mahasiswa::with('kelas.semester')->where('kelas_id', $kelas_id)->get();
                 foreach ($mahasiswas as $mahasiswa) {
                     $nilaiTotal = $this->calculateTotalNilai($mahasiswa->id, $kelas_id, $matkul_id, $jadwal_id);
                     $nilaiHuruf = $this->getKeterangan($nilaiTotal);
-
                     NilaiHuruf::create([
                         'mahasiswa_id' => $mahasiswa->id,
+                        'semester_id' => $mahasiswa->kelas->semester->id,
                         'kelas_id' => $kelas_id,
                         'matkul_id' => $matkul_id,
                         'nilai_total' => $nilaiTotal,
@@ -755,7 +752,6 @@ class RekapNilaiController extends Controller
            ($uts * 0.25) + 
            ($uas * 0.25); 
 }
-
 
     private function getKeterangan($jumlah)
     {

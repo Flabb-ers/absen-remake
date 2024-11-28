@@ -2,6 +2,7 @@
 
 use App\Models\Kelas;
 use App\Models\Jadwal;
+use App\Models\NilaiHuruf;
 use GuzzleHttp\Middleware;
 use App\Models\PengajuanRekapkontrak;
 use Illuminate\Support\Facades\Route;
@@ -60,7 +61,12 @@ Route::prefix('/presensi')->group(function () {
     Route::get('/dashboard', function () {
         $userId = Session::get('user.id');
         $kelasAll = Jadwal::where('dosens_id',$userId)->get();
-        return view('pages.dashboard.index', compact('kelasAll'));
+        $semesters = NilaiHuruf::where('mahasiswa_id', $userId)
+            ->select('semester_id')
+            ->with('semester')
+            ->groupBy('semester_id')
+            ->get();
+        return view('pages.dashboard.index', compact('kelasAll','semesters'));
     })->name('dashboard')->middleware('auth:admin,mahasiswa,direktur,wakil_direktur,dosen,kaprodi');
 
     Route::prefix('/data-master')->middleware('auth:admin')->group(function () {
@@ -190,7 +196,8 @@ Route::prefix('/presensi')->group(function () {
     // HALAMAN MAHASISWA
     Route::prefix('/mahasiswa')->group(function () {
         Route::get('/nilai', [NilaiMahasiswaController::class, 'index']);
-        Route::get('/riwayat/{kelas_id}', [NilaiMahasiswaController::class, 'riwayat']);
+        Route::get('/riwayat/{semester_id}', [NilaiMahasiswaController::class, 'riwayat']);
         Route::get('/khs/{semester}', [NilaiMahasiswaController::class, 'khs']);
+        Route::get('riwayat/khs/{semester}', [NilaiMahasiswaController::class, 'riwayatKhs']);
     });
 });

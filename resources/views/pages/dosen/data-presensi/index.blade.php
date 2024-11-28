@@ -53,7 +53,7 @@
                                                 class="btn btn-warning btn-sm w-100 mb-2">
                                                 <span class="mdi mdi-clipboard-edit-outline"></span> Edit Presensi
                                             </a>
-                                            @wendif
+                                            @endif
                                         @else
                                             <button class="btn btn-secondary btn-sm w-100 mb-2" disabled>
                                                 <span class="mdi mdi-clipboard-edit-outline"></span> Presensi Sudah Selesai

@@ -173,16 +173,17 @@
         </div>
         <div class="text-end">
             @if (!$approve && $cekNilaiLengkap)
-            @if (!$approve)
-                <form action="/presensi/data-nilai/rekap" method="POST">
-                    @csrf
-                    <input type="hidden" name="kelas_id" value="{{ $jadwals->kelas_id }}">
-                    <input type="hidden" name="matkul_id" value="{{ $jadwals->matkuls_id }}">
-                    <input type="hidden" name="jadwal_id" value="{{ $jadwals->id }}">
-                    <button type="submit" class="btn btn-primary btn-sm">
-                        <span class="mdi mdi-send"></span> Ajukan Verifikasi
-                    </button>
-                </form>
+                @if (!$approve)
+                    <form action="/presensi/data-nilai/rekap" method="POST">
+                        @csrf
+                        <input type="hidden" name="kelas_id" value="{{ $jadwals->kelas_id }}">
+                        <input type="hidden" name="matkul_id" value="{{ $jadwals->matkuls_id }}">
+                        <input type="hidden" name="jadwal_id" value="{{ $jadwals->id }}">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <span class="mdi mdi-send"></span> Ajukan Verifikasi
+                        </button>
+                    </form>
+                @endif
             @elseif ($approve && $approve->status == 0)
                 <div class="btn btn-warning btn-sm">
                     <span class="mdi mdi-clock"></span> Pending
@@ -194,6 +195,5 @@
                 </a>
             @endif
         </div>
-
     </div>
 </div>

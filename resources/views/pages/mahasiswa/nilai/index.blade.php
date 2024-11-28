@@ -14,14 +14,17 @@
                     <div class="card">
                         <div class="card-body">
                             @php
-                                $allNilaiFilled = $combinedData->every(function($data) {
+                                $allNilaiFilled = $combinedData->every(function ($data) {
                                     return $data['nilai'] && $data['nilai']->nilai_total && $data['nilai']->nilai_huruf;
                                 });
-
                             @endphp
 
-                            @if ($allNilaiFilled)
-                                <a href="/presensi/mahasiswa/khs/{{$sem}}" class="btn btn-primary mb-3">Cetak KHS</a>
+                            @if ($allNilaiFilled && $riwayat == false)
+                                <a href="/presensi/mahasiswa/khs/{{ $sem }}" class="btn btn-primary mb-3">Cetak
+                                    KHS</a>
+                            @elseif($allNilaiFilled && $riwayat == true)
+                                <a href="/presensi/mahasiswa/riwayat/khs/{{ $semesterRiwayatKhs->id }}" class="btn btn-primary mb-3">Cetak 
+                                    KHS Semester {{ $semesterRiwayatKhs->semester }}</a>
                             @endif
 
                             <div class="table-responsive">
@@ -42,7 +45,8 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $data['matkul']->kode }}</td>
                                                 <td>{{ $data['matkul']->nama_matkul }}</td>
-                                                <td>{{ $data['matkul']->praktek + $data['matkul']->teori ?? 'Belum ada nilai' }}</td>
+                                                <td>{{ $data['matkul']->praktek + $data['matkul']->teori ?? 'Belum ada nilai' }}
+                                                </td>
                                                 <td>{{ $data['nilai']->nilai_total ?? 'Belum dinilai' }}</td>
                                                 <td>{{ $data['nilai']->nilai_huruf ?? 'Belum dinilai' }}</td>
                                             </tr>

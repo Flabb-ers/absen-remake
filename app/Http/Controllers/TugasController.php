@@ -11,15 +11,26 @@ use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
+use Illuminate\Support\Facades\Session;
 
 class TugasController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+    protected $userId;
+
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->userId = Session::get('user.id');
+            return $next($request);
+        });
+    }
     public function index($kelas_id, $matkul_id, $jadwal_id)
     {
-        $kelasAll = Jadwal::all();
+        $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
 
         $tugas = Tugas::select('tugas_ke', 'jadwal_id', DB::raw('MIN(id) as id'))
             ->where('kelas_id', $kelas_id)
@@ -43,7 +54,7 @@ class TugasController extends Controller
             ->get();
 
         $matkul = Matkul::where('id', $matkul_id)->first();
-        $kelasAll = Jadwal::all();
+        $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
 
         $lastTugas = Tugas::where('kelas_id', $kelas_id)
             ->where('matkul_id', $matkul_id)
@@ -53,6 +64,7 @@ class TugasController extends Controller
 
         $nextTugasKe = $lastTugas ? $lastTugas->tugas_ke + 1 : 1;
         $jadwal = Jadwal::where('matkuls_id', $matkul_id)
+            ->where('id', $jadwal_id)
             ->where('kelas_id', $kelas_id)
             ->first();
 
@@ -114,7 +126,7 @@ class TugasController extends Controller
             ->where('tugas_ke', $tugas_ke)
             ->get();
 
-        $kelasAll = Jadwal::all();
+        $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
         return view('pages.dosen.data-nilai.tugas.edit', compact('mahasiswas', 'tugas', 'kelas_id', 'matkul_id', 'tugas_ke', 'kelasAll', 'jadwal_id'));
     }
 

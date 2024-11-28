@@ -9,24 +9,34 @@ use App\Models\Matkul;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class UasController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+    protected $userId;
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->userId = Session::get("user.id");
+            return $next($request);
+        });
+    }
     public function index($kelas_id, $matkul_id, $jadwal_id)
     {
-        $kelasAll = Jadwal::all();
+        $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
         $uass = Uas::where('kelas_id', $kelas_id)
-                ->where('jadwal_id', $jadwal_id)
-                ->where('matkul_id', $matkul_id)
-                ->select('matkul_id', 'kelas_id', 'jadwal_id', DB::raw('GROUP_CONCAT(mahasiswa_id) as mahasiswa_ids, GROUP_CONCAT(nilai) as nilai_total'))
-                ->groupBy('matkul_id', 'kelas_id', 'jadwal_id')
-                ->get();
+            ->where('jadwal_id', $jadwal_id)
+            ->where('matkul_id', $matkul_id)
+            ->select('matkul_id', 'kelas_id', 'jadwal_id', DB::raw('GROUP_CONCAT(mahasiswa_id) as mahasiswa_ids, GROUP_CONCAT(nilai) as nilai_total'))
+            ->groupBy('matkul_id', 'kelas_id', 'jadwal_id')
+            ->get();
 
-        $kelas = Kelas::where('id',$kelas_id)->first();
-        return  view('pages.dosen.data-nilai.uas.index', compact('kelasAll', 'kelas_id', 'matkul_id', 'jadwal_id', 'uass','kelas'));
+        $kelas = Kelas::where('id', $kelas_id)->first();
+        return  view('pages.dosen.data-nilai.uas.index', compact('kelasAll', 'kelas_id', 'matkul_id', 'jadwal_id', 'uass', 'kelas'));
     }
 
     /**
@@ -39,10 +49,11 @@ class UasController extends Controller
             ->get();
 
         $matkul = Matkul::where('id', $matkul_id)->first();
-        $kelasAll = Jadwal::all();
+        $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
 
         $jadwal = Jadwal::where('matkuls_id', $matkul_id)
             ->where('kelas_id', $kelas_id)
+            ->where('id', $jadwal_id)
             ->first();
         return view('pages.dosen.data-nilai.uas.create', compact('mahasiswas', 'matkul', 'kelasAll', 'jadwal', 'kelas_id', 'matkul_id', 'jadwal_id'));
     }
@@ -97,7 +108,7 @@ class UasController extends Controller
             ->where('jadwal_id', $jadwal_id)
             ->get();
 
-        $kelasAll = Jadwal::all();
+        $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
         return view('pages.dosen.data-nilai.uas.edit', compact('mahasiswas', 'uas', 'kelas_id', 'matkul_id', 'kelasAll', 'jadwal_id'));
     }
 

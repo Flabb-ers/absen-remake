@@ -181,17 +181,6 @@
                 </a>
             </li>
 
-            {{-- @php
-                $uniqueSemesters = $semesters
-                    ->map(function ($item) {
-                        return [
-                            'semester' => $item->kelas->semester->semester,
-                            'kelas_id' => $item->kelas->id,
-                        ];
-                    })
-                    ->unique(fn($value) => $value['semester']);
-            @endphp
-
             <li
                 class="nav-item {{ Request::is('presensi/mahasiswa/nilai/*') && !Request::is('presensi/mahasiswa/nilai') ? 'active' : '' }}">
                 <a class="nav-link" data-bs-toggle="collapse" href="#riwayat" aria-expanded="false"
@@ -202,17 +191,17 @@
                 </a>
                 <div class="collapse" id="riwayat">
                     <ul class="nav flex-column sub-menu">
-                        @foreach ($uniqueSemesters as $semester)
+                        @foreach ($semesters as $semester)
                             <li
-                                class="nav-item {{ Request::is('presensi/mahasiswa/riwayat/' . $semester['kelas_id']) ? 'active' : '' }}">
-                                <a class="nav-link" href="/presensi/mahasiswa/riwayat/{{ $semester['kelas_id'] }}">
-                                    Semester {{ $semester['semester'] }}
+                                class="nav-item {{ Request::is('presensi/mahasiswa/riwayat/' . $semester->semester->id) ? 'active' : '' }}">
+                                <a class="nav-link" href="/presensi/mahasiswa/riwayat/{{ $semester->semester->id}}">
+                                    Semester {{ $semester->semester->semester }}
                                 </a>
                             </li>
                         @endforeach
                     </ul>
                 </div>
-            </li> --}}
+            </li>
         @endif
     </ul>
 </nav>

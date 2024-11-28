@@ -27,4 +27,5 @@
 - [x] add auth
 
 - [x] di rekap presensi  dan kontrank untuk nama tanda tangan belum di ubah
-- [ ] **plan besok cek auth nilai kalau sudah cek khs dan buat history persemester**
+- [x] **plan besok cek auth nilai kalau sudah cek khs dan buat history persemester**
+- [ ]  **cek kepastian matkul apakah perprodi dan persemester apakah perkelas**

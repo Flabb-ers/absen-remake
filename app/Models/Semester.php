@@ -18,4 +18,8 @@ class Semester extends Model
 
         return $this->hasMany(Kelas::class);
     }
+
+    public function nilaiHuruf(){
+        return $this->hasMany(NilaiHuruf::class);   
+    }
 }

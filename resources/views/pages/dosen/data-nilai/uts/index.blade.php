@@ -15,7 +15,7 @@
                 <tbody>
                     @forelse ($utss as $uts)
                         <tr>
-                            <td>Ujian Akhir Semester</td>
+                            <td>Ujian Tengah Semester</td>
                             <td>
                                 <a href="{{ url('/presensi/data-nilai/' . $kelas_id . '/' . $matkul_id . '/' . $jadwal_id . '/uts/edit') }}"
                                     class="btn btn-warning btn-sm">
