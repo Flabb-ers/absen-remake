@@ -37,7 +37,8 @@
                                             <th>Kode</th>
                                             <th>Nama Mata Kuliah</th>
                                             <th>SKS</th>
-                                            <th>Kelas</th>
+                                            <th>Prodi</th>
+                                            <th>Semester</th>
                                             <th>Opsi</th>
                                         </tr>
                                     </thead>
@@ -48,14 +49,18 @@
                                                 <td>{{ $matkul->kode }}</td>
                                                 <td>{{ $matkul->nama_matkul }}</td>
                                                 <td>{{ $matkul->praktek + $matkul->teori }} </td>
-                                                <td>{{ $matkul->kelas->nama_kelas }}</td>
+                                                <td>{{ $matkul->prodi->nama_prodi }}</td>
+                                                <td>Semester {{ $matkul->semester->semester }}</td>
                                                 <td>
                                                     <button class="btn btn-primary btn-sm editMatkul"
                                                         data-id="{{ $matkul->id }}" data-nama="{{ $matkul->nama_matkul }}"
-                                                        data-kode="{{ $matkul->kode }}" data-teori="{{ $matkul->teori }}"
-                                                        data-praktek="{{ $matkul->praktek }}" 
-                                                        data-kelas="{{ $matkul->kelas_id }}"
-                                                        data-bs-toggle="modal"
+                                                        data-alias="{{ $matkul->alias }}" data-kode="{{ $matkul->kode }}"
+                                                        data-teori="{{ $matkul->teori }}"
+                                                        data-prodi="{{ $matkul->prodi_id }}"
+                                                        data-teori="{{ $matkul->teori }}"
+                                                        data-semester="{{ $matkul->semester_id }}"
+                                                        data-teori="{{ $matkul->teori }}"
+                                                        data-praktek="{{ $matkul->praktek }}" data-bs-toggle="modal"
                                                         data-bs-target="#editModal">
                                                         <span class="mdi mdi-pencil"></span> Edit
                                                     </button>
@@ -95,11 +100,18 @@
                     <form id="tambahForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="nama_matkul" class="form-label">Nama Mata kuliah <span
+                            <label for="nama_matkul" class="form-label">Nama Mata Kuliah (Indonesia) <span
                                     style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="nama_matkul" name="nama_matkul"
-                                placeholder="Nama Mata Kuliah">
+                                placeholder="Nama Mata Kuliah (Indonesia)">
                             <div id="namaMatkulError" class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="alias" class="form-label">Nama Mata Kuliah (English)<span
+                                    style="color: red;">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="alias" name="alias"
+                                placeholder="Nama Mata Kuliah (English)">
+                            <div id="namaAliasError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
                             <label for="kode" class="form-label">Kode <span style="color: red;">*</span></label>
@@ -108,14 +120,24 @@
                             <div id="kodeError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="Kelas" class="form-label">Kelas <span style="color: red;">*</span></label>
-                            <select class="form-select" id="kelas" name="kelas" required>
-                                <option selected>--Kelas--</option>
-                                @foreach ($kelass as $kelas)
-                                    <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
+                            <label for="prodi" class="form-label">Prodi <span style="color: red;">*</span></label>
+                            <select class="form-select" id="prodi" name="prodi" required>
+                                <option selected>--Prodi--</option>
+                                @foreach ($prodis as $prodi)
+                                    <option value="{{ $prodi->id }}">{{ $prodi->nama_prodi }}</option>
                                 @endforeach
                             </select>
-                            <div class="invalid-feedback" id="KelasError"></div>
+                            <div class="invalid-feedback" id="prodiError"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="semester" class="form-label">Semester <span style="color: red;">*</span></label>
+                            <select class="form-select" id="semester" name="semester" required>
+                                <option selected>--Semester--</option>
+                                @foreach ($semesters as $semester)
+                                    <option value="{{ $semester->id }}">Semester {{ $semester->semester }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="SemesterError"></div>
                         </div>
                         <div class="mb-3 row">
                             <label class="form-label">SKS <span style="color: red;">*</span></label>
@@ -152,11 +174,18 @@
                         @method('PUT')
                         <input type="hidden" id="editId" name="id">
                         <div class="mb-3">
-                            <label for="edit_nama_matkul" class="form-label">Nama Mata Kuliah <span
+                            <label for="edit_nama_matkul" class="form-label">Nama Mata Kuliah (Indonesia) <span
                                     style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="edit_nama_matkul"
                                 name="nama_matkul">
                             <div id="editNamaMatkulError" class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_alias" class="form-label">Nama Mata Kuliah (English)<span
+                                    style="color: red;">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="edit_alias"
+                                name="edit_alias">
+                            <div id="editNamaAliasError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
                             <label for="kodeEdit" class="form-label">Kode <span style="color: red;">*</span></label>
@@ -165,14 +194,25 @@
                             <div id="kodeErrorEdit" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_kelas" class="form-label">Kelas <span style="color: red;">*</span></label>
-                            <select class="form-select" id="edit_kelas" name="edit_kelas" required>
-                                <option selected>--Kelas--</option>
-                                @foreach ($kelass as $kelas)
-                                    <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
+                            <label for="edit_prodi" class="form-label">Prodi <span style="color: red;">*</span></label>
+                            <select class="form-select" id="edit_prodi" name="edit_prodi" required>
+                                <option selected>--Prodi--</option>
+                                @foreach ($prodis as $prodi)
+                                    <option value="{{ $prodi->id }}">{{ $prodi->nama_prodi }}</option>
                                 @endforeach
                             </select>
-                            <div class="invalid-feedback" id="editkelasError"></div>
+                            <div class="invalid-feedback" id="editProdiError"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_semester" class="form-label">Semester <span
+                                    style="color: red;">*</span></label>
+                            <select class="form-select" id="edit_semester" name="edit_semester" required>
+                                <option selected>--Semester--</option>
+                                @foreach ($semesters as $semester)
+                                    <option value="{{ $semester->id }}">Semester {{ $semester->semester }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="editSemesterError"></div>
                         </div>
                         <div class="mb-3 row">
                             <label class="form-label">SKS <span style="color: red;">*</span></label>
@@ -205,18 +245,6 @@
                 }
             });
 
-            // $('#kelas').change(function() {
-
-            //     var selectedOption = $(this).find('option:selected');
-            //     var semester = selectedOption.data('semester');
-            //     var prodi = selectedOption.data('prodi');
-            //     var jenisKelas = selectedOption.data(
-            //         'jenis-kelas')
-
-            //     $('#semester').text('Semester ' + semester);
-            //     $('#program_studi').text(prodi);
-            //     $('#jenis_kelas').text(jenisKelas);
-            // });
             $('#tambahForm').submit(function(e) {
                 e.preventDefault();
 
@@ -224,10 +252,13 @@
                 $('.invalid-feedback').text('');
 
                 let nama_matkul = $('#nama_matkul').val();
-                let kelas_id = $('#kelas').val();
+                let alias = $('#alias').val();
+                let prodi_id = $('#prodi').val();
+                let semester_id = $('#semester').val();
                 let teori = $('#teori').val();
                 let praktek = $('#praktek').val();
                 let kode = $('#kode').val();
+
                 $('#namaMatkulError, #sksError, #dosenError, #ruanganError, #kelasError')
                     .text('').removeClass('is-invalid');
 
@@ -236,8 +267,10 @@
                     method: 'POST',
                     data: {
                         nama_matkul: nama_matkul,
+                        alias: alias,
                         kode: kode,
-                        kelas_id: kelas_id,
+                        semester_id: semester_id,
+                        prodi_id: prodi_id,
                         teori: teori,
                         praktek: praktek
 
@@ -262,6 +295,10 @@
                                 $('#nama_matkul').addClass('is-invalid');
                                 $('#namaMatkulError').text(errors.nama_matkul[0]);
                             }
+                            if (errors.alias) {
+                                $('#alias').addClass('is-invalid');
+                                $('#namaAliasError').text(errors.alias[0]);
+                            }
                             if (errors.sks) {
                                 $('#sks').addClass('is-invalid');
                                 $('#sksError').text(errors.sks[0]);
@@ -270,9 +307,13 @@
                                 $('#kode').addClass('is-invalid');
                                 $('#kodeError').text(errors.kode[0]);
                             }
-                            if (errors.kelas_id) {
-                                $('#kelas').addClass('is-invalid');
-                                $('#kelasError').text(errors.kelas_id[0]);
+                            if (errors.prodi_id) {
+                                $('#prodi').addClass('is-invalid');
+                                $('#prodiError').text(errors.prodi_id[0]);
+                            }
+                            if (errors.semester_id) {
+                                $('#semester').addClass('is-invalid');
+                                $('#SemesterError').text(errors.semester_id[0]);
                             }
                             if (errors.praktek) {
                                 $('#praktek').addClass('is-invalid');
@@ -297,18 +338,21 @@
 
                 let id = $(this).data('id');
                 let nama = $(this).data('nama');
-                let kelas = $(this).data('kelas');
+                let alias = $(this).data('alias');
+                let semester = $(this).data('semester');
+                let prodi = $(this).data('prodi');
                 let kode = $(this).data('kode');
                 let praktek = $(this).data('praktek');
                 let teori = $(this).data('teori');
 
                 $('#editId').val(id);
                 $('#edit_nama_matkul').val(nama);
-                $('#edit_kelas').val(kelas);
+                $('#edit_alias').val(alias);
+                $('#edit_prodi').val(prodi);
+                $('#edit_semester').val(semester);
                 $('#kodeEdit').val(kode);
                 $('#praktekEdit').val(praktek);
                 $('#teoriEdit').val(teori);
-                // $('#edit_kelas').trigger('change');
             });
 
             $('#editForm').submit(function(e) {
@@ -319,10 +363,12 @@
 
                 let id = $('#editId').val();
                 let namaMatkul = $('#edit_nama_matkul').val();
+                let alias = $('#edit_alias').val();
                 let kode = $('#kodeEdit').val();
                 let praktek = $('#praktekEdit').val();
                 let teori = $('#teoriEdit').val();
-                let kelasId = $('#edit_kelas').val();
+                let prodi_id = $('#edit_prodi').val();
+                let semester_id = $('#edit_semester').val();
 
 
                 $.ajax({
@@ -330,10 +376,12 @@
                     type: 'PUT',
                     data: {
                         nama_matkul: namaMatkul,
+                        alias: alias,
                         kode: kode,
                         teori: teori,
                         praktek: praktek,
-                        kelas_id: kelasId
+                        semester_id: semester_id,
+                        prodi_id: prodi_id
                     },
                     success: function(response) {
                         $('#editModal').modal('hide');
@@ -355,9 +403,21 @@
                                 $('#edit_nama_matkul').addClass('is-invalid');
                                 $('#editNamaMatkulError').text(errors.nama_matkul[0]);
                             }
+                            if (errors.alias) {
+                                $('#edit_alias').addClass('is-invalid');
+                                $('#editNamaAliasError').text(errors.alias[0]);
+                            }
                             if (errors.kode) {
                                 $('#kodeEdit').addClass('is-invalid');
                                 $('#kodeErrorEdit').text(errors.kode[0]);
+                            }
+                            if (errors.prodi_id) {
+                                $('#edit_prodi').addClass('is-invalid');
+                                $('#editProdiError').text(errors.prodi_id[0]);
+                            }
+                            if (errors.semester_id) {
+                                $('#edit_semester').addClass('is-invalid');
+                                $('#editSemesterError').text(errors.semester_id[0]);
                             }
                             if (errors.teori) {
                                 $('#teoriEdit').addClass('is-invalid');
@@ -467,7 +527,7 @@
                         search: searchQuery
                     },
                     success: function(response) {
-                        $('tbody').empty(); // Kosongkan tabel sebelumnya
+                        $('tbody').empty();
                         if (response.data.length > 0) {
                             response.data.forEach(function(matkul, index) {
                                 $('tbody').append(`
@@ -476,10 +536,16 @@
                             <td>${matkul.kode}</td>
                             <td>${matkul.nama_matkul}</td>
                             <td>${matkul.teori + matkul.praktek}</td>
+                            <td>${matkul.prodi.nama_prodi}</td>
+                            <td>Semester ${matkul.semester.semester}</td>
                             <td>
                                 <button class="btn btn-primary btn-sm editMatkul" 
                                     data-id="${matkul.id}" 
                                     data-nama="${matkul.nama_matkul}" 
+                                    data-alias="${matkul.alias}" 
+                                    data-kode="${matkul.kode}" 
+                                    data-prodi="${matkul.prodi_id}" 
+                                    data-semester="${matkul.semester_id}" 
                                     data-kode="${matkul.kode}" 
                                     data-teori="${matkul.teori}" 
                                     data-praktek="${matkul.praktek}" 
@@ -500,7 +566,7 @@
                             updatePagination(response);
                         } else {
                             $('tbody').append(
-                                '<tr><td class="text-center" colspan="5">Tidak ada hasil ditemukan</td></tr>'
+                                '<tr><td class="text-center" colspan="7">Tidak ada hasil ditemukan</td></tr>'
                             );
                         }
                     },
@@ -541,10 +607,16 @@
                             <td>${matkul.kode}</td>
                             <td>${matkul.nama_matkul}</td>
                             <td>${matkul.teori + matkul.praktek}</td>
+                            <td>${matkul.prodi.nama_prodi}</td>
+                            <td>Semester ${matkul.semester.semester}</td>
                             <td>
                                 <button class="btn btn-primary btn-sm editMatkul" 
                                     data-id="${matkul.id}" 
                                     data-nama="${matkul.nama_matkul}" 
+                                    data-alias="${matkul.alias}" 
+                                    data-kode="${matkul.kode}" 
+                                    data-prodi="${matkul.prodi_id}" 
+                                    data-semester="${matkul.semester_id}" 
                                     data-kode="${matkul.kode}" 
                                     data-teori="${matkul.teori}" 
                                     data-praktek="${matkul.praktek}" 

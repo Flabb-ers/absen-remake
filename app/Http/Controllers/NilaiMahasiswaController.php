@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\Prodi;
 use App\Models\Jadwal;
 use App\Models\Matkul;
 use App\Models\Kaprodi;
 use App\Models\Semester;
 use App\Models\Mahasiswa;
 use App\Models\NilaiHuruf;
-use App\Models\Prodi;
 use Illuminate\Http\Request;
 use App\Models\TahunAkademik;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class NilaiMahasiswaController extends Controller
@@ -31,8 +32,8 @@ class NilaiMahasiswaController extends Controller
     }
     public function index()
     {
-        // INI BIMBANG MUNGKIN REVISI
-        $matkuls = Matkul::where('kelas_id', $this->kelasId)->get();
+        $kelas = Kelas::with('prodi', 'semester')->where('id', $this->kelasId)->first();
+        $matkuls = Matkul::where('prodi_id', $kelas->id_prodi)->where('semester_id', $kelas->id_semester)->get();
         $kelas = Kelas::where('id', $this->kelasId)->first();
 
         $semester = Semester::where('id', $kelas->id_semester)->first();
@@ -42,7 +43,7 @@ class NilaiMahasiswaController extends Controller
             ->where('semester_id', $semester->id)
             ->where('mahasiswa_id', $this->userId)
             ->get();
-
+            
         $combinedData = $matkuls->map(function ($matkul) use ($nilais) {
             $nilai = $nilais->firstWhere('matkul_id', $matkul->id);
             return [
@@ -76,10 +77,14 @@ class NilaiMahasiswaController extends Controller
         $prodi = Prodi::where('id', $kelas->id_prodi)->first();
 
         // INI BIMBANG MUNGKIN REVISI
-        $matkuls = Matkul::whereHas('kelas', function ($query) use ($prodi, $semester_id) {
-            $query->where('id_prodi', $prodi->id)
-                ->where('id_semester', $semester_id);
-        })
+        // $matkuls = Matkul::whereHas('kelas', function ($query) use ($prodi, $semester_id) {
+        //     $query->where('id_prodi', $prodi->id)
+        //         ->where('id_semester', $semester_id);
+        // })
+        //     ->get();
+
+        $matkuls = matkul::where('prodi_id', $prodi->id)
+            ->where('semester_id', $semester_id)
             ->get();
 
         $semesterRiwayatKhs = Semester::where('id', $semester_id)->first();
@@ -113,7 +118,7 @@ class NilaiMahasiswaController extends Controller
             ->first();
 
         $riwayat = true;
-        return view("pages.mahasiswa.nilai.index", compact("combinedData", "semesters", 'riwayat','semesterRiwayatKhs'));
+        return view("pages.mahasiswa.nilai.index", compact("combinedData", "semesters", 'riwayat', 'semesterRiwayatKhs'));
     }
 
 
@@ -150,7 +155,7 @@ class NilaiMahasiswaController extends Controller
     {
         $kelas = Kelas::where('id', $this->kelasId)->first();
         $prodi = Prodi::where('id', $kelas->id_prodi)->first();
-        $getSemesterById = Semester::where('id',$semester)->first();
+        $getSemesterById = Semester::where('id', $semester)->first();
 
         $ipks = NilaiHuruf::with(['matkul', 'kelas.prodi'])
             ->where('mahasiswa_id', $this->userId)
@@ -158,7 +163,7 @@ class NilaiMahasiswaController extends Controller
                 $query->where('id', $prodi->id);
             })
             ->whereHas('kelas.semester', function ($query) use ($getSemesterById) {
-                $query->where('semester','<=' ,$getSemesterById->semester);
+                $query->where('semester', '<=', $getSemesterById->semester);
             })
             ->get();
 

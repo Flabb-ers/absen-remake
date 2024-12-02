@@ -28,5 +28,8 @@
 
 - [x] di rekap presensi  dan kontrank untuk nama tanda tangan belum di ubah
 - [x] **plan besok cek auth nilai kalau sudah cek khs dan buat history persemester**
-- [ ]  **cek kepastian matkul apakah perprodi dan persemester apakah perkelas**
-- [ ] di riwayat khs untuk tahun ajaran dan semester masih sama seperti khs biasa atau sesuai paling tinggi mungkin bisa difix atau tmbah table
+- [x]  **cek kepastian matkul apakah perprodi dan persemester apakah perkelas**
+- [x] di riwayat khs untuk tahun ajaran dan semester masih sama seperti khs biasa atau sesuai paling tinggi mungkin bisa difix atau tmbah table
+-[ ] hapus log di rekap nilai kontroller jika sudah benar perhitungan nilai
+-[ ] tambah where jika mahasiswa status krs 0 belum bisa masuk ke presensi dll
+-[ ] lanjut krs besok

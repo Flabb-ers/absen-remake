@@ -215,7 +215,11 @@ class MahasiswaController extends Controller
 
         $mahasiswaIds = explode(',', $request->input('mahasiswa_ids'));
 
-        Mahasiswa::whereIn('id', $mahasiswaIds)->update(['kelas_id' => $request->input('kelas_id')]);
+
+        Mahasiswa::whereIn('id', $mahasiswaIds)->update([
+            'kelas_id' => $request->input('kelas_id'),
+            'status_krs' => 0,
+        ]);
 
         return redirect('/presensi/data-mahasiswa')->with('success', 'Kelas mahasiswa berhasil diperbarui!');
     }
@@ -245,14 +249,14 @@ class MahasiswaController extends Controller
         $request->validate([
             'file' => 'required|mimes:xlsx,xls'
         ]);
-    
+
         $file = $request->file('file')->path();
         $spreadsheet = IOFactory::load($file);
         $sheet = $spreadsheet->getActiveSheet();
-    
+
         $dataMahasiswa = [];
         $errors = [];
-    
+
         foreach ($sheet->getRowIterator(2) as $row) {
             $namaLengkap = $sheet->getCell("B{$row->getRowIndex()}")->getValue();
             $nim = $sheet->getCell("C{$row->getRowIndex()}")->getValue();
@@ -268,10 +272,9 @@ class MahasiswaController extends Controller
             $jenisKelamin = $sheet->getCell("M{$row->getRowIndex()}")->getValue();
             $kelasId = $sheet->getCell("N{$row->getRowIndex()}")->getValue();
             $pembimbingAkademik = $sheet->getCell("O{$row->getRowIndex()}")->getValue();
-    
+
             $tanggalLahir = Date::excelToDateTimeObject($tanggalLahir);
-    
-            // Validasi untuk setiap baris
+
             if (empty($namaLengkap)) {
                 $errors[] = "Nama lengkap tidak boleh kosong pada baris {$row->getRowIndex()}";
             }
@@ -284,13 +287,11 @@ class MahasiswaController extends Controller
             if (empty($kelasId) || !Kelas::where('id', $kelasId)->exists()) {
                 $errors[] = "Kelas ID tidak valid pada baris {$row->getRowIndex()}";
             }
-    
-            // Jika ada error, skip baris ini
+
             if (!empty($errors)) {
                 continue;
             }
-    
-            // Data valid akan dimasukkan ke array
+
             $dataMahasiswa[] = [
                 'nama_lengkap' => $namaLengkap,
                 'nim' => $nim,
@@ -308,21 +309,15 @@ class MahasiswaController extends Controller
                 'dosen_pembimbing_id' => $pembimbingAkademik,
             ];
         }
-    
+
         if (count($dataMahasiswa) > 0) {
             Mahasiswa::insert($dataMahasiswa);
         }
-    
-        // Jika ada error, masukkan ke session
+
         if (count($errors) > 0) {
             return redirect()->route('data-mahasiswa.index')->withErrors($errors);
         }
-    
+
         return redirect()->route('data-mahasiswa.index')->with('success', 'Data mahasiswa berhasil diimpor');
     }
-    
-    
-    
-    
-    
 }

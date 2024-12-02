@@ -52,12 +52,12 @@ class AuthController extends Controller
         if ($user && Hash::check($request->password, $user->password)) {
             Auth::guard($guard)->login($user);
             session(['user' => [
-                'id'=> $user->id,
-                'kelasId' =>$user->kelas_id,
+                'id' => $user->id,
+                'kelasId' => $user->kelas_id,
                 'nama' => $user->nama ?? $user->nama_lengkap,
                 'role' => $role,
-                'wadir'=> $user->no,
-                'prodiId'=>$user->prodis_id,
+                'wadir' => $user->no,
+                'prodiId' => $user->prodis_id,
                 'email' => $user->email,
             ]]);
             return redirect()->route('dashboard');
@@ -92,7 +92,9 @@ class AuthController extends Controller
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        return redirect()->route('login');
+        return redirect()->route('login')
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 }

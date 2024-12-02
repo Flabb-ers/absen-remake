@@ -118,7 +118,7 @@
                     </ul>
                 </div>
             </li>
-            @elseif(auth::guard('wakil_direktur')->check() || auth::guard('kaprodi')->check())
+        @elseif(auth::guard('wakil_direktur')->check() || auth::guard('kaprodi')->check())
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap" aria-expanded="false"
                     aria-controls="pengajuan-rekap">
@@ -191,16 +191,24 @@
                 </a>
                 <div class="collapse" id="riwayat">
                     <ul class="nav flex-column sub-menu">
-                        @foreach ($semesters as $semester)
+                        @forelse ($semesters as $semester)
                             <li
                                 class="nav-item {{ Request::is('presensi/mahasiswa/riwayat/' . $semester->semester->id) ? 'active' : '' }}">
-                                <a class="nav-link" href="/presensi/mahasiswa/riwayat/{{ $semester->semester->id}}">
+                                <a class="nav-link" href="/presensi/mahasiswa/riwayat/{{ $semester->semester->id }}">
                                     Semester {{ $semester->semester->semester }}
                                 </a>
                             </li>
-                        @endforeach
+                        @empty
+                        <li class="nav-link">Belum ada riwayat</li>
+                        @endforelse
                     </ul>
                 </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/presensi/mahasiswa/krs_pembayaran">
+                    <i class="mdi mdi-receipt-text-check-outline menu-icon"></i>
+                    <span class="menu-title">KRS & Pembayaran</span>
+                </a>
             </li>
         @endif
     </ul>

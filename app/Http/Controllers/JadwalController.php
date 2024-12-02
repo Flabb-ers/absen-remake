@@ -19,10 +19,10 @@ class JadwalController extends Controller
     {
         $kelasAll = Jadwal::all();
         $dosens = Dosen::all();
-        $kelass = Kelas::whereHas('semester', function ($query) {
+        $kelass = Kelas::with('semester','prodi')->whereHas('semester', function ($query) {
             $query->where('status', 1);
         })->get();
-        $matkuls = Matkul::all();
+        $matkuls = Matkul::with('semester','prodi')->orderBy('nama_matkul','asc')->get();
         $jadwals = Jadwal::with('dosen', 'kelas', 'matkul', 'ruangan')->latest()->get();
         $ruangans = Ruangan::all();
         $tahun = TahunAkademik::where('status','1')->first();

@@ -46,10 +46,11 @@
                                                         data-id="{{ $jadwal->id }}"
                                                         data-matkul="{{ $jadwal->matkul->id }}"
                                                         data-dosen="{{ $jadwal->dosen->id }}"
-                                                        data-kelas="{{ $jadwal->kelas->id }}"
+                                                        data-kelas="{{ $jadwal->kelas_id }}"
+                                                        data-semester="{{ $jadwal->kelas->id_semester }}"
+                                                        data-prodi="{{ $jadwal->kelas->id_prodi }}"
                                                         data-ruangan="{{ $jadwal->ruangan->id }}"
                                                         data-tahun="{{ $jadwal->tahun }}"
-                                                    
                                                         data-jam_mulai="{{ $jadwal->waktu_mulai }}"
                                                         data-jam_selesai="{{ $jadwal->waktu_selesai }}"
                                                         data-hari="{{ $jadwal->hari }}" data-bs-toggle="modal"
@@ -97,7 +98,11 @@
                                     <select class="form-select" id="kelas" name="kelas">
                                         <option selected>--Kelas--</option>
                                         @foreach ($kelass as $kelas)
-                                            <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
+                                            <option value="{{ $kelas->id }}"
+                                                data-semester-id="{{ $kelas->id_semester }}"
+                                                data-prodi-id="{{ $kelas->id_prodi }}">
+                                                {{ $kelas->nama_kelas }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     <div class="invalid-feedback" id="kelasError"></div>
@@ -194,7 +199,9 @@
                                     <select class="form-select" id="matkul" name="matkul">
                                         <option selected>--Matkul--</option>
                                         @foreach ($matkuls as $matkul)
-                                            <option value="{{ $matkul->id }}" data-kelas-id="{{ $matkul->kelas_id }}"
+                                            <option value="{{ $matkul->id }}"
+                                                data-semester-id="{{ $matkul->semester_id }}"
+                                                data-prodi-id="{{ $matkul->prodi_id }}"
                                                 data-teori="{{ $matkul->teori }}" data-praktek="{{ $matkul->praktek }}">
                                                 {{ $matkul->nama_matkul }}
                                             </option>
@@ -276,6 +283,8 @@
                                         <option selected>--Kelas--</option>
                                         @foreach ($kelass as $kelas)
                                             <option value="{{ $kelas->id }}"
+                                                data-semester-id="{{ $kelas->id_semester }}"
+                                                data-prodi-id="{{ $kelas->id_prodi }}"
                                                 {{ old('kelas', $kelas->id) == $kelas->id ? 'selected' : '' }}>
                                                 {{ $kelas->nama_kelas }}
                                             </option>
@@ -372,10 +381,10 @@
                                     <select class="form-select" id="editMatkul" name="matkul" required>
                                         <option selected>--Matkul--</option>
                                         @foreach ($matkuls as $matkul)
-                                            <option value="{{ $matkul->id }}" data-kelas-id="{{ $matkul->kelas_id }}"
-                                                data-praktek="{{ $matkul->praktek }}"
-                                                data-teori="{{ $matkul->teori }}"
-                                                {{ old('matkul', $matkul->id) == $matkul->id ? 'selected' : '' }}>
+                                            <option value="{{ $matkul->id }}" data-teori="{{ $matkul->teori }}"
+                                                data-praktek="{{ $matkul->praktek }}" data-teori="{{ $matkul->teori }}"
+                                                data-semester-id="{{ $matkul->semester_id }}"
+                                                data-prodi-id="{{ $matkul->prodi_id }}">
                                                 {{ $matkul->nama_matkul }}
                                             </option>
                                         @endforeach
@@ -452,82 +461,29 @@
                 $('#sks').val(totalSKS);
             });
 
+            $('#matkul')
+                .val('--Matkul--')
+                .prop('disabled', true);
             $('#kelas').on('change', function() {
-                const selectedKelas = $(this).val();
-                const $matkulDropdown = $('#matkul');
-                const $matkulOptions = $matkulDropdown.find('option');
+                const selectedKelasId = $(this).val();
 
-                const previousMatkul = $matkulDropdown.val();
-                if (!selectedKelas) {
-                    $matkulOptions.show();
-                    $matkulDropdown.val('');
-                    return;
-                }
+                const semesterId = $(this).find(':selected').data('semester-id');
+                const prodiId = $(this).find(':selected').data('prodi-id');
 
-                let foundSelected = false;
-                $matkulOptions.each(function() {
-                    const kelasId = $(this).data('kelas-id');
-                    if (!kelasId || kelasId == selectedKelas) {
+                $('#matkul')
+                    .val('--Matkul--')
+                    .prop('disabled', false);
+
+                $('#matkul option').each(function() {
+                    const matkulSemesterId = $(this).data('semester-id');
+                    const matkulProdiId = $(this).data('prodi-id');
+
+                    if (matkulSemesterId === semesterId && matkulProdiId === prodiId) {
                         $(this).show();
-                        if ($(this).val() === previousMatkul) {
-                            foundSelected = true;
-                        }
                     } else {
                         $(this).hide();
                     }
                 });
-
-                if (foundSelected) {
-                    $matkulDropdown.val(previousMatkul);
-                } else {
-                    $matkulDropdown.val('');
-                }
-            })
-            
-            const selectedKelas = $('#editKelas').val();
-            const $matkulDropdown = $('#editMatkul');
-            const previousMatkul = $matkulDropdown.val();
-
-            filterMatkul(selectedKelas, previousMatkul);
-
-            $('#editKelas').on('change', function() {
-                const selectedKelas = $(this).val();
-                $matkulDropdown.val('--Matkul--');
-                filterMatkul(selectedKelas, '');
-            });
-
-            function filterMatkul(kelasId, selectedMatkul) {
-                const $matkulOptions = $matkulDropdown.find('option');
-
-                if (!kelasId || kelasId === '--Kelas--') {
-                    $matkulOptions.show();
-                    $matkulDropdown.val('');
-                    return;
-                }
-                let foundSelected = false;
-                $matkulOptions.each(function() {
-                    const mataKuliahKelasId = $(this).data('kelas-id');
-                    if (!mataKuliahKelasId || mataKuliahKelasId == kelasId) {
-                        $(this).show();
-                        if ($(this).val() === selectedMatkul) {
-                            foundSelected = true;
-                        }
-                    } else {
-                        $(this).hide();
-                    }
-                });
-
-                if (foundSelected) {
-                    $matkulDropdown.val(selectedMatkul);
-                } else {
-                    $matkulDropdown.val('--Matkul--');
-                }
-            }
-
-            $matkulDropdown.on('click', function() {
-                const selectedMatkul = $matkulDropdown.val();
-                const kelasId = $('#editKelas').val();
-                filterMatkul(kelasId, selectedMatkul);
             });
 
 
@@ -623,7 +579,6 @@
             });
 
             $('#editModal').on('show.bs.modal', function(event) {
-
                 let button = $(event.relatedTarget);
                 let jadwalId = button.data('id');
                 let matkulId = button.data('matkul');
@@ -635,7 +590,8 @@
                 let hari = button.data('hari');
                 let id = button.data('id');
                 let tahun = button.data('tahun');
-
+                let semesterId = button.data('semester');
+                let prodiId = button.data('prodi');
 
                 let modal = $(this);
                 modal.find('#editMatkul').val(matkulId);
@@ -648,11 +604,50 @@
                 modal.find('#editid').val(id);
                 modal.find('input[name="editHari"][value="' + hari + '"]').prop('checked', true);
 
+                modal.find('#editMatkul').prop('disabled', false);
+
+                modal.find('#editMatkul option').each(function() {
+                    const matkulSemesterId = $(this).data('semester-id');
+                    const matkulProdiId = $(this).data('prodi-id');
+
+                    if (matkulSemesterId === semesterId && matkulProdiId === prodiId) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+
+                    if ($(this).val() == matkulId) {
+                        $(this).prop('selected', true);
+                    }
+                });
+
+                
                 const selectedOption = modal.find('#editMatkul option:selected');
                 const teori = parseInt(selectedOption.data('teori')) || 0;
                 const praktek = parseInt(selectedOption.data('praktek')) || 0;
                 const totalSKS = teori + praktek;
                 modal.find('#editSks').val(totalSKS);
+            });
+
+            $('#editKelas').on('change', function() {
+                const selectedKelasId = $(this).val();
+                const semesterId = $(this).find(':selected').data('semester-id');
+                const prodiId = $(this).find(':selected').data('prodi-id');
+
+                $('#editMatkul').val('--Matkul--').prop('disabled', false);
+
+                $('#editMatkul option').each(function() {
+                    const matkulSemesterId = $(this).data('semester-id');
+                    const matkulProdiId = $(this).data('prodi-id');
+
+                    if (matkulSemesterId === semesterId && matkulProdiId === prodiId) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                $('#editSks').val('');
             });
 
             $('#editMatkul').change(function() {

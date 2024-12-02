@@ -19,10 +19,6 @@ class Matkul extends Model
         return $this->belongsTo(Kelas::class);
     }
 
-    public function ruangan()
-    {
-        return $this->belongsTo(Ruangan::class, 'ruangans_id');
-    }
 
     public function kontrak()
     {
@@ -85,5 +81,13 @@ class Matkul extends Model
     public function nilaiHuruf()
     {
         return $this->hasMany(NilaiHuruf::class);
+    }
+
+    public function semester(){
+        return $this->belongsTo(Semester::class,'semester_id');
+    }
+
+    public function prodi(){
+        return $this->belongsTo(Prodi::class,'prodi_id');
     }
 }

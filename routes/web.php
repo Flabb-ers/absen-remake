@@ -28,6 +28,7 @@ use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\RekapNilaiController;
+use App\Http\Controllers\KrsPembayaranController;
 use App\Http\Controllers\TahunAkademikController;
 use App\Http\Controllers\NilaiMahasiswaController;
 use App\Http\Controllers\PengajuanRekapBeritaController;
@@ -199,5 +200,6 @@ Route::prefix('/presensi')->group(function () {
         Route::get('/riwayat/{semester_id}', [NilaiMahasiswaController::class, 'riwayat']);
         Route::get('/khs/{semester}', [NilaiMahasiswaController::class, 'khs']);
         Route::get('riwayat/khs/{semester}', [NilaiMahasiswaController::class, 'riwayatKhs']);
+        Route::get('/krs_pembayaran',[KrsPembayaranController::class,'index']);
     });
 });

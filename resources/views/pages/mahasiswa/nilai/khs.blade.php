@@ -59,7 +59,7 @@
     </div>
 
     <!-- Teks -->
-    <div style="text-align: center; flex: 1;" >
+    <div style="text-align: center; flex: 1;">
         <div style="font-weight: bold">YAYASAN SAWUNGGALIH AJI PURWOREJO</div>
         <div class="monotype-corsiva">SAWUNGGALIH AJI FUNDATION PURWOREJO</div>
         <div style="font-weight: bold">POLITEKNIK SAWUNGGALIH AJI</div>
@@ -150,7 +150,12 @@
         <tr>
             <td style="text-align:center">{{ $loop->iteration }}</td>
             <td colspan="2" style="text-align:center">{{ $ips->matkul->kode }}</td>
-            <td>{{ $ips->matkul->nama_matkul }}</td>
+            <td style="max-width: 200px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
+                <div style="display: block; width: 100%;">
+                    <span>{{ $ips->matkul->nama_matkul }}</span><br>
+                    <span>({{ $ips->matkul->alias }})</span>
+                </div>
+            </td>            
             <td style="text-align:center">{{ $ips->matkul->praktek + $ips->matkul->teori }}</td>
             <td style="text-align:center">{{ $ips->nilai_huruf }}</td>
             <td style="text-align:center">
@@ -225,7 +230,8 @@
     <div class="left">
         <div>Ketua Progam Studi,</div>
         <div class="monotype-corsiva" style="margin-bottom:80px">Head of Study Programmed</div>
-        <div style="font-weight:bold">{{ $kaprodi->nama }}</div>
+        <div style="font-weight:bold">
+            {{ $kaprodi->nama ?? '...........................................................' }}</div>
     </div>
     <div class="right">
         <div>Pembina Akademik,</div>

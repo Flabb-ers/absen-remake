@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('nama_ibu');
             $table->string('jenis_kelamin');
             $table->foreignId('kelas_id')->constrained()->onDelete('cascade');
+            $table->boolean('status_krs')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
