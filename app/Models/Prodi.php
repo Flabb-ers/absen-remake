@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Prodi extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
     protected $guarded = ['id'];
 
     protected $table = 'prodi';
@@ -30,7 +30,17 @@ class Prodi extends Model
         return $this->hasMany(Absen::class);
     }
 
-    public function matkul(){
+    public function matkul()
+    {
         return $this->hasMany(Matkul::class);
+    }
+
+    public function pembayaran()
+    {
+        return $this->hasMany(Pembayaran::class);
+    }
+
+    public function krs(){
+        return $this->hasMany(Krs::class);
     }
 }

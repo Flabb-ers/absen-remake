@@ -26,4 +26,13 @@ class Semester extends Model
     public function matkul(){
         return $this->hasMany(Matkul::class);
     }
+
+    public function pembayaran()
+    {
+        return $this->hasMany(Pembayaran::class);
+    }
+
+    public function krs(){
+        return $this->hasMany(Krs::class);
+    }
 }

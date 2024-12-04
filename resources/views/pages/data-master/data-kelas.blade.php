@@ -378,7 +378,6 @@
                             url: `{{ url('/presensi/data-master/data-kelas') }}/${id}`,
                             method: 'DELETE',
                             success: function(response) {
-                                // Menghapus baris dari tabel
                                 $('#row_' + id).remove();
 
                                 Swal.fire({

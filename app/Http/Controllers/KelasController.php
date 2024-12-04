@@ -135,7 +135,6 @@ class KelasController extends Controller
     public function destroy($id)
     {
         $hapus = Kelas::findOrFail($id);
-        Matkul::where('kelas_id', $id)->forceDelete();
         Mahasiswa::where('kelas_id', $id)->forceDelete();
         $hapus->delete();
         Jadwal::where('kelas_id',$id)->forceDelete();

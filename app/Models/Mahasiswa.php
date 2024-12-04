@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Mahasiswa extends Authenticatable 
+class Mahasiswa extends Authenticatable
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -50,7 +50,17 @@ class Mahasiswa extends Authenticatable
         return $this->belongsTo(Dosen::class, 'dosen_pembimbing_id');
     }
 
-    public function nilaiHuruf(){
+    public function nilaiHuruf()
+    {
         return $this->hasMany(NilaiHuruf::class);
+    }
+
+    public function pembayaran()
+    {
+        return $this->hasMany(Pembayaran::class);
+    }
+
+    public function krs(){
+        return $this->hasMany(Krs::class);
     }
 }

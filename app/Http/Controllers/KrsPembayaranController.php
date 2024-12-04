@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Krs;
 use App\Models\Kelas;
+use App\Models\Jadwal;
 use App\Models\Matkul;
 use App\Models\Mahasiswa;
 use App\Models\NilaiHuruf;
+use App\Models\Pembayaran;
+use App\Models\TahunAkademik;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -24,16 +28,169 @@ class KrsPembayaranController extends Controller
     }
     public function index()
     {
-        $kelas = Kelas::where('id',$this->kelasId)->first();
-        $matkulKrs = Matkul::where('semester_id',$kelas->id_semester)
-                ->where('prodi_id',$kelas->id_prodi)
-                ->get();
-        $cekStatus = Mahasiswa::where('id',$this->userId)->first();
+        $kelas = Kelas::where('id', $this->kelasId)->first();
+        $matkulKrs = Matkul::where('semester_id', $kelas->id_semester)
+            ->where('prodi_id', $kelas->id_prodi)
+            ->get();
+        $cekStatus = Mahasiswa::where('id', $this->userId)->first();
         $semesters = NilaiHuruf::where('mahasiswa_id', $this->userId)
             ->select('semester_id')
             ->with('semester')
             ->groupBy('semester_id')
             ->get();
-        return view('pages.mahasiswa.krs_pembayaran.index',compact('semesters','cekStatus','matkulKrs'));
+        $pembayaran = Pembayaran::where('mahasiswa_id', $this->userId)
+            ->where('prodi_id', $kelas->id_prodi)
+            ->where('semester_id', $kelas->id_semester)
+            ->where('kelas_id', $this->kelasId)
+            ->first();
+        $prodiId = $kelas->id_prodi;
+        $semesterId = $kelas->id_semester;
+        $krs = Krs::where('mahasiswa_id', $this->userId)
+            ->where('kelas_id', $this->kelasId)
+            ->where('semester_id', $semesterId)
+            ->where('prodi_id', $prodiId)
+            ->first();
+        $cekPembayaran = $pembayaran !== null;
+
+        if ($cekPembayaran) {
+            $cekPembayaran = true;
+        } else {
+            $cekPembayaran = false;
+        }
+        return view('pages.mahasiswa.krs_pembayaran.index', compact('semesters', 'cekStatus', 'matkulKrs', 'cekPembayaran', 'pembayaran', 'krs'));
+    }
+
+    public function createPembayaran(Request $request)
+    {
+        $validated = $request->validate([
+            'file' => 'required|mimes:jpeg,png,jpg|max:5120',
+        ], [
+            'file.required' => 'File bukti pembayaran wajib diunggah.',
+            'file.mimes' => 'File harus berformat jpeg, png, atau jpg.',
+            'file.max' => 'Ukuran file maksimal 5MB.',
+        ]);
+
+        $mahasiswaId = Mahasiswa::where('id', $request->mahasiswa_id)->first();
+        $kelasId = Kelas::where('id', $mahasiswaId->kelas_id)->first();
+        $prodiId = $kelasId->id_prodi;
+        $semesterId = $kelasId->id_semester;
+
+        $buktiPembayaranPath = null;
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            if ($file->isValid()) {
+                $buktiPembayaranPath = $file->store('images', 'public');
+            } else {
+                return back()->withErrors(['file' => 'File upload failed']);
+            }
+        } else {
+            return back()->withErrors(['file' => 'No file uploaded']);
+        }
+
+        Pembayaran::create([
+            'mahasiswa_id' => $mahasiswaId->id,
+            'prodi_id' => $prodiId,
+            'semester_id' => $semesterId,
+            'kelas_id' => $kelasId->id,
+            'bukti_pembayaran' => $buktiPembayaranPath,
+            'status_pembayaran' => 0
+        ]);
+
+        return redirect('/presensi/mahasiswa/krs_pembayaran')->with('success', 'Bukti pembayaran berhasil diunggah.');
+    }
+
+    public function diajukan()
+    {
+        $pembayarans = Pembayaran::with('mahasiswa', 'prodi', 'kelas', 'semester')->where('status_pembayaran', 0)->latest()->get();
+        return view('pages.pembayaran.index', compact('pembayarans'));
+    }
+    public function disetujui()
+    {
+        $pembayarans = Pembayaran::with('mahasiswa', 'prodi', 'kelas', 'semester')->where('status_pembayaran', 1)->latest()->get();
+        return view('pages.pembayaran.index', compact('pembayarans'));
+    }
+
+    public function edit($id)
+    {
+        $pembayaran = Pembayaran::with('mahasiswa', 'mahasiswa.kelas.prodi', 'mahasiswa.kelas.semester', 'mahasiswa.kelas')
+            ->where('id', $id)
+            ->first();
+        return view('pages.pembayaran.edit', compact('pembayaran'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $pembayaran = Pembayaran::where('id', $id)->first();
+        if (!$pembayaran) {
+            return redirect('/presensi/pembayaran/diajukan')->with('error', 'Data pembayaran tidak ditemukan.');
+        }
+        $request->validate([
+            'status_pembayaran' => 'required|in:0,1',
+            'keterangan' => 'nullable|string|max:255',
+        ]);
+
+        $pembayaran->status_pembayaran = $request->status_pembayaran;
+        $pembayaran->keterangan = $request->keterangan;
+
+        $pembayaran->save();
+        if ($request->status_pembayaran == 0) {
+            return redirect()->back()->with('success', 'Status pembayaran berhasil diperbarui.');
+        } else {
+            return redirect('/presensi/pembayaran/diajukan')->with('success', 'Status pembayaran berhasil diperbarui.');
+        }
+    }
+
+    public function pengajuanKrs(Request $request)
+    {
+        $mahasiswaId = Mahasiswa::where('id', $this->userId)->first();
+        $kelasId = Kelas::where('id', $this->kelasId)->first();
+        $prodiId = $kelasId->id_prodi;
+        $semesterId = $kelasId->id_semester;
+        $tahunAjaran = TahunAkademik::where('status', 1)->first();
+
+        Krs::create([
+            'mahasiswa_id' => $mahasiswaId->id,
+            'kelas_id' => $kelasId->id,
+            'prodi_id' => $prodiId,
+            'semester_id' => $semesterId,
+            'tahun_ajaran' => $tahunAjaran->tahun_akademik,
+            'status_krs' => 0
+        ]);
+
+        return redirect()->back()->with('success', 'KRS berhasil diajukan');
+    }
+
+    public function krsDiajukan()
+    {
+        $dosenPa = $this->userId;
+        $krss = Krs::with('mahasiswa', 'kelas.prodi', 'kelas')
+            ->whereHas('mahasiswa', function ($query) use ($dosenPa) {
+                $query->where('dosen_pembimbing_id', $dosenPa);
+            })
+            ->where('status_krs', 0)
+            ->latest()
+            ->get();
+        $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
+        return view('pages.dosen.krs.index', compact('krss', 'kelasAll'));
+    }
+
+    public function krsEdit($id)
+    {
+        $krs = Krs::with('mahasiswa', 'kelas', 'prodi', 'semester')->where('id', $id)->first();
+        $prodiId = $krs->prodi_id;
+        $semesterId = $krs->semester_id;
+        $matkulKrs = Matkul::where('prodi_id', $prodiId)
+            ->where('semester_id', $semesterId)
+            ->get();
+        $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
+        return view('pages.dosen.krs.edit', compact('krs', 'matkulKrs', 'kelasAll'));
+    }
+
+    public function krsUpdate($id)
+    {
+        $krs = Krs::where('id', $id)->first();
+        $krs->status_krs = 1;
+        $krs->save();
+        return redirect('/presensi/krs/diajukan')->with('success', 'Berhasil memverifikasi KRS');
     }
 }

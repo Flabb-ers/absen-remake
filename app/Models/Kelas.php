@@ -96,4 +96,13 @@ class Kelas extends Model
     {
         return $this->hasMany(NilaiHuruf::class);
     }
+
+    public function pembayaran()
+    {
+        return $this->hasMany(Pembayaran::class);
+    }
+
+    public function krs(){
+        return $this->hasMany(Krs::class);
+    }
 }

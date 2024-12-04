@@ -69,8 +69,26 @@
                         <li class="nav-item"> <a class="nav-link"
                                 href="/presensi/data-nilai/pengajuan/rekap-nilai">Diajukan</a>
                         </li>
-                        <li class="nav-item"> <a class="nav-link"
-                                href="/presensi/data-nilai/pengajuan/nilai-disetujui">Disetujui</a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/presensi/data-nilai/pengajuan/nilai-disetuju">
+                                Disetujui
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#pembayaran" aria-expanded="false"
+                    aria-controls="pembayaran">
+                    <i class="mdi mdi-receipt-text-check-outline menu-icon"></i>
+                    <span class="menu-title">Pembayaran</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="pembayaran">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item"> <a class="nav-link" href="/presensi/pembayaran/diajukan">Diajukan</a>
+                        </li>
+                        <li class="nav-item"> <a class="nav-link" href="/presensi/pembayaran/disetujui">Disetujui</a>
                         </li>
                     </ul>
                 </div>
@@ -118,6 +136,24 @@
                     </ul>
                 </div>
             </li>
+            @if (Session::get('user.status_pa') == 1)
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap" aria-expanded="false"
+                        aria-controls="pengajuan-rekap">
+                        <i class="mdi mdi-card-bulleted-settings menu-icon"></i>
+                        <span class="menu-title">KRS</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="pengajuan-rekap">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"> <a class="nav-link" href="/presensi/krs/diajukan">Diajukan</a>
+                            </li>
+                            <li class="nav-item"> <a class="nav-link" href="/presensi/krs/disetujui">Disetujui</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            @endif
         @elseif(auth::guard('wakil_direktur')->check() || auth::guard('kaprodi')->check())
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap" aria-expanded="false"
@@ -199,7 +235,7 @@
                                 </a>
                             </li>
                         @empty
-                        <li class="nav-link">Belum ada riwayat</li>
+                            <li class="nav-link">Belum ada riwayat</li>
                         @endforelse
                     </ul>
                 </div>

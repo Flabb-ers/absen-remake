@@ -59,6 +59,7 @@ class AuthController extends Controller
                 'wadir' => $user->no,
                 'prodiId' => $user->prodis_id,
                 'email' => $user->email,
+                'status_pa' => $user->pembimbing_akademik,
             ]]);
             return redirect()->route('dashboard');
         } else

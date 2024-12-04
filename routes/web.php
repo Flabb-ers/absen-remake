@@ -188,10 +188,27 @@ Route::prefix('/presensi')->group(function () {
         Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/rekap', [RekapNilaiController::class, 'index']);
         Route::post('/rekap', [RekapNilaiController::class, 'store']);
         Route::get('/pengajuan/rekap-nilai', [RekapNilaiController::class, 'pengajuan']);
-        Route::get('/pengajuan/nilai-disetujui', [RekapNilaiController::class, 'disetujui']);
+        Route::get('/pengajuan/nilai-disetuju', [RekapNilaiController::class, 'disetujui']);
         Route::get('/pengajuan/rekap-nilai/{kelas_id}/{matkul_id}/{jadwal_id}', [RekapNilaiController::class, 'diajukan']);
         Route::put('/pengajuan/rekap-nilai/{kelas_id}/{matkul_id}/{jadwal_id}', [RekapNilaiController::class, 'update']);
         Route::get('rekap/{kelas_id}/{matkul_id}/{jadwal_id}', [RekapNilaiController::class, 'rekap']);
+    });
+
+    // PEMBAYARAN
+    Route::prefix('/pembayaran')->middleware('auth:admin')->group(function(){
+        Route::get('/diajukan',[KrsPembayaranController::class,'diajukan']);
+        Route::get('/disetujui',[KrsPembayaranController::class,'disetujui']);
+        Route::get('/diajukan/{id}/edit',[KrsPembayaranController::class,'edit']);
+        Route::get('/disetujui/{id}/edit',[KrsPembayaranController::class,'edit']);
+        Route::put('/diajukan/update/{id}',[KrsPembayaranController::class,'update']);
+    });
+
+    // KRS
+    Route::prefix('/krs')->middleware('auth:dosen')->group(function(){
+        Route::get('/diajukan',[KrsPembayaranController::class,'krsDiajukan']);
+        Route::post('/diajukan',[KrsPembayaranController::class,'updateKrs']);
+        Route::get('/diajukan/{id}/edit',[KrsPembayaranController::class,'krsEdit']);
+        Route::put('/diajukan/{id}/update',[KrsPembayaranController::class,'krsUpdate']);
     });
 
     // HALAMAN MAHASISWA
@@ -201,5 +218,7 @@ Route::prefix('/presensi')->group(function () {
         Route::get('/khs/{semester}', [NilaiMahasiswaController::class, 'khs']);
         Route::get('riwayat/khs/{semester}', [NilaiMahasiswaController::class, 'riwayatKhs']);
         Route::get('/krs_pembayaran',[KrsPembayaranController::class,'index']);
+        Route::post('/krs_pembayaran',[KrsPembayaranController::class,'createPembayaran'])->name('upload_bukti_pembayaran');
+        Route::post('/krs',[KrsPembayaranController::class,'pengajuanKrs']);
     });
 });
