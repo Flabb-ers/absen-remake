@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('semester_id')->constrained('semesters')->onDelete('cascade');
             $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
             $table->integer('status_krs');
+            $table->integer('setuju_pa');
+            $table->integer('setuju_mahasiswa');
             $table->string('tahun_ajaran');
             $table->timestamps();
         });

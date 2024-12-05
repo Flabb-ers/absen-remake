@@ -137,18 +137,20 @@
                 </div>
             </li>
             @if (Session::get('user.status_pa') == 1)
-                <li class="nav-item">
+                <li class="nav-item {{ Request::is('presensi/krs*') ? 'active' : '' }}">
                     <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap" aria-expanded="false"
                         aria-controls="pengajuan-rekap">
                         <i class="mdi mdi-card-bulleted-settings menu-icon"></i>
                         <span class="menu-title">KRS</span>
                         <i class="menu-arrow"></i>
                     </a>
-                    <div class="collapse" id="pengajuan-rekap">
+                    <div class="collapse {{ Request::is('presensi/krs*') ? 'show' : '' }}" id="pengajuan-rekap">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"> <a class="nav-link" href="/presensi/krs/diajukan">Diajukan</a>
+                            <li class="nav-item"> <a
+                                    class="nav-link  {{ Request::is('presensi/krs/diajukan*') ? 'active' : '' }}" href="/presensi/krs/diajukan">Diajukan</a>
                             </li>
-                            <li class="nav-item"> <a class="nav-link" href="/presensi/krs/disetujui">Disetujui</a>
+                            <li class="nav-item">
+                                <a class="nav-link {{ Request::is('presensi/krs/disetujui*') ? 'active' : '' }}" href="/presensi/krs/disetujui">Disetujui</a>
                             </li>
                         </ul>
                     </div>

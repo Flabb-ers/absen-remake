@@ -4,11 +4,13 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\Admin;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Admin;
 use App\Models\Dosen;
+use App\Models\Kelas;
 use App\Models\Prodi;
+use App\Models\Matkul;
 use App\Models\Ruangan;
 use App\Models\Semester;
 use App\Models\TahunAkademik;
@@ -175,6 +177,120 @@ class DatabaseSeeder extends Seeder
             'email'=>'admin@email.com',
             'password'=> Hash::make('admin123'),
         ]);
+
+        Kelas::create([
+            'kode_kelas'=>'22222',
+            'nama_kelas'=>'TI1A',
+            'jenis_kelas'=>'Reguler',
+            'id_prodi'=>1,
+            'id_semester'=>1
+        ]);
+
+        $matkuls = [
+            [
+                'prodi_id' => 1,
+                'semester_id' => 1,
+                'nama_matkul' => 'Matematika Diskrit',
+                'alias' => 'Discrete Mathematics',
+                'kode' => 'MD101',
+                'teori' => 3,
+                'praktek' => 0,
+            ],
+            [
+                'prodi_id' => 1,
+                'semester_id' => 1,
+                'nama_matkul' => 'Algoritma dan Pemrograman',
+                'alias' => 'Algorithm and Programming',
+                'kode' => 'AP102',
+                'teori' => 3,
+                'praktek' => 2,
+            ],
+            [
+                'prodi_id' => 1,
+                'semester_id' => 1,
+                'nama_matkul' => 'Sistem Operasi',
+                'alias' => 'Operating Systems',
+                'kode' => 'SO103',
+                'teori' => 3,
+                'praktek' => 2,
+            ],
+            [
+                'prodi_id' => 1,
+                'semester_id' => 1,
+                'nama_matkul' => 'Struktur Data',
+                'alias' => 'Data Structures',
+                'kode' => 'SD104',
+                'teori' => 3,
+                'praktek' => 2,
+            ],
+            [
+                'prodi_id' => 1,
+                'semester_id' => 1,
+                'nama_matkul' => 'Basis Data',
+                'alias' => 'Database Systems',
+                'kode' => 'BD105',
+                'teori' => 3,
+                'praktek' => 2,
+            ],
+            [
+                'prodi_id' => 1,
+                'semester_id' => 1,
+                'nama_matkul' => 'Pemrograman Berorientasi Objek',
+                'alias' => 'Object-Oriented Programming',
+                'kode' => 'PBO106',
+                'teori' => 3,
+                'praktek' => 2,
+            ],
+            [
+                'prodi_id' => 1,
+                'semester_id' => 1,
+                'nama_matkul' => 'Jaringan Komputer',
+                'alias' => 'Computer Networks',
+                'kode' => 'JK107',
+                'teori' => 3,
+                'praktek' => 2,
+            ],
+            [
+                'prodi_id' => 1,
+                'semester_id' => 1,
+                'nama_matkul' => 'Manajemen Proyek TI',
+                'alias' => 'IT Project Management',
+                'kode' => 'MPTI108',
+                'teori' => 3,
+                'praktek' => 0,
+            ],
+            [
+                'prodi_id' => 1,
+                'semester_id' => 1,
+                'nama_matkul' => 'Keamanan Sistem Informasi',
+                'alias' => 'Information Security',
+                'kode' => 'KSI109',
+                'teori' => 3,
+                'praktek' => 2,
+            ],
+            [
+                'prodi_id' => 1,
+                'semester_id' => 1,
+                'nama_matkul' => 'Pemrograman Web',
+                'alias' => 'Web Programming',
+                'kode' => 'PW110',
+                'teori' => 3,
+                'praktek' => 2,
+            ],
+            [
+                'prodi_id' => 1,
+                'semester_id' => 1,
+                'nama_matkul' => 'Kecerdasan Buatan',
+                'alias' => 'Artificial Intelligence',
+                'kode' => 'AI111',
+                'teori' => 3,
+                'praktek' => 2,
+            ],
+        ];
+
+        foreach ($matkuls as $matkul) {
+            Matkul::create($matkul);
+        }
 
     }
 }

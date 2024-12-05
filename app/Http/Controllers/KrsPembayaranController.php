@@ -45,7 +45,8 @@ class KrsPembayaranController extends Controller
             ->first();
         $prodiId = $kelas->id_prodi;
         $semesterId = $kelas->id_semester;
-        $krs = Krs::where('mahasiswa_id', $this->userId)
+        $krs = Krs::with('mahasiswa', 'kelas', 'prodi', 'semester')
+            ->where('mahasiswa_id', $this->userId)
             ->where('kelas_id', $this->kelasId)
             ->where('semester_id', $semesterId)
             ->where('prodi_id', $prodiId)
@@ -57,6 +58,7 @@ class KrsPembayaranController extends Controller
         } else {
             $cekPembayaran = false;
         }
+
         return view('pages.mahasiswa.krs_pembayaran.index', compact('semesters', 'cekStatus', 'matkulKrs', 'cekPembayaran', 'pembayaran', 'krs'));
     }
 
@@ -136,6 +138,16 @@ class KrsPembayaranController extends Controller
         if ($request->status_pembayaran == 0) {
             return redirect()->back()->with('success', 'Status pembayaran berhasil diperbarui.');
         } else {
+            Krs::create([
+                'mahasiswa_id' => $pembayaran->mahasiswa_id,
+                'prodi_id' => $pembayaran->prodi_id,
+                'semester_id' => $pembayaran->semester_id,
+                'kelas_id' => $pembayaran->kelas_id,
+                'status_krs' => 0,
+                'setuju_pa' => 0,
+                'setuju_mahasiswa' => 0,
+                'tahun_ajaran' => TahunAkademik::where('status', 1)->pluck('tahun_akademik')->first()
+            ]);
             return redirect('/presensi/pembayaran/diajukan')->with('success', 'Status pembayaran berhasil diperbarui.');
         }
     }
@@ -168,6 +180,24 @@ class KrsPembayaranController extends Controller
                 $query->where('dosen_pembimbing_id', $dosenPa);
             })
             ->where('status_krs', 0)
+            ->where('setuju_pa',0)
+            ->where('setuju_mahasiswa',1)
+            ->latest()
+            ->get();
+        $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
+        return view('pages.dosen.krs.index', compact('krss', 'kelasAll'));
+    }
+
+    public function krsDisetujui()
+    {
+        $dosenPa = $this->userId;
+        $krss = Krs::with('mahasiswa', 'kelas.prodi', 'kelas')
+            ->whereHas('mahasiswa', function ($query) use ($dosenPa) {
+                $query->where('dosen_pembimbing_id', $dosenPa);
+            })
+            ->where('status_krs', 1)
+            ->where('setuju_pa',1)
+            ->where('setuju_mahasiswa',1)
             ->latest()
             ->get();
         $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
@@ -186,11 +216,36 @@ class KrsPembayaranController extends Controller
         return view('pages.dosen.krs.edit', compact('krs', 'matkulKrs', 'kelasAll'));
     }
 
-    public function krsUpdate($id)
+    public function krsUpdate(Request $request, $id)
     {
         $krs = Krs::where('id', $id)->first();
-        $krs->status_krs = 1;
+        if ($request->setuju_mahasiswa) {
+            $krs->setuju_mahasiswa = $request->setuju_mahasiswa;
+        }
+        if ($request->setuju_pa) {
+            $krs->setuju_pa = $request->setuju_pa;
+        }
+        if ($krs->setuju_mahasiswa == 1 && $krs->setuju_pa == 1) {
+            $krs->status_krs = 1;
+            $mahasiswa = Mahasiswa::where('id',$krs->mahasiswa_id)->first();
+            $mahasiswa->status_krs = true;
+            $mahasiswa->save();
+        }
         $krs->save();
-        return redirect('/presensi/krs/diajukan')->with('success', 'Berhasil memverifikasi KRS');
+        if ($request->setuju_mahasiswa) {
+            return redirect()->back()->with('success', 'KRS berhasil diverifikasi dan langsung diserahkan kepada Dosen Pembimbing Akademink');
+        } else {
+            return redirect('/presensi/krs/diajukan')->with('success', 'Berhasil memverifikasi KRS');
+        }
+    }
+
+    public function krsCetak($id){
+        $krs = Krs::with('mahasiswa', 'kelas', 'prodi', 'semester')->where('id', $id)->first();
+        $prodiId = $krs->prodi_id;
+        $semesterId = $krs->semester_id;
+        $matkulKrs = Matkul::where('prodi_id', $prodiId)
+            ->where('semester_id', $semesterId)
+            ->get();
+        return view('pages.mahasiswa.krs_pembayaran.cetak_krs',compact('krs','matkulKrs'));
     }
 }

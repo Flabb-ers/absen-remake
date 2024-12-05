@@ -206,8 +206,9 @@ Route::prefix('/presensi')->group(function () {
     // KRS
     Route::prefix('/krs')->middleware('auth:dosen')->group(function(){
         Route::get('/diajukan',[KrsPembayaranController::class,'krsDiajukan']);
-        Route::post('/diajukan',[KrsPembayaranController::class,'updateKrs']);
+        Route::get('/disetujui',[KrsPembayaranController::class,'krsDisetujui']);
         Route::get('/diajukan/{id}/edit',[KrsPembayaranController::class,'krsEdit']);
+        Route::get('/disetujui/{id}/edit',[KrsPembayaranController::class,'krsEdit']);
         Route::put('/diajukan/{id}/update',[KrsPembayaranController::class,'krsUpdate']);
     });
 
@@ -220,5 +221,7 @@ Route::prefix('/presensi')->group(function () {
         Route::get('/krs_pembayaran',[KrsPembayaranController::class,'index']);
         Route::post('/krs_pembayaran',[KrsPembayaranController::class,'createPembayaran'])->name('upload_bukti_pembayaran');
         Route::post('/krs',[KrsPembayaranController::class,'pengajuanKrs']);
+        Route::put('/krs/{id}/update',[KrsPembayaranController::class,'krsUpdate']);
+        Route::get('/krs/{id}/cetak',[KrsPembayaranController::class,'krsCetak']);
     });
 });

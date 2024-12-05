@@ -90,9 +90,9 @@
                                                 </div>
                                             @elseif($krs->status_krs == 1)
                                                 <div class="d-grid gap-2">
-                                                    <button class="btn btn-primary" id="cetakKRSBtn">
+                                                    <a class="btn btn-primary" href="/presensi/mahasiswa/krs/{{ $krs->id }}/cetak" id="cetakKRSBtn">
                                                         <i class="mdi mdi-send-file"></i> Cetak KRS
-                                                    </button>
+                                                    </a>
                                                 </div>
                                             @endif
                                             @if ($krs == null)
@@ -100,15 +100,20 @@
                                                     <strong>Status KRS:</strong>
                                                     <span id="statusKRS">Belum Diproses</span>
                                                 </div>
-                                            @elseif($krs->status_krs == 0)
+                                            @elseif($krs->setuju_mahasiswa == 1 && $krs->setuju_mahasiswa == 0 && $krs->setuju_pa == 0)
                                                 <div class="alert alert-warning mt-4" role="alert">
                                                     <strong>Status KRS:</strong>
                                                     <span id="statusKRS">Diproses</span>
                                                 </div>
-                                            @elseif($krs->status_krs == 1)
+                                            @elseif($krs->status_krs == 1 && $krs->setuju_mahasiswa == 1 && $krs->setuju_pa == 1)
                                                 <div class="alert alert-success mt-4" role="alert">
                                                     <strong>Status KRS:</strong>
                                                     <span id="statusKRS">Selesai</span>
+                                                </div>
+                                            @elseif($krs->setuju_mahasiswa == 0)
+                                                <div class="alert alert-info mt-4" role="alert">
+                                                    <strong>Status KRS:</strong>
+                                                    <span id="statusKRS">Belum Diproses</span>
                                                 </div>
                                             @endif
                                         @else
@@ -126,35 +131,251 @@
                                 </div>
                             </div>
 
-                            <div class="row mt-5">
-                                <div class="col-md-12">
-                                    <h5 class="mb-3">Mata Kuliah yang Akan Diambil</h5>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>Kode Mata Kuliah</th>
-                                                    <th>Nama Mata Kuliah</th>
-                                                    <th>SKS</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($matkulKrs as $matkul)
+                            @if (empty($krs) && $pembayaran->status_pembayaran == 1 && $pembayaran->keterangan == 'Sudah')
+                                <div class="row mt-5">
+                                    <div class="col-md-12">
+                                        <h5 class="mb-3">Mata Kuliah yang Akan Diambil</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
                                                     <tr>
-                                                        <td>{{ $matkul->kode }}</td>
-                                                        <td>{{ $matkul->nama_matkul }}</td>
-                                                        <td>{{ $matkul->teori + $matkul->praktek }}</td>
+                                                        <th>Kode Mata Kuliah</th>
+                                                        <th>Nama Mata Kuliah</th>
+                                                        <th>SKS</th>
                                                     </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="alert alert-info mt-3">
-                                        <small>Daftar mata kuliah yang akan diambil akan otomatis disesuaikan dengan paket
-                                            yang tersedia.</small>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($matkulKrs as $matkul)
+                                                        <tr>
+                                                            <td>{{ $matkul->kode }}</td>
+                                                            <td>{{ $matkul->nama_matkul }}</td>
+                                                            <td>{{ $matkul->teori + $matkul->praktek }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="alert alert-info mt-3">
+                                            <small>Daftar mata kuliah yang akan diambil akan otomatis disesuaikan dengan
+                                                paket
+                                                yang tersedia.</small>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @elseif ($krs != null && $pembayaran->status_pembayaran == 1 && $pembayaran->keterangan == 'Sudah')
+                                <style>
+                                    @media (min-width: 769px) {
+                                        .custom-table {
+                                            width: 100%;
+                                            max-width: 100%;
+                                        }
+                                    }
+
+                                    @media (max-width: 768px) {
+                                        .custom-table {
+                                            width: 1200px;
+
+                                        }
+                                    }
+
+                                    .custom-table {
+                                        border: 1px solid black;
+                                        border-collapse: collapse;
+                                        font-size: 0.9em;
+                                    }
+
+                                    .custom-table th,
+                                    .custom-table td {
+                                        border: 1px solid black;
+                                        padding: 5px;
+                                        text-align: center;
+                                        min-width: 50px;
+                                    }
+
+                                    .info-cell {
+                                        text-align: left !important;
+                                        vertical-align: top;
+                                        padding: 20px !important;
+                                        width: 360px;
+                                    }
+
+                                    .empty-cell {
+                                        height: 25px;
+                                    }
+
+                                    .table-responsive {
+                                        width: 100%;
+                                        overflow-x: auto;
+                                        -webkit-overflow-scrolling: touch;
+                                    }
+
+                                    .custom-table td:nth-child(3) {
+                                        text-align: left !important;
+                                        padding-left: 10px;
+                                    }
+                                </style>
+                                <div style="display: flex; align-items: center; margin-top:40px">
+                                    <img src="{{ asset('images/file.png') }}" alt="polsa" width="55px" class="mb-3">
+                                    <div style="margin-left: 10px;">
+                                        <h3 class="fw-bold">POLITEKNIK SAWUNGGALIH AJI</h3>
+                                        <h5 class="fw-bold">KARTU RENCANA STUDI</h5>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="custom-table">
+                                        <tr>
+                                            <td class="info-cell" rowspan="12">
+                                                <div style="display: grid; grid-template-columns: auto 1fr; gap: 5px;">
+                                                    <div style="font-weight: bold;">Prodi</div>
+                                                    <div style="font-weight: bold;">:
+                                                        {{ $krs->prodi->nama_prodi }}</div>
+                                                    <div style="font-weight: bold;">Semester</div>
+                                                    <div style="font-weight: bold;">:
+                                                        {{ $krs->semester->semester }}
+                                                        ({{ $krs->semester->semester % 2 == 0 ? 'Genap' : 'Ganjil' }})
+                                                    </div>
+                                                    <div style="font-weight: bold;">Tahun Akd.</div>
+                                                    <div style="font-weight: bold;">:
+                                                        {{ $krs->tahun_ajaran }}</div>
+                                                </div>
+
+                                                <hr style="border: 1px solid black; margin-top: 10px; margin-bottom: 5px;">
+
+                                                <div
+                                                    style="display: grid; grid-template-columns: auto 1fr; gap: 5px; font-weight: normal; margin-left: 5px; margin-top: 30px">
+                                                    <div style="margin-top: 5px; margin-bottom: 5px;">
+                                                        Nama</div>
+                                                    <div style="margin-left: 35px; margin-top: 5px; margin-bottom: 5px;">
+                                                        :
+                                                        {{ $krs->mahasiswa->nama_lengkap }}</div>
+                                                    <div style="margin-top: 5px; margin-bottom: 5px;">
+                                                        NIM</div>
+                                                    <div style="margin-left: 35px; margin-top: 5px; margin-bottom: 5px;">
+                                                        :
+                                                        {{ $krs->mahasiswa->nim }}</div>
+                                                    <div style="margin-top: 5px; margin-bottom: 5px;">
+                                                        Kelas</div>
+                                                    <div style="margin-left: 35px; margin-top: 5px; margin-bottom: 5px;">
+                                                        :
+                                                        {{ $krs->mahasiswa->kelas->nama_kelas }}</div>
+                                                </div>
+
+                                                <div
+                                                    style="font-weight: normal; font-size: 13px; margin-left: 5px; margin-top: 45px">
+                                                    <b>*) Syarat untuk mengikuti ujian, kehadiran
+                                                        minimal 75%</b>
+                                                </div>
+                                            </td>
+                                            <th rowspan="2">No</th>
+                                            <th rowspan="2">Kode</th>
+                                            <th rowspan="2">Mata Kuliah</th>
+                                            <th colspan="3">SKS</th>
+                                        </tr>
+                                        <tr>
+                                            <th>T</th>
+                                            <th>P</th>
+                                            <th>JML</th>
+                                        </tr>
+
+                                        @php
+                                            $totalSksTeori = 0;
+                                            $totalSksPraktek = 0;
+                                        @endphp
+
+                                        @foreach ($matkulKrs as $matkul)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $matkul->kode }}</td>
+                                                <td>{{ $matkul->nama_matkul }}</td>
+                                                <td>{{ $matkul->teori }}</td>
+                                                <td>{{ $matkul->praktek }}</td>
+                                                <td>{{ $matkul->teori + $matkul->praktek }}</td>
+
+                                                @php
+                                                    $totalSksTeori += $matkul->teori;
+                                                    $totalSksPraktek += $matkul->praktek;
+                                                @endphp
+                                            </tr>
+                                        @endforeach
+
+                                        @for ($i = count($matkulKrs); $i < 8; $i++)
+                                            <tr>
+                                                <td class="empty-cell"></td>
+                                                <td class="empty-cell"></td>
+                                                <td class="empty-cell"></td>
+                                                <td class="empty-cell"></td>
+                                                <td class="empty-cell"></td>
+                                                <td class="empty-cell"></td>
+                                            </tr>
+                                        @endfor
+
+                                        <tr>
+                                            <td class="empty-cell"></td>
+                                            <td class="empty-cell"></td>
+                                            <td class="empty-cell"></td>
+                                            <td class="empty-cell"></td>
+                                            <td class="empty-cell"></td>
+                                            <td class="empty-cell"></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td style="padding: 10px"><b>Jumlah SKS</b></td>
+                                            <td>{{ $totalSksTeori }}</td>
+                                            <td>{{ $totalSksPraktek }}</td>
+                                            <td>{{ $totalSksTeori + $totalSksPraktek }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <table style="width: 100%; border-collapse: collapse; margin: 40px 0;">
+                                    <tr>
+                                        <td colspan="2" style="text-align: right; padding-bottom: 10px;">Purworejo,
+                                            {{ date('d F Y') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 50%; text-align: left; padding-right: 20px;">
+                                            Pembina Akademik</td>
+                                        <td style="width: 50%; text-align: right; padding-left: 20px;">
+                                            Mahasiswa</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-bottom: 50px; text-align: center; position: relative;">
+                                            <div style="position: absolute; left: 20%; transform: translateX(-50%);">
+                                                <form id="pembinaForm"
+                                                    action="/presensi/krs/diajukan/{{ $krs->id }}/update"
+                                                    method="POST">
+                                                    @method('PUT')
+                                                    @csrf
+                                                    <input type="checkbox" id="pembinaCheckbox" {{ $krs->setuju_pa == 1 ? 'checked' : '' }}
+                                                    disabled>
+                                                </form>
+                                            </div>
+                                        </td>
+                                        <td style="padding-bottom: 50px; text-align: center; position: relative;">
+                                            <div style="position: absolute; right: 20%; transform: translateX(50%);">
+                                                <form id="mahasiswaForm"
+                                                    action="/presensi/mahasiswa/krs/{{ $krs->id }}/update"
+                                                    method="POST">
+                                                    @method('PUT')
+                                                    @csrf
+
+                                                    <input type="hidden" name="setuju_mahasiswa" value="1">
+                                                    <input type="checkbox" id="mahasiswaCheckbox"
+                                                        {{ $krs->setuju_mahasiswa == 1 ? 'checked' : '' }}
+                                                        {{ 'checked' == true ? 'disabled' : '' }}>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: left; padding-right: 20px;">
+                                            {{ $krs->mahasiswa->pembimbingAkademik->nama }}</td>
+                                        <td style="text-align: right;">
+                                            {{ $krs->mahasiswa->nama_lengkap }}</td>
+                                    </tr>
+                                </table>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -267,4 +488,26 @@
             });
         </script>
     @endif
+    <script>
+        document.getElementById('mahasiswaCheckbox').addEventListener('change', function() {
+            if (this.checked) {
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: 'Anda akan menandatangani pengajuan KRS ini.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, lanjutkan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('mahasiswaForm').submit();
+                        Swal.fire('Verifikasi berhasil!', '', 'success');
+                    } else {
+                        document.getElementById('mahasiswaCheckbox').checked = false;
+                        Swal.fire('Verifikasi dibatalkan', '', 'error');
+                    }
+                });
+            }
+        });
+    </script>
 @endsection

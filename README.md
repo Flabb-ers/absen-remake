@@ -30,8 +30,9 @@
 - [x] **plan besok cek auth nilai kalau sudah cek khs dan buat history persemester**
 - [x]  **cek kepastian matkul apakah perprodi dan persemester apakah perkelas**
 - [x] di riwayat khs untuk tahun ajaran dan semester masih sama seperti khs biasa atau sesuai paling tinggi mungkin bisa difix atau tmbah table
--[ ] melanjutkan krs apakah view nya mahasiswa bisa lihat krs dulu sebelum di kirim ke dosen pa dan cetak krs
+-[x] melanjutkan krs apakah view nya mahasiswa bisa lihat krs dulu sebelum di kirim ke dosen pa dan cetak krs
 -[ ] hapus log di rekap nilai kontroller jika sudah benar perhitungan nilai
 -[ ] tambah where jika mahasiswa status krs 0 belum bisa masuk ke presensi dll
--[ ] lanjut krs besok
+-[x] lanjut krs besok
+-[ ] krs kurang tampilan view dan semester diganti romawi
 -[ ] Cek apakah mahasiswa pindah juga where jenis kelas

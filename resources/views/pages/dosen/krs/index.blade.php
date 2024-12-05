@@ -34,13 +34,16 @@
                                                 <td>{{ $pembayaran->prodi->nama_prodi }}</td>
                                                 <td>Semester {{ $pembayaran->semester->semester }}</td>
                                                 <td>{{ $pembayaran->kelas->nama_kelas }}</td>
-                                                <td><a href="/presensi/krs/diajukan/{{ $pembayaran->id }}/edit"
+                                                <td>
+                                                    <a href="/presensi/krs/{{ Request::is('presensi/krs/diajukan') ? 'diajukan' : 'disetujui' }}/{{ $pembayaran->id }}/edit"
                                                         class="btn btn-warning btn-sm"><span class="mdi mdi-eye"></span>
-                                                        Lihat</a></td>
+                                                        Lihat
+                                                    </a>
+                                                </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td class="text-center" colspan="8">Belum ada pengajuan rekap</td>
+                                                <td class="text-center" colspan="8">Belum ada pengajuan KRS</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -52,24 +55,4 @@
             </div>
         </div>
     </div>
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                title: 'Sukses!',
-                text: '{{ session('success') }}',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
-        </script>
-    @endif
-    @if ($errors->any())
-        <script>
-            Swal.fire({
-                title: 'Error!',
-                text: '{{ implode(' ', $errors->all()) }}',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        </script>
-    @endif
 @endsection

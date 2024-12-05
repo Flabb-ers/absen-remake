@@ -30,7 +30,7 @@
                                     <td><strong>Semester:</strong> Semester
                                         {{ $pembayaran->mahasiswa->kelas->semester->semester }}</td>
                                     <td><strong>Status Pembayaran:</strong>
-                                        @if ($pembayaran->status_pembayaran == 1 && $pembayaran->keterangan == 'Lunas')
+                                        @if ($pembayaran->status_pembayaran == 1 && $pembayaran->keterangan == 'Sudah')
                                             <span class="badge bg-success">Sudah Lunas</span>
                                         @elseif($pembayaran->keterangan == 'Belum' && $pembayaran->status_pembayaran == 0)
                                             <span class="badge bg-warning">Belum Lunas</span>
