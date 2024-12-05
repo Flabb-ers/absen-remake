@@ -6,43 +6,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Cetak KRS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         @media print {
             body * {
                 visibility: visible;
+                font-family: 'Rubik', sans-serif;
             }
 
             .custom-table {
                 width: 100%;
-                max-width: 100%;
                 border: 1px solid black;
                 border-collapse: collapse;
-                font-size: 0.9em;
+                font-size: 12px;
             }
 
             .custom-table th,
             .custom-table td {
                 border: 1px solid black;
-                padding: 5px;
                 text-align: center;
-                min-width: 50px;
             }
 
             .info-cell {
                 text-align: left !important;
                 vertical-align: top;
-                padding: 20px !important;
-                width: 360px;
+                padding: 10px !important;
+                width: 250px !important;
+                min-width: 30px !important;
+                max-width: 250px !important;
+            }
+
+            .kode {
+                width: 50px !important;
+                max-width: 50px !important;
+            }
+
+            .sks {
+                width: 30px;
             }
 
             .empty-cell {
-                height: 25px;
+                height: 17px;
             }
 
             .custom-table td:nth-child(3) {
                 text-align: left !important;
                 padding-left: 10px;
             }
+
+            .custom-table .small-font {
+                font-size: 12px;
+            }
+
 
             @page {
                 size: auto;
@@ -56,13 +71,15 @@
             }
         }
     </style>
+
 </head>
+
 <body>
     <div style="display: flex; align-items: center;">
         <img src="{{ asset('images/file.png') }}" alt="polsa" width="55px" class="mb-3">
         <div style="margin-left: 10px;">
-            <h3 class="fw-bold">POLITEKNIK SAWUNGGALIH AJI</h3>
-            <h5 class="fw-bold">KARTU RENCANA STUDI</h5>
+            <h2 class="fw-bold">POLITEKNIK SAWUNGGALIH AJI</h2>
+            <h4 class="fw-bold" style="margin-top:-20px; ">KARTU RENCANA STUDI</h4>
         </div>
     </div>
     <div>
@@ -84,29 +101,29 @@
                     <div
                         style="display: grid; grid-template-columns: auto 1fr; gap: 5px; font-weight: normal; margin-left: 5px; margin-top: 30px">
                         <div style="margin-top: 5px; margin-bottom: 5px;">Nama</div>
-                        <div style="margin-left: 35px; margin-top: 5px; margin-bottom: 5px;">:
+                        <div style="margin-left: 30px; margin-top: 5px; margin-bottom: 5px;">:
                             {{ $krs->mahasiswa->nama_lengkap }}</div>
                         <div style="margin-top: 5px; margin-bottom: 5px;">NIM</div>
-                        <div style="margin-left: 35px; margin-top: 5px; margin-bottom: 5px;">:
+                        <div style="margin-left: 30px; margin-top: 5px; margin-bottom: 5px;">:
                             {{ $krs->mahasiswa->nim }}</div>
                         <div style="margin-top: 5px; margin-bottom: 5px;">Kelas</div>
-                        <div style="margin-left: 35px; margin-top: 5px; margin-bottom: 5px;">:
+                        <div style="margin-left: 30px; margin-top: 5px; margin-bottom: 5px;">:
                             {{ $krs->mahasiswa->kelas->nama_kelas }}</div>
                     </div>
 
-                    <div style="font-weight: normal; font-size: 13px; margin-left: 5px; margin-top: 45px">
+                    <div style="font-weight: normal; font-size: 11px; margin-left: 5px; margin-top: 45px;">
                         <b>*) Syarat untuk mengikuti ujian, kehadiran minimal 75%</b>
                     </div>
                 </td>
                 <th rowspan="2">No</th>
-                <th rowspan="2">Kode</th>
+                <th rowspan="2" class="kode">Kode</th>
                 <th rowspan="2">Mata Kuliah</th>
                 <th colspan="3">SKS</th>
             </tr>
             <tr>
-                <th>T</th>
-                <th>P</th>
-                <th>JML</th>
+                <th class="sks">T</th>
+                <th class="sks">P</th>
+                <th class="sks">JML</th>
             </tr>
 
             @php
@@ -122,6 +139,7 @@
                     <td>{{ $matkul->teori }}</td>
                     <td>{{ $matkul->praktek }}</td>
                     <td>{{ $matkul->teori + $matkul->praktek }}</td>
+
 
                     @php
                         $totalSksTeori += $matkul->teori;
@@ -153,47 +171,43 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td style="padding: 10px"><b>Jumlah SKS</b></td>
+                <td style="padding: 10px;">Jumlah SKS</td>
                 <td>{{ $totalSksTeori }}</td>
                 <td>{{ $totalSksPraktek }}</td>
                 <td>{{ $totalSksTeori + $totalSksPraktek }}</td>
             </tr>
         </table>
     </div>
-    <table style="width: 100%; border-collapse: collapse; margin: 40px 0;">
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0; position: relative;">
         <tr>
-            <td colspan="2" style="text-align: right; padding-bottom: 10px;">Purworejo,
-                {{ date('d F Y') }}</td>
+            <td colspan="2" style="padding-bottom: 10px;">
+                <div style="text-align: right; width: 100%; overflow: hidden;">
+                    <span style="display: inline-block; white-space: nowrap; max-width: 100%; text-overflow: ellipsis;">
+                        Purworejo, {{ $krs->created_at->translatedFormat('d F Y') }}
+                    </span>
+                </div>
+            </td>            
         </tr>
         <tr>
-            <td style="width: 50%; text-align: left; padding-right: 20px;">Pembina Akademik</td>
-            <td style="width: 50%; text-align: right; padding-left: 20px;">Mahasiswa</td>
+            <td style="width: 50%; position: absolute; left: 0;">Pembina Akademik</td>
+            <td style="width: 29%; position: absolute; right: 0;">Mahasiswa</td>
         </tr>
         <tr>
-            <td style="padding-bottom: 50px; text-align: center; position: relative;">
-                <div style="position: absolute; left: 20%; transform: translateX(-50%);">
-                    <form id="pembinaForm" action="/presensi/krs/diajukan/{{ $krs->id }}/update" method="POST">
-                        @method('PUT')
-                        @csrf
-                        <input type="checkbox" id="pembinaCheckbox" disabled checked>
-                    </form>
+            <td style="text-align: center; position: relative; height: 50px;">
+                <div style="position: absolute; left: 10%; transform: translateX(-50%);">
+                    <input type="checkbox" id="pembinaCheckbox" disabled checked>
                 </div>
             </td>
-            <td style="padding-bottom: 50px; text-align: center; position: relative;">
-                <div style="position: absolute; right: 20%; transform: translateX(50%);">
-                    <form id="mahasiswaForm" action="/presensi/krs/diajukan/{{ $krs->id }}/update-mahasiswa"
-                        method="POST">
-                        @method('PUT')
-                        @csrf
-                        <input type="checkbox" id="mahasiswaCheckbox" checked disabled>
-                    </form>
+            <td style="text-align: center; position: relative; height: 50px;">
+                <div style="position: absolute; right: 100px; transform: translateX(-50%);">
+                    <input type="checkbox" id="mahasiswaCheckbox" checked disabled>
                 </div>
             </td>
         </tr>
         <tr>
-            <td style="text-align: left; padding-right: 20px;">
+            <td>
                 {{ $krs->mahasiswa->pembimbingAkademik->nama }}</td>
-            <td style="text-align: right;">{{ $krs->mahasiswa->nama_lengkap }}</td>
+            <td style="width: 29%; position: absolute; right: 0;">{{ $krs->mahasiswa->nama_lengkap }}</td>
         </tr>
     </table>
 </body>
