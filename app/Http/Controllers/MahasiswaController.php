@@ -200,7 +200,9 @@ class MahasiswaController extends Controller
             ->get();
         $kelasId = Kelas::where('id', $id);
         $kelasAll = Jadwal::all();
-        $kelasSem = Kelas::where('id_prodi', $namaKelas->id_prodi)->get();
+        $kelasSem = Kelas::where('id_prodi', $namaKelas->id_prodi)
+                            ->where('jenis_kelas',$namaKelas->jenis_kelas)                    
+        ->get();
         $kelasAlls = Kelas::where('id_prodi', $namaKelas->id_prodi)->first();
         return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass', 'namaKelas', 'dosens', 'kelasAlls', 'kelasAll', 'kelasSem', 'kelasId'));
     }
@@ -212,17 +214,25 @@ class MahasiswaController extends Controller
             'mahasiswa_ids' => 'required|string',
             'kelas_id' => 'required|exists:kelas,id',
         ]);
-
+    
         $mahasiswaIds = explode(',', $request->input('mahasiswa_ids'));
-
-
-        Mahasiswa::whereIn('id', $mahasiswaIds)->update([
-            'kelas_id' => $request->input('kelas_id'),
-            'status_krs' => 0,
-        ]);
-
+        $newKelasId = $request->input('kelas_id');
+        Mahasiswa::whereIn('id', $mahasiswaIds)->each(function ($mahasiswa) use ($newKelasId) {
+            if ($mahasiswa->kelas_id == $newKelasId) {
+                $mahasiswa->update([
+                    'status_krs' => 1,
+                ]);
+            } else {
+                $mahasiswa->update([
+                    'kelas_id' => $newKelasId,
+                    'status_krs' => 0,
+                ]);
+            }
+        });
+    
         return redirect('/presensi/data-mahasiswa')->with('success', 'Kelas mahasiswa berhasil diperbarui!');
     }
+    
 
     public function search(Request $request)
     {

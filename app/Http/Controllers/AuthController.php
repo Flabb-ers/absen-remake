@@ -17,8 +17,12 @@ class AuthController extends Controller
 {
     public function showLogin()
     {
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
         return view("pages.auth.login");
     }
+
 
     public function processLogin(Request $request)
     {

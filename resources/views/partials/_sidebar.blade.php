@@ -93,6 +93,13 @@
                     </ul>
                 </div>
             </li>
+            </li>
+            <li class="nav-item {{ Request::is('presensi/krs/*') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/krs/kategori">
+                    <i class="mdi  mdi-card-bulleted-settings menu-icon"></i>
+                    <span class="menu-title">KRS</span>
+                </a>
+            </li>
         @elseif(Auth::guard('dosen')->check())
             <li class="nav-item {{ Request::is('presensi/data-presensi*') ? 'active' : '' }}">
                 <a class="nav-link" href="/presensi/data-presensi">
@@ -147,10 +154,12 @@
                     <div class="collapse {{ Request::is('presensi/krs*') ? 'show' : '' }}" id="pengajuan-rekap">
                         <ul class="nav flex-column sub-menu">
                             <li class="nav-item"> <a
-                                    class="nav-link  {{ Request::is('presensi/krs/diajukan*') ? 'active' : '' }}" href="/presensi/krs/diajukan">Diajukan</a>
+                                    class="nav-link  {{ Request::is('presensi/krs/diajukan*') ? 'active' : '' }}"
+                                    href="/presensi/krs/diajukan">Diajukan</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ Request::is('presensi/krs/disetujui*') ? 'active' : '' }}" href="/presensi/krs/disetujui">Disetujui</a>
+                                <a class="nav-link {{ Request::is('presensi/krs/disetujui*') ? 'active' : '' }}"
+                                    href="/presensi/krs/disetujui">Disetujui</a>
                             </li>
                         </ul>
                     </div>

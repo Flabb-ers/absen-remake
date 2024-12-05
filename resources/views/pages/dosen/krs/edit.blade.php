@@ -1,6 +1,36 @@
 @extends('layouts.main')
 
 @section('container')
+    @php
+        function toRoman($num)
+        {
+            $n = intval($num);
+            $result = '';
+            $romanNumerals = [
+                1000 => 'M',
+                900 => 'CM',
+                500 => 'D',
+                400 => 'CD',
+                100 => 'C',
+                90 => 'XC',
+                50 => 'L',
+                40 => 'XL',
+                10 => 'X',
+                9 => 'IX',
+                5 => 'V',
+                4 => 'IV',
+                1 => 'I',
+            ];
+
+            foreach ($romanNumerals as $value => $roman) {
+                while ($n >= $value) {
+                    $result .= $roman;
+                    $n -= $value;
+                }
+            }
+            return $result;
+        }
+    @endphp
     <style>
         @media (min-width: 769px) {
             .custom-table {
@@ -80,7 +110,7 @@
                                                 <div style="font-weight: bold;">Prodi</div>
                                                 <div style="font-weight: bold;">: {{ $krs->prodi->nama_prodi }}</div>
                                                 <div style="font-weight: bold;">Semester</div>
-                                                <div style="font-weight: bold;">: {{ $krs->semester->semester }}
+                                                <div style="font-weight: bold;">: {{ toRoman($krs->semester->semester) }}
                                                     ({{ $krs->semester->semester % 2 == 0 ? 'Genap' : 'Ganjil' }})</div>
                                                 <div style="font-weight: bold;">Tahun Akd.</div>
                                                 <div style="font-weight: bold;">: {{ $krs->tahun_ajaran }}</div>
@@ -168,49 +198,65 @@
                                     </tr>
                                 </table>
                             </div>
-                            <table style="width: 100%; border-collapse: collapse; margin: 40px 0;">
-                                <tr>
-                                    <td colspan="2" style="text-align: right; padding-bottom: 10px;">Purworejo,
-                                        {{ date('d F Y') }}</td>
-                                </tr>
-                                <tr>
-                                    <td style="width: 50%; text-align: left; padding-right: 20px;">Pembina Akademik</td>
-                                    <td style="width: 50%; text-align: right; padding-left: 20px;">Mahasiswa</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-bottom: 50px; text-align: center; position: relative;">
-                                        <div style="position: absolute; left: 20%; transform: translateX(-50%);">
-                                            <form id="pembinaForm"
-                                                action="/presensi/krs/diajukan/{{ $krs->id }}/update" method="POST">
-                                                @method('PUT')
-                                                @csrf
-                                                <input type="hidden" name="setuju_pa" value="1">
-                                                @if ($krs->setuju_pa == 0)
-                                                    <input type="checkbox" id="pembinaCheckbox">
-                                                @elseif($krs->setuju_pa == 1)
-                                                    <input type="checkbox" id="pembinaCheckbox" disabled checked>
-                                                @endif
-                                            </form>
-                                        </div>
-                                    </td>
-                                    <td style="padding-bottom: 50px; text-align: center; position: relative;">
-                                        <div style="position: absolute; right: 20%; transform: translateX(50%);">
-                                            <form id="mahasiswaForm"
-                                                action="/presensi/krs/diajukan/{{ $krs->id }}/update-mahasiswa"
-                                                method="POST">
-                                                @method('PUT')
-                                                @csrf
-                                                <input type="checkbox" id="mahasiswaCheckbox" checked disabled>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: left; padding-right: 20px;">
-                                        {{ $krs->mahasiswa->pembimbingAkademik->nama }}</td>
-                                    <td style="text-align: right;">{{ $krs->mahasiswa->nama_lengkap }}</td>
-                                </tr>
-                            </table>
+                            <div class="table-responsive" style="min-width: 100%;width:100%">
+                                <table style="width: 100%; border-collapse: collapse; margin: 40px 0">
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td colspan="3" style="text-align: left; padding-bottom: 10px">
+                                            Purworejo, {{ $krs->created_at->translatedFormat('d F Y') }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 33%; text-align: left; padding-right: 20px">
+                                            Pembina Akademik
+                                        </td>
+                                        <td style="width: 33%; text-align: center"></td>
+                                        <td style="width: 33%; text-align: left;">
+                                            Mahasiswa
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; padding-bottom: 50px; position: relative">
+                                            <div style="position: absolute; left: 20%; transform: translateX(-50%);">
+                                                <form id="pembinaForm"
+                                                    action="/presensi/krs/diajukan/{{ $krs->id }}/update"
+                                                    method="POST">
+                                                    @method('PUT')
+                                                    @csrf
+                                                    <input type="hidden" name="setuju_pa" value="1">
+                                                    @if ($krs->setuju_pa == 0)
+                                                        <input type="checkbox" id="pembinaCheckbox">
+                                                    @elseif($krs->setuju_pa == 1)
+                                                        <input type="checkbox" id="pembinaCheckbox" disabled checked>
+                                                    @endif
+                                                </form>
+                                            </div>
+                                        </td>
+                                        <td></td>
+                                        <td style="text-align: center; padding-bottom: 30px; position: relative">
+                                            <div>
+                                                <form id="mahasiswaForm"
+                                                    action="/presensi/krs/diajukan/{{ $krs->id }}/update-mahasiswa"
+                                                    method="POST">
+                                                    @method('PUT')
+                                                    @csrf
+                                                    <input type="checkbox" id="mahasiswaCheckbox" checked disabled>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: left; padding-right: 20px">
+                                            {{ $krs->mahasiswa->pembimbingAkademik->nama }}
+                                        </td>
+                                        <td></td>
+                                        <td style="text-align: left">
+                                            {{ $krs->mahasiswa->nama_lengkap }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

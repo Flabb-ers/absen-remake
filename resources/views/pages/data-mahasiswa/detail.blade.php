@@ -16,13 +16,12 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
-                                <!-- Tombol Tambah -->
+
                                 <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#tambahModal">
                                     <span class="mdi mdi-plus"></span> Tambah
                                 </button>
 
-                                <!-- Dropdown Semester -->
                                 <div class="dropdown ms-2" id="semesterDropdown" style="display: none;">
                                     <button class="btn btn-primary dropdown-toggle btn-sm" type="button"
                                         id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-haspopup="true"

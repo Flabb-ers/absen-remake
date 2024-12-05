@@ -180,8 +180,8 @@ class KrsPembayaranController extends Controller
                 $query->where('dosen_pembimbing_id', $dosenPa);
             })
             ->where('status_krs', 0)
-            ->where('setuju_pa',0)
-            ->where('setuju_mahasiswa',1)
+            ->where('setuju_pa', 0)
+            ->where('setuju_mahasiswa', 1)
             ->latest()
             ->get();
         $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
@@ -196,8 +196,8 @@ class KrsPembayaranController extends Controller
                 $query->where('dosen_pembimbing_id', $dosenPa);
             })
             ->where('status_krs', 1)
-            ->where('setuju_pa',1)
-            ->where('setuju_mahasiswa',1)
+            ->where('setuju_pa', 1)
+            ->where('setuju_mahasiswa', 1)
             ->latest()
             ->get();
         $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
@@ -227,7 +227,7 @@ class KrsPembayaranController extends Controller
         }
         if ($krs->setuju_mahasiswa == 1 && $krs->setuju_pa == 1) {
             $krs->status_krs = 1;
-            $mahasiswa = Mahasiswa::where('id',$krs->mahasiswa_id)->first();
+            $mahasiswa = Mahasiswa::where('id', $krs->mahasiswa_id)->first();
             $mahasiswa->status_krs = true;
             $mahasiswa->save();
         }
@@ -239,13 +239,49 @@ class KrsPembayaranController extends Controller
         }
     }
 
-    public function krsCetak($id){
+    public function krsCetak($id)
+    {
         $krs = Krs::with('mahasiswa', 'kelas', 'prodi', 'semester')->where('id', $id)->first();
         $prodiId = $krs->prodi_id;
         $semesterId = $krs->semester_id;
         $matkulKrs = Matkul::where('prodi_id', $prodiId)
             ->where('semester_id', $semesterId)
             ->get();
-        return view('pages.mahasiswa.krs_pembayaran.cetak_krs',compact('krs','matkulKrs'));
+        return view('pages.mahasiswa.krs_pembayaran.cetak_krs', compact('krs', 'matkulKrs'));
+    }
+
+    public function showKelas()
+    {
+        $kelass = Kelas::with('prodi', 'semester', 'mahasiswa')
+            ->whereHas('semester', function ($query) {
+                $query->where('status', 1);
+            })
+            ->get();
+        return view('pages.krs.index', compact('kelass'));
+    }
+
+    public function showDetailMhs($id)
+    {
+        $kelas = Kelas::where('id', $id)->first();
+        $mahasiswas = Mahasiswa::with('kelas.semester', 'kelas')
+            ->where('kelas_id', $kelas->id)
+            ->orderBy('nim', 'asc')
+            ->get();
+        return view('pages.krs.detail', compact('mahasiswas', 'kelas'));
+    }
+
+    public function krsCetakAdmin($id)
+    {
+        $mahasiswa = Mahasiswa::with('kelas')->where('id', $id)->first();
+        $semesterId = $mahasiswa->kelas->id_semester;
+        $prodiId = $mahasiswa->kelas->id_prodi;
+        $krs = Krs::where('mahasiswa_id', $mahasiswa->id)
+            ->where('semester_id', $semesterId)
+            ->where('prodi_id', $prodiId)
+            ->first();
+        $matkulKrs = Matkul::where('prodi_id', $prodiId)
+            ->where('semester_id', $semesterId)
+            ->get();
+        return view('pages.krs.cetak', compact('krs', 'matkulKrs'));
     }
 }

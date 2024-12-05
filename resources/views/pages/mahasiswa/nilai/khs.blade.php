@@ -51,6 +51,12 @@
     .monotype-corsiva {
         font-family: 'Monotype Corsiva', cursive;
     }
+
+    @media screen {
+        body * {
+            display: none;
+        }
+    }
 </style>
 <div style="display: flex; align-items: center; justify-content: space-between; font-size: 1em">
     <!-- Logo -->
@@ -155,7 +161,7 @@
                     <span>{{ $ips->matkul->nama_matkul }}</span><br>
                     <span>({{ $ips->matkul->alias }})</span>
                 </div>
-            </td>            
+            </td>
             <td style="text-align:center">{{ $ips->matkul->praktek + $ips->matkul->teori }}</td>
             <td style="text-align:center">{{ $ips->nilai_huruf }}</td>
             <td style="text-align:center">

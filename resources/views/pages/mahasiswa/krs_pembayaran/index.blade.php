@@ -1,6 +1,36 @@
 @extends('layouts.main')
 
 @section('container')
+    @php
+        function toRoman($num)
+        {
+            $n = intval($num);
+            $result = '';
+            $romanNumerals = [
+                1000 => 'M',
+                900 => 'CM',
+                500 => 'D',
+                400 => 'CD',
+                100 => 'C',
+                90 => 'XC',
+                50 => 'L',
+                40 => 'XL',
+                10 => 'X',
+                9 => 'IX',
+                5 => 'V',
+                4 => 'IV',
+                1 => 'I',
+            ];
+
+            foreach ($romanNumerals as $value => $roman) {
+                while ($n >= $value) {
+                    $result .= $roman;
+                    $n -= $value;
+                }
+            }
+            return $result;
+        }
+    @endphp
     <div class="main-panel">
         <div class="content-wrapper">
             <div class="breadcrumb">
@@ -78,7 +108,7 @@
                                                     @csrf
                                                     <div class="d-grid gap-2">
                                                         <button class="btn btn-primary" id="cetakKRSBtn">
-                                                            <i class="mdi mdi-file-send"></i> Ajukan KRS
+                                                            <i class="mdi mdi-printer"></i> Cetak KRS
                                                         </button>
                                                     </div>
                                                 </form>
@@ -90,8 +120,10 @@
                                                 </div>
                                             @elseif($krs->status_krs == 1)
                                                 <div class="d-grid gap-2">
-                                                    <a class="btn btn-primary" href="/presensi/mahasiswa/krs/{{ $krs->id }}/cetak" id="cetakKRSBtn">
-                                                        <i class="mdi mdi-send-file"></i> Cetak KRS
+                                                    <a class="btn btn-primary"
+                                                        href="/presensi/mahasiswa/krs/{{ $krs->id }}/cetak"
+                                                        id="cetakKRSBtn" target="_bank">
+                                                        <i class="mdi mdi-printer"></i> Cetak KRS
                                                     </a>
                                                 </div>
                                             @endif
@@ -100,7 +132,7 @@
                                                     <strong>Status KRS:</strong>
                                                     <span id="statusKRS">Belum Diproses</span>
                                                 </div>
-                                            @elseif($krs->setuju_mahasiswa == 1 && $krs->setuju_mahasiswa == 0 && $krs->setuju_pa == 0)
+                                            @elseif($krs->setuju_mahasiswa == 1 && $krs->setuju_pa == 0)
                                                 <div class="alert alert-warning mt-4" role="alert">
                                                     <strong>Status KRS:</strong>
                                                     <span id="statusKRS">Diproses</span>
@@ -119,7 +151,7 @@
                                         @else
                                             <div class="d-grid gap-2">
                                                 <button class="btn btn-primary" disabled id="cetakKRSBtn">
-                                                    <i class="mdi mdi-file-send"></i> Ajukan KRS
+                                                    <i class="mdi mdi-file-send"></i> Cetak KRS
                                                 </button>
                                             </div>
                                             <div class="alert alert-info mt-4" role="alert">
@@ -131,7 +163,7 @@
                                 </div>
                             </div>
 
-                            @if (empty($krs) && $pembayaran->status_pembayaran == 1 && $pembayaran->keterangan == 'Sudah')
+                            @if (empty($krs))
                                 <div class="row mt-5">
                                     <div class="col-md-12">
                                         <h5 class="mb-3">Mata Kuliah yang Akan Diambil</h5>
@@ -231,7 +263,7 @@
                                                         {{ $krs->prodi->nama_prodi }}</div>
                                                     <div style="font-weight: bold;">Semester</div>
                                                     <div style="font-weight: bold;">:
-                                                        {{ $krs->semester->semester }}
+                                                        {{ toRoman($krs->semester->semester) }}
                                                         ({{ $krs->semester->semester % 2 == 0 ? 'Genap' : 'Ganjil' }})
                                                     </div>
                                                     <div style="font-weight: bold;">Tahun Akd.</div>
@@ -327,54 +359,65 @@
                                             <td>{{ $totalSksTeori + $totalSksPraktek }}</td>
                                         </tr>
                                     </table>
+                                </div class="tabel-responsive">
+                                <div>
+                                    <table style="width: 100%; border-collapse: collapse; margin: 40px 0;">
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td style="text-align: left; padding-bottom: 10px;">
+                                                Purworejo, {{ $krs->created_at->translatedFormat('d F Y') }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 33%; text-align: left; padding-right: 20px;">
+                                                Pembina Akademik
+                                            </td>
+                                            <td style="width: 33%; text-align: center;"></td>
+                                            <td style="width: 33%; text-align: left;">
+                                                Mahasiswa
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: center; position: relative; padding-bottom: 50px;">
+                                                <div style="position: absolute; left: 20%; transform: translateX(-50%);">
+                                                    <form id="pembinaForm"
+                                                        action="/presensi/krs/diajukan/{{ $krs->id }}/update"
+                                                        method="POST">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <input type="checkbox" id="pembinaCheckbox"
+                                                            {{ $krs->setuju_pa == 1 ? 'checked' : '' }} disabled>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                            <td style="text-align: center; position: relative; padding-bottom: 30px;">
+                                                <div>
+                                                    <form id="mahasiswaForm"
+                                                        action="/presensi/mahasiswa/krs/{{ $krs->id }}/update"
+                                                        method="POST">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <input type="hidden" name="setuju_mahasiswa" value="1">
+                                                        <input type="checkbox" id="mahasiswaCheckbox"
+                                                            {{ $krs->setuju_mahasiswa == 1 ? 'checked' : '' }}
+                                                            @if ($krs->setuju_mahasiswa == 1) disabled @endif>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; padding-right: 20px;">
+                                                {{ $krs->mahasiswa->pembimbingAkademik->nama }}
+                                            </td>
+                                            <td></td>
+                                            <td style="text-align: left;">
+                                                {{ $krs->mahasiswa->nama_lengkap }}
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
-                                <table style="width: 100%; border-collapse: collapse; margin: 40px 0;">
-                                    <tr>
-                                        <td colspan="2" style="text-align: right; padding-bottom: 10px;">Purworejo,
-                                            {{ date('d F Y') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 50%; text-align: left; padding-right: 20px;">
-                                            Pembina Akademik</td>
-                                        <td style="width: 50%; text-align: right; padding-left: 20px;">
-                                            Mahasiswa</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-bottom: 50px; text-align: center; position: relative;">
-                                            <div style="position: absolute; left: 20%; transform: translateX(-50%);">
-                                                <form id="pembinaForm"
-                                                    action="/presensi/krs/diajukan/{{ $krs->id }}/update"
-                                                    method="POST">
-                                                    @method('PUT')
-                                                    @csrf
-                                                    <input type="checkbox" id="pembinaCheckbox" {{ $krs->setuju_pa == 1 ? 'checked' : '' }}
-                                                    disabled>
-                                                </form>
-                                            </div>
-                                        </td>
-                                        <td style="padding-bottom: 50px; text-align: center; position: relative;">
-                                            <div style="position: absolute; right: 20%; transform: translateX(50%);">
-                                                <form id="mahasiswaForm"
-                                                    action="/presensi/mahasiswa/krs/{{ $krs->id }}/update"
-                                                    method="POST">
-                                                    @method('PUT')
-                                                    @csrf
-
-                                                    <input type="hidden" name="setuju_mahasiswa" value="1">
-                                                    <input type="checkbox" id="mahasiswaCheckbox"
-                                                        {{ $krs->setuju_mahasiswa == 1 ? 'checked' : '' }}
-                                                        {{ 'checked' == true ? 'disabled' : '' }}>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align: left; padding-right: 20px;">
-                                            {{ $krs->mahasiswa->pembimbingAkademik->nama }}</td>
-                                        <td style="text-align: right;">
-                                            {{ $krs->mahasiswa->nama_lengkap }}</td>
-                                    </tr>
-                                </table>
                             @endif
                         </div>
                     </div>
@@ -501,10 +544,8 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         document.getElementById('mahasiswaForm').submit();
-                        Swal.fire('Verifikasi berhasil!', '', 'success');
                     } else {
                         document.getElementById('mahasiswaCheckbox').checked = false;
-                        Swal.fire('Verifikasi dibatalkan', '', 'error');
                     }
                 });
             }
