@@ -35,5 +35,6 @@
 - [ ] tambah where jika mahasiswa status krs 0 belum bisa masuk ke presensi dll
 - [x] lanjut krs besok
 - [x] krs kurang tampilan view dan semester diganti romawi
-- [ ] Cek apakah mahasiswa pindah juga where jenis kelas
+- [x] Cek apakah mahasiswa pindah juga where jenis kelas
 - [x] cetak krs untuk admin di kelas 
+- [ ] in nilai sikap uts uas initinya itu belum ada filter where status_krs == 1

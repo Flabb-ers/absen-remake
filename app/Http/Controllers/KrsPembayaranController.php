@@ -42,15 +42,26 @@ class KrsPembayaranController extends Controller
             ->where('prodi_id', $kelas->id_prodi)
             ->where('semester_id', $kelas->id_semester)
             ->where('kelas_id', $this->kelasId)
+            ->latest()
             ->first();
         $prodiId = $kelas->id_prodi;
         $semesterId = $kelas->id_semester;
-        $krs = Krs::with('mahasiswa', 'kelas', 'prodi', 'semester')
-            ->where('mahasiswa_id', $this->userId)
-            ->where('kelas_id', $this->kelasId)
-            ->where('semester_id', $semesterId)
-            ->where('prodi_id', $prodiId)
-            ->first();
+        if ($pembayaran) {
+            $krs = Krs::with('mahasiswa', 'kelas', 'prodi', 'semester')
+                ->where('mahasiswa_id', $this->userId)
+                ->where('kelas_id', $this->kelasId)
+                ->where('semester_id', $kelas->id_semester)
+                ->where('prodi_id', $kelas->id_prodi)
+                ->where('created_at', '>=', $pembayaran->created_at)
+                ->first();
+        } else {
+            $krs = Krs::with('mahasiswa', 'kelas', 'prodi', 'semester')
+                ->where('mahasiswa_id', $this->userId)
+                ->where('kelas_id', $this->kelasId)
+                ->where('semester_id', $kelas->id_semester)
+                ->where('prodi_id', $kelas->id_prodi)
+                ->first();
+        }
         $cekPembayaran = $pembayaran !== null;
 
         if ($cekPembayaran) {
@@ -59,7 +70,9 @@ class KrsPembayaranController extends Controller
             $cekPembayaran = false;
         }
 
-        return view('pages.mahasiswa.krs_pembayaran.index', compact('semesters', 'cekStatus', 'matkulKrs', 'cekPembayaran', 'pembayaran', 'krs'));
+        $mahasiswa = Mahasiswa::where('id', $this->userId)->first();
+        $cekStatusKrs = $mahasiswa->status_krs;
+        return view('pages.mahasiswa.krs_pembayaran.index', compact('semesters', 'cekStatus', 'matkulKrs', 'cekPembayaran', 'pembayaran', 'krs', 'cekStatusKrs'));
     }
 
     public function createPembayaran(Request $request)

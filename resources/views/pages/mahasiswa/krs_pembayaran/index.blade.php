@@ -78,22 +78,26 @@
                                                     </ul>
                                                 </div>
                                             @endif
-                                            @if (isset($pembayaran) && $pembayaran->status_pembayaran == 0 && $pembayaran->keterangan == 'Belum')
-                                                <div class="alert alert-danger mt-2" role="alert">
-                                                    <span id="statusKRS">Pembayaran Belum Lunas
-                                                        Segera Hubungi
-                                                        Akademik</span>
-                                                </div>
-                                            @elseif(isset($pembayaran) && $pembayaran->status_pembayaran == 1 && $pembayaran->keterangan == 'Sudah')
-                                                <div class="alert alert-success mt-2" role="alert">
-                                                    <span id="statusKRS">Pembayaran Diverifikasi, Segera Ajukan KRS</span>
-                                                </div>
-                                            @elseif(empty($pembayaran))
-                                                <button class="btn btn-info btn-sm mt-2" type="submit"><i
-                                                        class="mdi mdi-file-upload"></i> Upload</button>
-                                            @elseif($pembayaran->status_pembayaran == 0 && $pembayaran->keterangan == null)
-                                                <div class="btn btn-warning btn-sm mt-2" type="submit"><i
-                                                        class="mdi mdi-clock-alert"></i> Pending</div>
+                                            @if (isset($pembayaran))
+                                                @if ($pembayaran->status_pembayaran == 0 && $pembayaran->keterangan == 'Belum' && $cekStatusKrs == 0)
+                                                    <div class="alert alert-danger mt-2" role="alert">
+                                                        <span id="statusKRS">Pembayaran Belum Lunas, Segera Hubungi
+                                                            Akademik</span>
+                                                    </div>
+                                                @elseif ($pembayaran->status_pembayaran == 1 && $pembayaran->keterangan == 'Sudah' && $cekStatusKrs == 0 || $cekStatusKrs == 1)
+                                                    <div class="alert alert-success mt-2" role="alert">
+                                                        <span id="statusKRS">Pembayaran Diverifikasi, Segera Ajukan
+                                                            KRS</span>
+                                                    </div>
+                                                @elseif ($pembayaran->status_pembayaran == 0 && $pembayaran->keterangan == null)
+                                                    <div class="btn btn-warning btn-sm mt-2">
+                                                        <i class="mdi mdi-clock-alert"></i> Pending
+                                                    </div>
+                                                @endif
+                                            @elseif ($cekStatusKrs == 0)
+                                                <button class="btn btn-info btn-sm mt-2" type="submit">
+                                                    <i class="mdi mdi-file-upload"></i> Upload
+                                                </button>
                                             @endif
                                         </div>
                                     </form>
@@ -112,13 +116,13 @@
                                                         </button>
                                                     </div>
                                                 </form>
-                                            @elseif($krs->status_krs == 0)
+                                            @elseif($cekStatusKrs == 0)
                                                 <div class="d-grid gap-2">
                                                     <button class="btn btn-primary" disabled id="cetakKRSBtn">
                                                         <i class="mdi mdi-printer"></i> Cetak KRS
                                                     </button>
                                                 </div>
-                                            @elseif($krs->status_krs == 1)
+                                            @elseif($cekStatusKrs == 1)
                                                 <div class="d-grid gap-2">
                                                     <a class="btn btn-primary"
                                                         href="/presensi/mahasiswa/krs/{{ $krs->id }}/cetak"
@@ -127,6 +131,7 @@
                                                     </a>
                                                 </div>
                                             @endif
+
                                             @if ($krs == null)
                                                 <div class="alert alert-info mt-4" role="alert">
                                                     <strong>Status KRS:</strong>
@@ -162,39 +167,7 @@
                                     </div>
                                 </div>
                             </div>
-
-                            @if (empty($krs))
-                                <div class="row mt-5">
-                                    <div class="col-md-12">
-                                        <h5 class="mb-3">Mata Kuliah yang Akan Diambil</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Kode Mata Kuliah</th>
-                                                        <th>Nama Mata Kuliah</th>
-                                                        <th>SKS</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($matkulKrs as $matkul)
-                                                        <tr>
-                                                            <td>{{ $matkul->kode }}</td>
-                                                            <td>{{ $matkul->nama_matkul }}</td>
-                                                            <td>{{ $matkul->teori + $matkul->praktek }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="alert alert-info mt-3">
-                                            <small>Daftar mata kuliah yang akan diambil akan otomatis disesuaikan dengan
-                                                paket
-                                                yang tersedia.</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            @elseif ($krs != null && $pembayaran->status_pembayaran == 1 && $pembayaran->keterangan == 'Sudah')
+                            @if ($krs != null && $pembayaran->status_pembayaran == 1 && $pembayaran->keterangan == 'Sudah')
                                 <style>
                                     @media (min-width: 769px) {
                                         .custom-table {
@@ -417,6 +390,37 @@
                                             </td>
                                         </tr>
                                     </table>
+                                </div>
+                            @elseif ($cekStatusKrs == 0)
+                                <div class="row mt-5">
+                                    <div class="col-md-12">
+                                        <h5 class="mb-3">Mata Kuliah yang Akan Diambil</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Kode Mata Kuliah</th>
+                                                        <th>Nama Mata Kuliah</th>
+                                                        <th>SKS</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($matkulKrs as $matkul)
+                                                        <tr>
+                                                            <td>{{ $matkul->kode }}</td>
+                                                            <td>{{ $matkul->nama_matkul }}</td>
+                                                            <td>{{ $matkul->teori + $matkul->praktek }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="alert alert-info mt-3">
+                                            <small>Daftar mata kuliah yang akan diambil akan otomatis disesuaikan dengan
+                                                paket
+                                                yang tersedia.</small>
+                                        </div>
+                                    </div>
                                 </div>
                             @endif
                         </div>

@@ -25,17 +25,18 @@ class PresensiController extends Controller
      * Display a listing of the resource.
      */
 
-     protected $userid;
+    protected $userid;
 
-     public function __construct(){
+    public function __construct()
+    {
         $this->middleware(function ($request, $next) {
             $this->userid = Session::get('user.id');
             return $next($request);
         });
-     }
+    }
     public function index()
     {
-        $kelasAll = Jadwal::where('dosens_id',$this->userid)->get();
+        $kelasAll = Jadwal::where('dosens_id', $this->userid)->get();
         $jadwals = Jadwal::with('dosen', 'matkul', 'kelas.prodi', 'ruangan')
             ->where('dosens_id', $this->userid)
             ->latest()
@@ -65,9 +66,11 @@ class PresensiController extends Controller
             ->first();
         $pertemuan = Absen::where('jadwals_id', $jadwal->id)->max('pertemuan');
         $pertemuan = $pertemuan ? $pertemuan + 1 : 1;
-        $mahasiswas = Mahasiswa::where('kelas_id', $jadwal->kelas->id)->get();
+        $mahasiswas = Mahasiswa::where('kelas_id', $jadwal->kelas->id)
+            ->where('status_krs', 1)
+            ->get();
         $tahun = TahunAkademik::where('status', 1)->first();
-        $kelasAll = Jadwal::where('dosens_id',$this->userid)->get();
+        $kelasAll = Jadwal::where('dosens_id', $this->userid)->get();
         return view('pages.dosen.data-presensi.presensi', compact('jadwal', 'mahasiswas', 'pertemuan', 'tahun', 'kelasAll'));
     }
 
@@ -136,8 +139,10 @@ class PresensiController extends Controller
             ->where('jadwals_id', $jadwal_id)
             ->get();
 
-        $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)->get();
-        $kelasAll = Jadwal::where('dosens_id',$this->userid)->get();
+        $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)
+            ->where('status_krs', 1)
+            ->get();
+        $kelasAll = Jadwal::where('dosens_id', $this->userid)->get();
 
         return view('pages.dosen.data-presensi.edit', compact('resume',  'absens', 'mahasiswas', 'id', 'kelasAll'));
     }
@@ -214,9 +219,9 @@ class PresensiController extends Controller
             ->get();
 
         $tahunAkademik = TahunAkademik::where('status', 1)->get();
-        $dosenPengampu = Dosen::where('id',$absens->first()->dosens_id)->first();
-        $kaprodi = Kaprodi::where('prodis_id',$absens->first()->prodis_id)->first();
-        return view('pages.dosen.data-presensi.rekap.presensi1-7', compact('absens', 'tahunAkademik','dosenPengampu','kaprodi'));
+        $dosenPengampu = Dosen::where('id', $absens->first()->dosens_id)->first();
+        $kaprodi = Kaprodi::where('prodis_id', $absens->first()->prodis_id)->first();
+        return view('pages.dosen.data-presensi.rekap.presensi1-7', compact('absens', 'tahunAkademik', 'dosenPengampu', 'kaprodi'));
     }
 
     public function rekap8to14($matkuls_id, $kelas_id)
@@ -247,10 +252,10 @@ class PresensiController extends Controller
             ->get();
 
         $tahunAkademik = TahunAkademik::where('status', 1)->get();
-        $dosenPengampu = Dosen::where('id',$absens->first()->dosens_id)->first();
-        $kaprodi = Kaprodi::where('prodis_id',$absens->first()->prodis_id)->first();
+        $dosenPengampu = Dosen::where('id', $absens->first()->dosens_id)->first();
+        $kaprodi = Kaprodi::where('prodis_id', $absens->first()->prodis_id)->first();
 
-        return view('pages.dosen.data-presensi.rekap.presensi8-14', compact('absens', 'tahunAkademik','dosenPengampu','kaprodi'));
+        return view('pages.dosen.data-presensi.rekap.presensi8-14', compact('absens', 'tahunAkademik', 'dosenPengampu', 'kaprodi'));
     }
 
 
@@ -316,5 +321,19 @@ class PresensiController extends Controller
         }
         $tahunAkademik = TahunAkademik::where('status', 1)->get();
         return view('pages.dosen.data-presensi.rekap.berita8-14', compact('beritas', 'sem', 'tahunAkademik'));
+    }
+
+    public function kategori()
+    {
+        $getDosenId = Dosen::all();
+        $getDosen = Jadwal::with('dosen')->whereIn('dosens_id', $getDosenId->pluck('id'))->get();
+        $dosenMatkulCount = $getDosen->groupBy('dosens_id')->map(function ($jadwals) {
+            return $jadwals->count();
+        });
+        return view('pages.data-presensi.index', compact('getDosen', 'dosenMatkulCount'));
+    }
+
+    public function detailMatkul($id){
+        return $id;
     }
 }

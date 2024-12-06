@@ -258,5 +258,13 @@
                 </a>
             </li>
         @endif
+        @if(Auth::guard('kaprodi')->check() || Auth::guard('wakil_direktur')->check() || Auth::guard('direktur')->check() || Auth::guard('admin')->check())
+        <li class="nav-item">
+            <a class="nav-link" href="/presensi/data/presence">
+                <i class="mdi  mdi-clipboard-check-outline menu-icon"></i>
+                <span class="menu-title">Data Presensi</span>
+            </a>
+        </li>
+        @endif
     </ul>
 </nav>

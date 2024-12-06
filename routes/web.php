@@ -204,11 +204,11 @@ Route::prefix('/presensi')->group(function () {
     });
 
     // KRS ADMIN
-    Route::prefix('/krs')->middleware('auth:admin')->group(function(){
-        Route::get('/kategori',[KrsPembayaranController::class,'showKelas']);
-        Route::get('/kategori/{id}',[KrsPembayaranController::class,'showDetailMhs']);
-        Route::get('/kategori/{id}',[KrsPembayaranController::class,'showDetailMhs']);
-        Route::get('/kategori/cetak/{id}',[KrsPembayaranController::class,'krsCetakAdmin']);
+    Route::prefix('/krs')->middleware('auth:admin')->group(function () {
+        Route::get('/kategori', [KrsPembayaranController::class, 'showKelas']);
+        Route::get('/kategori/{id}', [KrsPembayaranController::class, 'showDetailMhs']);
+        Route::get('/kategori/{id}', [KrsPembayaranController::class, 'showDetailMhs']);
+        Route::get('/kategori/cetak/{id}', [KrsPembayaranController::class, 'krsCetakAdmin']);
     });
 
     // KRS DOSEN
@@ -218,6 +218,12 @@ Route::prefix('/presensi')->group(function () {
         Route::get('/diajukan/{id}/edit', [KrsPembayaranController::class, 'krsEdit']);
         Route::get('/disetujui/{id}/edit', [KrsPembayaranController::class, 'krsEdit']);
         Route::put('/diajukan/{id}/update', [KrsPembayaranController::class, 'krsUpdate']);
+    });
+
+    // DATA PRESENSI
+    Route::prefix('/data')->middleware('auth:admin,kaprodi,wakil_direktur,direktur')->group(function () {
+        Route::get('/presence', [PresensiController::class, 'kategori']);
+        Route::get('/presence/{id}', [PresensiController::class, 'detailMatkul']);
     });
 
     // HALAMAN MAHASISWA

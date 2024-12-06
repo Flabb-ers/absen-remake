@@ -214,22 +214,17 @@ class MahasiswaController extends Controller
             'mahasiswa_ids' => 'required|string',
             'kelas_id' => 'required|exists:kelas,id',
         ]);
-    
+        
         $mahasiswaIds = explode(',', $request->input('mahasiswa_ids'));
         $newKelasId = $request->input('kelas_id');
+        
         Mahasiswa::whereIn('id', $mahasiswaIds)->each(function ($mahasiswa) use ($newKelasId) {
-            if ($mahasiswa->kelas_id == $newKelasId) {
-                $mahasiswa->update([
-                    'status_krs' => 1,
-                ]);
-            } else {
-                $mahasiswa->update([
-                    'kelas_id' => $newKelasId,
-                    'status_krs' => 0,
-                ]);
-            }
+            $mahasiswa->update([
+                'kelas_id' => $newKelasId,
+                'status_krs' => 0,
+            ]);
         });
-    
+        
         return redirect('/presensi/data-mahasiswa')->with('success', 'Kelas mahasiswa berhasil diperbarui!');
     }
     

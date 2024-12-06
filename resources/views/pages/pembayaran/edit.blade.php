@@ -8,7 +8,8 @@
                     <span class="mdi mdi-home"></span> Dashboard
                 </a>
                 <span class="breadcrumb-item">Pembayaran</span>
-                <span class="breadcrumb-item">Konfirmasi Pembayaran</span>
+                <span class="breadcrumb-item">{{ Request::is('presensi/pembayaran/diajukan*') ? 'Diajukan' : 'Disetujui' }}</span>
+                <span class="breadcrumb-item">Lihat</span>
             </div>
             <div class="row">
                 <div class="col-lg-12 grid-margin stretch-card">
