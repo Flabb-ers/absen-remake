@@ -83,11 +83,13 @@ class Matkul extends Model
         return $this->hasMany(NilaiHuruf::class);
     }
 
-    public function semester(){
-        return $this->belongsTo(Semester::class,'semester_id');
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class, 'semester_id');
     }
 
-    public function prodi(){
-        return $this->belongsTo(Prodi::class,'prodi_id');
+    public function prodi()
+    {
+        return $this->belongsTo(Prodi::class, 'prodi_id');
     }
 }

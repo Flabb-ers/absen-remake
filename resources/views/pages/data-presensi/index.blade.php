@@ -15,16 +15,16 @@
                         <div class="card text-bg-light mb-3 shadow">
                             <div class="card-header d-flex align-items-center">
                                 <span class="mdi mdi-account-circle me-2" style="font-size: 24px;"></span>
-                                {{ $dosen->dosen->nama }}
+                                {{ $dosen->nama }}
                             </div>
                             <div class="card-body">
                                 <ul class="info-list">
                                     <li><strong><span class="mdi mdi-book-open-variant me-1"></span>Jumlah Mata Kuliah:
                                         </strong>
-                                        {{ $dosenMatkulCount->get($dosen->dosen->id, 0) }}
+                                        {{ $dosenMatkulCount->get($dosen->id, 0) }}
                                     </li>
                                 </ul>
-                                <a href="/presensi/data/presence/{{ $dosen->dosen->id }}" class="btn btn-info btn-sm">Lihat</a>
+                                <a href="/presensi/data/presence/{{ $dosen->id }}" class="btn btn-info btn-sm">Lihat</a>
                             </div>
                         </div>
                     </div>

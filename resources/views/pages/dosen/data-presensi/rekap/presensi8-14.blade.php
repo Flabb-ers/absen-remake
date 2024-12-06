@@ -111,6 +111,11 @@
             size: A4 portrait;
             margin: 30px;
         }
+        @media screen {
+            body * {
+                display: none;
+            }
+        }
     </style>
      <script>
         window.onload = function () {

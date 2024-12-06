@@ -224,6 +224,8 @@ Route::prefix('/presensi')->group(function () {
     Route::prefix('/data')->middleware('auth:admin,kaprodi,wakil_direktur,direktur')->group(function () {
         Route::get('/presence', [PresensiController::class, 'kategori']);
         Route::get('/presence/{id}', [PresensiController::class, 'detailMatkul']);
+        Route::get('/presence/{matkul_id}/{kelas_id}/{jadwal_id}/1-7',[PresensiController::class,'cek1to7']);
+        Route::get('/presence/{matkul_id}/{kelas_id}/{jadwal_id}/8-14',[PresensiController::class,'cek8to14']);
     });
 
     // HALAMAN MAHASISWA
