@@ -38,10 +38,10 @@
                                                 <td>{{ $jadwal->matkul->prodi->nama_prodi }}</td>
                                                 <td>Semester {{ $jadwal->matkul->semester->semester }}</td>
                                                 <td>
-                                                    <a class="btn btn-sm {{ ($pertemuanCounts[$jadwal->id] ?? null) == null ? 'btn-secondary' : 'btn-warning'}}" 
-                                                        href="/presensi/data/value/{{ $jadwal->kelas_id }}/{{ $jadwal->matkuls_id }}/{{ $jadwal->id }}/cek">
+                                                    <a class="btn btn-sm {{ ($pertemuanCounts[$jadwal->id] ?? null) == null ? 'btn-secondary disabled' : 'btn-warning' }}"
+                                                        href="{{ ($pertemuanCounts[$jadwal->id] ?? null) == null ? '#' : '/presensi/data/value/'.$jadwal->kelas_id.'/'.$jadwal->matkuls_id.'/'.$jadwal->id.'/cek' }}">
                                                         <i class="mdi mdi-eye"></i> Lihat
-                                                    </a>
+                                                     </a>                                                     
                                                 </td>
                                             </tr>
                                         @empty
