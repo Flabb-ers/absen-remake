@@ -45,6 +45,7 @@ class UasController extends Controller
     public function create($kelas_id, $matkul_id, $jadwal_id)
     {
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)
+            ->where('status_krs', 1)
             ->orderBy('nim', 'asc')
             ->get();
 
@@ -99,7 +100,8 @@ class UasController extends Controller
     {
 
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)
-            ->orderBy('nim')
+            ->where('status_krs', 1)
+            ->orderBy('nim', 'asc')
             ->get();
 
         $uas = Uas::with('jadwal.dosen', 'matkul', 'kelas.prodi')

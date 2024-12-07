@@ -45,6 +45,7 @@ class UtsController extends Controller
     public function create($kelas_id, $matkul_id, $jadwal_id)
     {
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)
+            ->where('status_krs', 1)
             ->orderBy('nim', 'asc')
             ->get();
 
@@ -53,7 +54,7 @@ class UtsController extends Controller
 
         $jadwal = Jadwal::where('matkuls_id', $matkul_id)
             ->where('kelas_id', $kelas_id)
-            ->where('id',$jadwal_id)
+            ->where('id', $jadwal_id)
             ->first();
         return view('pages.dosen.data-nilai.uts.create', compact('mahasiswas', 'matkul', 'kelasAll', 'jadwal', 'kelas_id', 'matkul_id', 'jadwal_id'));
     }
@@ -99,6 +100,7 @@ class UtsController extends Controller
     {
 
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)
+            ->where('status_krs', 1)
             ->orderBy('nim')
             ->get();
 

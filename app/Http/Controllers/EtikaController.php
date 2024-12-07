@@ -36,7 +36,7 @@ class EtikaController extends Controller
             ->get();
 
         $kelas = Kelas::where('id', $kelas_id)->first();
-        return  view('pages.dosen.data-nilai.etika.index', compact( 'kelas_id', 'matkul_id', 'jadwal_id', 'etikas', 'kelas'));
+        return  view('pages.dosen.data-nilai.etika.index', compact('kelas_id', 'matkul_id', 'jadwal_id', 'etikas', 'kelas'));
     }
 
     /**
@@ -45,6 +45,7 @@ class EtikaController extends Controller
     public function create($kelas_id, $matkul_id, $jadwal_id)
     {
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)
+            ->where('status_krs', 1)
             ->orderBy('nim', 'asc')
             ->get();
 
@@ -99,7 +100,8 @@ class EtikaController extends Controller
     {
 
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)
-            ->orderBy('nim','asc')
+            ->where('status_krs', 1)
+            ->orderBy('nim', 'asc')
             ->get();
 
         $etikas = Etika::with('jadwal.dosen', 'matkul', 'kelas.prodi')
@@ -107,7 +109,7 @@ class EtikaController extends Controller
             ->where('matkul_id', $matkul_id)
             ->where('jadwal_id', $jadwal_id)
             ->get();
-        $kelasAll = Jadwal::where('dosens_id',$this->userId)->get();
+        $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
         return view('pages.dosen.data-nilai.etika.edit', compact('mahasiswas', 'etikas', 'kelas_id', 'matkul_id', 'kelasAll', 'jadwal_id'));
     }
 

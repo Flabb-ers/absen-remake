@@ -114,24 +114,23 @@
                 </a>
             </li>
             <li
-                class="nav-item {{ Request::is('presensi/data-nilai/*') && !Request::is('presensi/data-nilai/pengajuan/*') ? 'active' : '' }}">
+                class="nav-item {{ Request::is('presensi/data-nilai/*') && !Request::is('presensi/data-kontrak*') ? 'active' : '' }}">
                 <a class="nav-link" data-bs-toggle="collapse" href="#data-nilai" aria-expanded="false"
                     aria-controls="data-nilai">
                     <i class="mdi mdi-folder menu-icon"></i>
                     <span class="menu-title">Nilai</span>
                     <i class="menu-arrow"></i>
                 </a>
-                <div class="collapse {{ request()->is('presensi/data-nilai/*') && !request()->is('presensi/data-nilai/pengajuan/*') ? 'show' : '' }}"
+                <div class="collapse {{ request()->is('presensi/data-nilai/*') && !request()->is('presensi/data-nilai/pengajuan/*') && !request()->is('presensi/data-kontrak*') ? 'show' : '' }}"
                     id="data-nilai">
                     <ul class="nav flex-column sub-menu">
                         @if ($kelasAll->isNotEmpty())
                             @foreach ($kelasAll->unique('kelas_id') as $kelas)
                                 @if (isset($kelas->kelas))
                                     <li class="nav-item">
-                                        <a class="nav-link 
-                                        {{ request()->segment(3) == $kelas->kelas->id ? 'active' : '' }} "
+                                        <a class="nav-link"
                                             id="sidebar-kelas-{{ $kelas->kelas->id }}"
-                                            href="{{ request()->is('presensi/data-kontrak/*') || request()->is('presensi/data-presensi/*') ? 'javascript:void(0)' : '/presensi/data-nilai/' . $kelas->kelas->id }}">
+                                            href="/presensi/data-nilai/{{ $kelas->kelas->id }}">
                                             {{ $kelas->kelas->nama_kelas }}
                                         </a>
                                     </li>

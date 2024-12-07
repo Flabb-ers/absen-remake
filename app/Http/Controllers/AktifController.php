@@ -18,26 +18,27 @@ class AktifController extends Controller
      * 
      */
 
-     protected $userId;
+    protected $userId;
 
-     public function __construct(){
-        $this->middleware(function($request,$next){
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
             $this->userId = Session::get('user.id');
             return $next($request);
         });
-     }
+    }
     public function index($kelas_id, $matkul_id, $jadwal_id)
     {
-        $kelasAll = Jadwal::where('dosens_id',$this->userId)->get();
+        $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
         $aktifs = Aktif::where('kelas_id', $kelas_id)
-                ->where('jadwal_id', $jadwal_id)
-                ->where('matkul_id', $matkul_id)
-                ->select('matkul_id', 'kelas_id', 'jadwal_id', DB::raw('GROUP_CONCAT(mahasiswa_id) as mahasiswa_ids, GROUP_CONCAT(nilai) as nilai_total'))
-                ->groupBy('matkul_id', 'kelas_id', 'jadwal_id')
-                ->get();
+            ->where('jadwal_id', $jadwal_id)
+            ->where('matkul_id', $matkul_id)
+            ->select('matkul_id', 'kelas_id', 'jadwal_id', DB::raw('GROUP_CONCAT(mahasiswa_id) as mahasiswa_ids, GROUP_CONCAT(nilai) as nilai_total'))
+            ->groupBy('matkul_id', 'kelas_id', 'jadwal_id')
+            ->get();
 
-        $kelas = Kelas::where('id',$kelas_id)->first();
-        return  view('pages.dosen.data-nilai.aktif.index', compact('kelasAll', 'kelas_id', 'matkul_id', 'jadwal_id', 'aktifs','kelas'));
+        $kelas = Kelas::where('id', $kelas_id)->first();
+        return  view('pages.dosen.data-nilai.aktif.index', compact('kelasAll', 'kelas_id', 'matkul_id', 'jadwal_id', 'aktifs', 'kelas'));
     }
 
     /**
@@ -46,15 +47,16 @@ class AktifController extends Controller
     public function create($kelas_id, $matkul_id, $jadwal_id)
     {
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)
+            ->where('status_krs', 1)
             ->orderBy('nim', 'asc')
             ->get();
 
         $matkul = Matkul::where('id', $matkul_id)->first();
-        $kelasAll = Jadwal::where('dosens_id',$this->userId)->get();
+        $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
 
         $jadwal = Jadwal::where('matkuls_id', $matkul_id)
             ->where('kelas_id', $kelas_id)
-            ->where('id',$jadwal_id)
+            ->where('id', $jadwal_id)
             ->first();
         return view('pages.dosen.data-nilai.aktif.create', compact('mahasiswas', 'matkul', 'kelasAll', 'jadwal', 'kelas_id', 'matkul_id', 'jadwal_id'));
     }
@@ -100,7 +102,8 @@ class AktifController extends Controller
     {
 
         $mahasiswas = Mahasiswa::where('kelas_id', $kelas_id)
-            ->orderBy('nim')
+            ->where('status_krs', 1)
+            ->orderBy('nim', 'asc')
             ->get();
 
         $aktifs = Aktif::with('jadwal.dosen', 'matkul', 'kelas.prodi')
@@ -109,7 +112,7 @@ class AktifController extends Controller
             ->where('jadwal_id', $jadwal_id)
             ->get();
 
-        $kelasAll = Jadwal::where('dosens_id',$this->userId)->get();
+        $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
         return view('pages.dosen.data-nilai.aktif.edit', compact('mahasiswas', 'aktifs', 'kelas_id', 'matkul_id', 'kelasAll', 'jadwal_id'));
     }
 

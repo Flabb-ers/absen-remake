@@ -32,11 +32,12 @@
 - [x] di riwayat khs untuk tahun ajaran dan semester masih sama seperti khs biasa atau sesuai paling tinggi mungkin bisa difix atau tmbah table
 - [x] melanjutkan krs apakah view nya mahasiswa bisa lihat krs dulu sebelum di kirim ke dosen pa dan cetak krs
 - [ ] hapus log di rekap nilai kontroller jika sudah benar perhitungan nilai
-- [ ] tambah where jika mahasiswa status krs 0 belum bisa masuk ke presensi dll
+- [x] tambah where jika mahasiswa status krs 0 belum bisa masuk ke presensi dll
 - [x] lanjut krs besok
 - [x] krs kurang tampilan view dan semester diganti romawi
 - [x] Cek apakah mahasiswa pindah juga where jenis kelas
 - [x] cetak krs untuk admin di kelas 
-- [ ] in nilai sikap uts uas initinya itu belum ada filter where status_krs == 1
+- [x] in nilai sikap uts uas initinya itu belum ada filter where status_krs == 1
 - [x] untuk hasil presensi sudah bisa dicek untuk semua role kaprodi keatas, besok tambah untuk resume, nilai baru rombak kontrak dan baru di ubah bisa lihat kaprodi keatas
 - [ ] tinggal rombak kontrak kuliah. agar bisa di lihat oleh semua role dan untuk inputnya ada 14 kolom form 
+- [ ] Sidebar belum fix untuk halaman dosen jika buka kontrak untuk nialai ikut terbuka 
