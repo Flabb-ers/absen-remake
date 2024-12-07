@@ -38,27 +38,10 @@
                                                 <td>{{ $jadwal->matkul->prodi->nama_prodi }}</td>
                                                 <td>Semester {{ $jadwal->matkul->semester->semester }}</td>
                                                 <td>
-                                                    <div class="dropdown">
-                                                        <button
-                                                            class="btn btn-sm dropdown-toggle {{ $pertemuanCounts[$jadwal->id] == null ? 'btn-secondary' : 'btn-warning' }}"
-                                                            type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                                                            aria-expanded="false"
-                                                            {{ $pertemuanCounts[$jadwal->id] == null ? 'disabled' : '' }}>
-                                                            Pilih Pertemuan
-                                                        </button>
-                                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                            @if (($pertemuanCounts[$jadwal->id] ?? 0) >= 1)
-                                                                <li><a class="dropdown-item"
-                                                                        href="/presensi/data/presence/{{ $jadwal->matkuls_id }}/{{ $jadwal->kelas_id }}/{{ $jadwal->id }}/1-7">Pertemuan
-                                                                        1-7</a></li>
-                                                            @endif
-                                                            @if (($pertemuanCounts[$jadwal->id] ?? 0) >= 8)
-                                                                <li><a class="dropdown-item"
-                                                                        href="/presensi/data/presence/{{ $jadwal->matkuls_id }}/{{ $jadwal->kelas_id }}/{{ $jadwal->id }}/8-14">Pertemuan
-                                                                        8-14</a></li>
-                                                            @endif
-                                                        </ul>
-                                                    </div>
+                                                    <a class="btn btn-sm {{ ($pertemuanCounts[$jadwal->id] ?? null) == null ? 'btn-secondary' : 'btn-warning'}}" 
+                                                        href="/presensi/data/value/{{ $jadwal->kelas_id }}/{{ $jadwal->matkuls_id }}/{{ $jadwal->id }}/cek">
+                                                        <i class="mdi mdi-eye"></i> Lihat
+                                                    </a>
                                                 </td>
                                             </tr>
                                         @empty

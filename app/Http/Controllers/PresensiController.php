@@ -262,7 +262,7 @@ class PresensiController extends Controller
     }
 
 
-    public function berita1to7($matkuls_id, $kelas_id)
+    public function berita1to7($matkuls_id, $kelas_id,$jadwal_id)
     {
         $beritas = Resume::with([
             'dosen' => function ($query) {
@@ -279,10 +279,14 @@ class PresensiController extends Controller
             },
             'kelas.semester' => function ($query) {
                 $query->withTrashed();
+            },
+            'jadwal' => function ($query) {
+                $query->withTrashed();
             }
         ])
             ->where('matkuls_id', $matkuls_id)
             ->where('kelas_id', $kelas_id)
+            ->where('jadwals_id',$jadwal_id)
             ->whereBetween('pertemuan', [1, 7])
             ->get();
 
@@ -311,10 +315,14 @@ class PresensiController extends Controller
             },
             'kelas.semester' => function ($query) {
                 $query->withTrashed();
+            },
+            'jadwal' => function ($query) {
+                $query->withTrashed();
             }
         ])
             ->where('matkuls_id', $matkuls_id)
             ->where('kelas_id', $kelas_id)
+            ->where('jadwals_id',$jadwal_id)
             ->whereBetween('pertemuan', [8, 14])
             ->get();
 
@@ -326,7 +334,7 @@ class PresensiController extends Controller
         return view('pages.dosen.data-presensi.rekap.berita8-14', compact('beritas', 'sem', 'tahunAkademik'));
     }
 
-    public function kategori()
+    public function kategoriInPresensi()
     {
         $jadwals = Jadwal::select('dosens_id')->distinct()->get();
 
@@ -352,7 +360,7 @@ class PresensiController extends Controller
     }
 
 
-    public function detailMatkul($id)
+    public function detailMatkulPresensi($id)
     {
         if ($this->role == 'kaprodi') {
             $kaprodi = Kaprodi::where('id', $this->userid)->first();
@@ -386,7 +394,7 @@ class PresensiController extends Controller
         return view('pages.data-presensi.matkul', compact('jadwals', 'pertemuanCounts'));
     }
 
-    public function cek1to7($matkul_id, $kelas_id, $jadwal_id)
+    public function cekPresensi1to7($matkul_id, $kelas_id, $jadwal_id)
     {
         $absens = Absen::with([
             'dosen' => function ($query) {
@@ -405,6 +413,9 @@ class PresensiController extends Controller
                 $query->withTrashed();
             },
             'mahasiswa' => function ($query) {
+                $query->withTrashed();
+            },
+            'jadwal' => function ($query) {
                 $query->withTrashed();
             }
         ])
@@ -420,7 +431,7 @@ class PresensiController extends Controller
         return view('pages.data-presensi.cek1to7', compact('absens', 'tahunAkademik', 'dosenPengampu', 'kaprodi'));
     }
 
-    public function cek8to14($matkul_id, $kelas_id, $jadwal_id)
+    public function cekPresensi8to14($matkul_id, $kelas_id, $jadwal_id)
     {
         $absens = Absen::with([
             'dosen' => function ($query) {
@@ -440,6 +451,9 @@ class PresensiController extends Controller
             },
             'mahasiswa' => function ($query) {
                 $query->withTrashed();
+            },
+            'jadwal' => function ($query) {
+                $query->withTrashed();
             }
         ])
             ->where('jadwals_id', $jadwal_id)
@@ -452,5 +466,135 @@ class PresensiController extends Controller
         $dosenPengampu = Dosen::where('id', $absens->first()->dosens_id)->first();
         $kaprodi = Kaprodi::where('prodis_id', $absens->first()->prodis_id)->first();
         return view('pages.data-presensi.cek8to14', compact('absens', 'tahunAkademik', 'dosenPengampu', 'kaprodi'));
+    }
+
+    public function kategoriInResume()
+    {
+        $jadwals = Jadwal::select('dosens_id')->distinct()->get();
+
+        $getDosen = Dosen::whereIn('id', $jadwals->pluck('dosens_id'))->get();
+
+        if ($this->role == 'kaprodi') {
+            $kaprodi = Kaprodi::where('id', $this->userid)->first();
+            $prodiId = $kaprodi->prodis_id;
+            $dosenMatkulCount = Jadwal::whereIn('dosens_id', $getDosen->pluck('id'))
+                ->whereHas('matkul.prodi', function ($query) use ($prodiId) {
+                    $query->where('id', $prodiId);
+                })
+                ->groupBy('dosens_id')
+                ->selectRaw('dosens_id, COUNT(*) as total')
+                ->pluck('total', 'dosens_id');
+        } else {
+            $dosenMatkulCount = Jadwal::whereIn('dosens_id', $getDosen->pluck('id'))
+                ->groupBy('dosens_id')
+                ->selectRaw('dosens_id, COUNT(*) as total')
+                ->pluck('total', 'dosens_id');
+        }
+        return view('pages.data-resume.index', compact('getDosen', 'dosenMatkulCount'));
+    }
+
+    public function detailMatkulResume($id)
+    {
+        if ($this->role == 'kaprodi') {
+            $kaprodi = Kaprodi::where('id', $this->userid)->first();
+            $prodiId = $kaprodi->prodis_id;
+            $jadwals = Jadwal::with('matkul', 'matkul.prodi', 'matkul.semester')
+                ->where('dosens_id', $id)
+                ->whereHas('matkul.prodi', function ($query) use ($prodiId) {
+                    $query->where('id', $prodiId);
+                })
+                ->orderBy(function ($query) {
+                    $query->select('nama_matkul')
+                        ->from('matkuls')
+                        ->whereColumn('matkuls.id', 'jadwals.matkuls_id');
+                }, 'asc')
+                ->get();
+        } else {
+            $jadwals = Jadwal::with('matkul', 'matkul.prodi', 'matkul.semester')
+                ->where('dosens_id', $id)
+                ->orderBy(function ($query) {
+                    $query->select('nama_matkul')
+                        ->from('matkuls')
+                        ->whereColumn('matkuls.id', 'jadwals.matkuls_id');
+                }, 'asc')
+                ->get();
+        }
+
+        $pertemuanCounts = [];
+        foreach ($jadwals as $jadwal) {
+            $pertemuan = Resume::where('jadwals_id', $jadwal->id)->max('pertemuan');
+            $pertemuanCounts[$jadwal->id] = $pertemuan;
+        }
+        return view('pages.data-resume.matkul', compact('jadwals', 'pertemuanCounts'));
+    }
+    public function cekResume1to7($matkuls_id, $kelas_id,$jadwal_id)
+    {
+        $beritas = Resume::with([
+            'dosen' => function ($query) {
+                $query->withTrashed();
+            },
+            'matkul' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas.prodi' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas.semester' => function ($query) {
+                $query->withTrashed();
+            },
+            'jadwal' => function ($query) {
+                $query->withTrashed();
+            }
+        ])
+            ->where('matkuls_id', $matkuls_id)
+            ->where('kelas_id', $kelas_id)
+            ->where('jadwals_id',$jadwal_id)
+            ->whereBetween('pertemuan', [1, 7])
+            ->get();
+
+        $semester = Semester::where('status', 1)->first();
+        if ($semester) {
+            $sem = ($semester->semester % 2 == 0) ? "GENAP" : "GANJIL";
+        }
+        $tahunAkademik = TahunAkademik::where('status', 1)->get();
+        return view('pages.data-resume.cek1to7', compact('beritas', 'tahunAkademik', 'sem'));
+    }
+    public function cekResume8to14($matkuls_id, $kelas_id,$jadwal_id)
+    {
+        $beritas = Resume::with([
+            'dosen' => function ($query) {
+                $query->withTrashed();
+            },
+            'matkul' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas.prodi' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas' => function ($query) {
+                $query->withTrashed();
+            },
+            'kelas.semester' => function ($query) {
+                $query->withTrashed();
+            },
+            'jadwal' => function ($query) {
+                $query->withTrashed();
+            }
+        ])
+            ->where('matkuls_id', $matkuls_id)
+            ->where('kelas_id', $kelas_id)
+            ->where('jadwals_id',$jadwal_id)
+            ->whereBetween('pertemuan', [8, 14])
+            ->get();
+
+        $semester = Semester::where('status', 1)->first();
+        if ($semester) {
+            $sem = ($semester->semester % 2 == 0) ? "GENAP" : "GANJIL";
+        }
+        $tahunAkademik = TahunAkademik::where('status', 1)->get();
+        return view('pages.data-resume.cek8to14', compact('beritas', 'tahunAkademik', 'sem'));
     }
 }

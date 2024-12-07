@@ -165,7 +165,7 @@
                     </div>
                 </li>
             @endif
-        @elseif(auth::guard('wakil_direktur')->check() || auth::guard('kaprodi')->check())
+        @elseif(auth::guard('wakil_direktur')->check() || auth::guard('kaprodi')->check() || auth::guard('direktur')->check())
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap" aria-expanded="false"
                     aria-controls="pengajuan-rekap">
@@ -263,6 +263,18 @@
             <a class="nav-link" href="/presensi/data/presence">
                 <i class="mdi  mdi-clipboard-check-outline menu-icon"></i>
                 <span class="menu-title">Data Presensi</span>
+            </a>
+        </li>
+        <li class="nav-item {{ Request::is('presensi/data/resume*') ? 'active' : '' }}">
+            <a class="nav-link" href="/presensi/data/resume">
+                <i class="mdi mdi-file-document menu-icon"></i>
+                <span class="menu-title">Data Berita Acara</span>
+            </a>
+        </li>
+        <li class="nav-item {{ Request::is('presensi/data/value*') ? 'active' : '' }}">
+            <a class="nav-link" href="/presensi/data/value">
+                <i class="mdi  mdi-star-outline menu-icon"></i>
+                <span class="menu-title">Data Nilai</span>
             </a>
         </li>
         @endif

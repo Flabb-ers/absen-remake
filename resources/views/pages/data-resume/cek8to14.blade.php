@@ -144,17 +144,7 @@
                 margin: 30px;
             }
         }
-        @media screen {
-            body * {
-                display: none;
-            }
-        }
     </style>
-    <script>
-        window.onload = function () {
-            window.print();
-        };
-    </script>
 </head>
 
 <body>
@@ -164,7 +154,6 @@
             <div>
                 <h3>POLITEKNIK SAWUNGGALIH AJI</h3>
                 <h3>BERITA ACARA PERKULIAHAN</h3>
-                {{-- <h3>SEMESTER {{ $sem }} TAHUN AKADEMIK {{ $tahunAkademik->first()->tahun_akademik }}</h3> --}}
                 <h3>SEMESTER {{ $sem }} TAHUN AKADEMIK {{ $beritas->first()->tahun }}</h3>
             </div>
         </div>
@@ -203,19 +192,22 @@
                 <th class="tidak-hadir">Jml Mhs Tdk Hadir</th>
                 <th class="ttd-dosen">Ttd Dosen</th>
             </tr>
-            @foreach ($beritas as $berita)
+            @for ($i = 8; $i <= 14; $i++)
+                @php
+                    $berita = $beritas->firstWhere('pertemuan', $i);
+                @endphp
                 <tr>
-                    <td class="pertemuan-ke" style="text-align: center">{{ $berita->pertemuan }}</td>
+                    <td class="pertemuan-ke" style="text-align: center">{{ $i }}</td>
                     <td class="tanggal" style="text-align: center">
-                        {{ \Carbon\Carbon::parse($berita->tanggal)->format('d-m-Y') }}</td>
+                        {{ $berita ? \Carbon\Carbon::parse($berita->tanggal)->format('d-m-Y') : '' }}</td>
                     <td class="waktu" style="text-align: center">
-                        {{ \Carbon\Carbon::parse($berita->waktu)->format('H:i') }}</td>
-                    <td class="ikhtisar">{{ $berita->materi }}</td>
-                    <td class="hadir" style="text-align: center">{{ $berita->hadir }}</td>
-                    <td class="tidak-hadir" style="text-align: center">{{ $berita->tidak_hadir }}</td>
+                        {{ $berita ? \Carbon\Carbon::parse($berita->waktu)->format('H:i') : '' }}</td>
+                    <td class="ikhtisar">{{ $berita->materi ?? '' }}</td>
+                    <td class="hadir" style="text-align: center">{{ $berita->hadir ?? '' }}</td>
+                    <td class="tidak-hadir" style="text-align: center">{{ $berita->tidak_hadir ?? '' }}</td>
                     <td class="ttd-dosen"></td>
                 </tr>
-            @endforeach
+            @endfor
             <tr>
                 <td style="text-align: center;">UTS/UAS</td>
                 <td></td>
@@ -231,5 +223,6 @@
         </div>
     </div>
 </body>
+
 
 </html>

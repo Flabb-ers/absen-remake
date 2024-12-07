@@ -245,9 +245,9 @@
         <div style="border: 1px solid black; padding: 10px; margin-top: 20px; width: 240px">
             @php
                 $rentangUrl = min($range) . '-' . max($range);
-                $noWadir = Session::get('user.wadir');
                 $roleWadir = Auth::guard('wakil_direktur')->check();
-                $isWadir = ($noWadir == 1) && $roleWadir;
+                $roleDirektur = Auth::guard('direktur')->check();
+                $wadirOrDir = $roleWadir || $roleDirektur;
                 $isKaprodi = Auth::guard('kaprodi')->check();
             @endphp
 
@@ -264,7 +264,7 @@
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="wakil_direktur" name="wakil_direktur"
                         {{ $beritas->where('setuju_wadir', 1)->count() == count($range) ? 'checked' : '' }}
-                        onchange="confirmSubmission(this)" @if (!$isWadir) disabled @endif>
+                        onchange="confirmSubmission(this)" @if (!$wadirOrDir) disabled @endif>
                     <label class="form-check-label" for="wakil_direktur">Wakil Direktur</label>
                 </div>
             </form>

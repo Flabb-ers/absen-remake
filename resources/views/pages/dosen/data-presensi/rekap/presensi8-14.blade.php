@@ -129,7 +129,8 @@
         <div style="text-align: center">
             <h3>POLITEKNIK SAWUNGGALIH AJI</h3>
             <h4 style="margin-top:-20px">PRESENSI MAHASISWA SEMESTER {{ $absens->first()->kelas->semester->semester }}</h4>
-            <h5 style="margin-top:-18px;margin-bottom:60px">TAHUN AKADEMIK {{ $tahunAkademik->first()->tahun_akademik }}</h5>
+            <h5 style="margin-top:-18px;margin-bottom:60px">TAHUN AKADEMIK {{ $absens->first()->tahun }}</h5>
+            {{-- <h5 style="margin-top:-18px;margin-bottom:60px">TAHUN AKADEMIK {{ $tahunAkademik->first()->tahun_akademik }}</h5> --}}
         </div>
         
         <div class="header-info">

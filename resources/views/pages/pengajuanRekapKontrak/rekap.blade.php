@@ -376,9 +376,9 @@
 
         <div style="border: 1px solid black; padding: 10px; margin-top: 30px; width:240px">
             @php
-                $noWadir = Session::get('user.wadir');
                 $roleWadir = Auth::guard('wakil_direktur')->check();
-                $isWadir = ($noWadir == 1) && $roleWadir;
+                $roleDirektur = Auth::guard('direktur')->check();
+                $wadirOrDir = $roleWadir || $roleDirektur;
                 $isKaprodi = Auth::guard('kaprodi')->check();
             @endphp
             <form id="attendanceForm" method="POST"
@@ -396,7 +396,7 @@
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="wakil_direktur" name="wakil_direktur"
                         {{ $kontraks->every(fn($kontrak) => $kontrak->setuju_wadir) ? 'checked' : '' }}
-                        onchange="confirmSubmission(this)" @if (!$isWadir) disabled @endif>
+                        onchange="confirmSubmission(this)" @if (!$wadirOrDir) disabled @endif>
                     <label class="form-check-label" for="wakil_direktur">Wakil Direktur</label>
                 </div>
             </form>

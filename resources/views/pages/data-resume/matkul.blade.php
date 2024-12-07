@@ -48,15 +48,14 @@
                                                         </button>
                                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                             @if (($pertemuanCounts[$jadwal->id] ?? 0) >= 1)
-                                                                <li><a class="dropdown-item"
-                                                                        href="/presensi/data/presence/{{ $jadwal->matkuls_id }}/{{ $jadwal->kelas_id }}/{{ $jadwal->id }}/1-7">Pertemuan
-                                                                        1-7</a></li>
-                                                            @endif
-                                                            @if (($pertemuanCounts[$jadwal->id] ?? 0) >= 8)
-                                                                <li><a class="dropdown-item"
-                                                                        href="/presensi/data/presence/{{ $jadwal->matkuls_id }}/{{ $jadwal->kelas_id }}/{{ $jadwal->id }}/8-14">Pertemuan
-                                                                        8-14</a></li>
-                                                            @endif
+                                                            <li><a class="dropdown-item"
+                                                                   href="/presensi/data/resume/{{ $jadwal->matkuls_id }}/{{ $jadwal->kelas_id }}/{{ $jadwal->id }}/1-7">Pertemuan 1-7</a></li>
+                                                        @endif
+                                                        
+                                                        @if (($pertemuanCounts[$jadwal->id] ?? 0) >= 8)
+                                                            <li><a class="dropdown-item"
+                                                                   href="/presensi/data/resume/{{ $jadwal->matkuls_id }}/{{ $jadwal->kelas_id }}/{{ $jadwal->id }}/8-14">Pertemuan 8-14</a></li>
+                                                        @endif     
                                                         </ul>
                                                     </div>
                                                 </td>

@@ -38,4 +38,5 @@
 - [x] Cek apakah mahasiswa pindah juga where jenis kelas
 - [x] cetak krs untuk admin di kelas 
 - [ ] in nilai sikap uts uas initinya itu belum ada filter where status_krs == 1
-- [ ] untuk hasil presensi sudah bisa dicek untuk semua role kaprodi keatas, besok tambah untuk resume, nilai baru rombak kontrak dan baru di ubah bisa lihat kaprodi keatas
+- [x] untuk hasil presensi sudah bisa dicek untuk semua role kaprodi keatas, besok tambah untuk resume, nilai baru rombak kontrak dan baru di ubah bisa lihat kaprodi keatas
+- [ ] tinggal rombak kontrak kuliah. agar bisa di lihat oleh semua role dan untuk inputnya ada 14 kolom form 

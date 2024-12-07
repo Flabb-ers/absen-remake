@@ -37,8 +37,11 @@ class Jadwal extends Model
 
     public function absen()
     {
-
         return $this->hasMany(Absen::class);
+    }
+    public function resume()
+    {
+        return $this->hasMany(Resume::class);
     }
 
     public function kontrak()
@@ -60,11 +63,13 @@ class Jadwal extends Model
         return $this->hasMany(PengajuanRekapkontrak::class);
     }
 
-    public function uas(){
+    public function uas()
+    {
         return $this->hasMany(Uas::class);
     }
 
-    public function uts(){
+    public function uts()
+    {
         return $this->hasMany(Uts::class);
     }
 
