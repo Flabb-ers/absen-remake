@@ -202,11 +202,7 @@
                     text: '{{ session('success') }}',
                     showConfirmButton: true,
                     allowOutsideClick: false,
-                    confirmButtonText: 'Isi Kontrak'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = `/presensi/data-kontrak/isi-kontrak/{{ $jadwal->id }}`;
-                    }
+                    confirmButtonText: 'OK'
                 });
             @elseif (session('error'))
                 Swal.fire({

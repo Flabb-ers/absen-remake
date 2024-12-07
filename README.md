@@ -41,3 +41,4 @@
 - [x] untuk hasil presensi sudah bisa dicek untuk semua role kaprodi keatas, besok tambah untuk resume, nilai baru rombak kontrak dan baru di ubah bisa lihat kaprodi keatas
 - [ ] tinggal rombak kontrak kuliah. agar bisa di lihat oleh semua role dan untuk inputnya ada 14 kolom form 
 - [ ] Sidebar belum fix untuk halaman dosen jika buka kontrak untuk nialai ikut terbuka 
+- [ ] Kontrak bisa di lihat role kaprodi uppp

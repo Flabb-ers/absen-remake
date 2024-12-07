@@ -15,7 +15,7 @@
                     <span class="mdi mdi-home"></span> Dashboard
                 </a>
                 <span class="breadcrumb-item" id="dataMasterBreadcrumb">Kontrak</span>
-            </div>            
+            </div>
             <div class="row">
                 @forelse ($jadwals as $jadwal)
                     <div class="col-lg-4 col-md-6 col-sm-12 grid-margin stretch-card">
@@ -48,7 +48,6 @@
 
                                     $latestAbsenPertemuan = $latestAbsen ? $latestAbsen->pertemuan : 0;
 
-                                    // Mengambil data kontrak terbaru
                                     $latestKontrak = Kontrak::where('jadwals_id', $jadwal->id)
                                         ->where('kelas_id', $jadwal->kelas->id)
                                         ->orderBy('pertemuan', 'desc')
@@ -85,24 +84,24 @@
                                     </div>
                                 </div>
 
+                                @php
+                                    $cekKontrak = Kontrak::where('jadwals_id', $jadwal->id)->first();
+                                @endphp
+
                                 <div class="row">
                                     <div class="col-md-12">
-                                        @if (is_null($rekapStatus) || $rekapStatus->status == 0)
-                                            @if ($latestAbsenPertemuan > 0)
-                                                @if ($latestAbsenPertemuan == $latestKontrakPertemuan)
-                                                    <a href="/presensi/data-kontrak/{{ $latestKontrak->id }}/edit"
-                                                        class="btn btn-warning btn-sm w-100 mb-2">
-                                                        <span class="mdi mdi-clipboard-edit-outline"></span> Edit Kontrak
-                                                        Pertemuan {{ $latestKontrakPertemuan }}
-                                                    </a>
-                                                @elseif($latestAbsenPertemuan > $latestKontrakPertemuan)
-                                                    <a href="/presensi/data-kontrak/isi-kontrak/{{ $jadwal->id }}"
-                                                        class="btn btn-dark btn-sm w-100 mb-2">
-                                                        <span class="mdi mdi-clipboard-edit-outline"></span> Tambah Kontrak
-                                                        Pertemuan {{ $latestAbsenPertemuan }}
-                                                    </a>
-                                                @endif
-                                            @endif
+                                        @if ($cekKontrak != null)
+                                            <a href="/presensi/data-kontrak/{{ $jadwal->id }}/edit"
+                                                class="btn btn-info btn-sm w-100 mb-2">
+                                                <span class="mdi mdi-clipboard-edit-outline"></span> Isi Kontrak
+                                                Perkuliahan
+                                            </a>
+                                        @elseif($cekKontrak == null)
+                                            <a href="/presensi/data-kontrak/isi-kontrak/{{ $jadwal->id }}"
+                                                class="btn btn-info btn-sm w-100 mb-2">
+                                                <span class="mdi mdi-clipboard-edit-outline"></span> Isi Kontrak
+                                                Perkuliahan
+                                            </a>
                                         @endif
                                     </div>
                                 </div>

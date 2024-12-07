@@ -7,7 +7,7 @@
                 <div class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="text-center">KONTRAK PERKULIAHAN</h5>
+                            <h5 class="text-center">EDIT KONTRAK PERKULIAHAN</h5>
                             <div>
                                 <div class="row">
                                     <div class="col-md-5 col-12">
@@ -15,22 +15,31 @@
                                             <li class="d-flex">
                                                 <span style="width: 140px;">Mata Kuliah</span>
                                                 <span style="margin-right: 5px;">:</span>
-                                                <span>{{ $jadwal->matkul->nama_matkul }}</span>
+                                                <span>{{ $kontrak->matkul->nama_matkul }}</span>
                                             </li>
                                             <li class="d-flex mt-2">
                                                 <span style="width: 140px;">Dosen</span>
                                                 <span style="margin-right: 5px;">:</span>
-                                                <span>{{ $jadwal->dosen->nama }}</span>
+                                                <span>{{ $kontrak->jadwal->dosen->nama }}</span>
                                             </li>
                                             <li class="d-flex mt-2">
+                                                <span style="width: 140px;">Pertemuan ke</span>
+                                                <span style="margin-right: 5px;">:</span>
+                                                <span>{{ $kontrak->pertemuan }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-5 offset-md-2 col-12">
+                                        <ul class="list-unstyled">
+                                            <li class="d-flex">
                                                 <span style="width: 140px;">Program Studi</span>
                                                 <span style="margin-right: 5px;">:</span>
-                                                <span>{{ $jadwal->kelas->prodi->nama_prodi }}</span>
+                                                <span>{{ $kontrak->kelas->prodi->nama_prodi }}</span>
                                             </li>
                                             <li class="d-flex mt-2">
                                                 <span style="width: 140px;">Kelas</span>
                                                 <span style="margin-right: 5px;">:</span>
-                                                <span>{{ $jadwal->kelas->nama_kelas }}</span>
+                                                <span>{{ $kontrak->kelas->nama_kelas }}</span>
                                             </li>
                                             <li class="d-flex mt-2">
                                                 <span style="width: 140px;">Tanggal</span>
@@ -42,45 +51,33 @@
                                 </div>
                             </div>
                             <hr>
-                            <form method="POST" action="{{ route('data-kontrak.store') }}">
-                                @csrf
-                                <input type="hidden" name="jadwals_id" value="{{ $jadwal->id }}">
-                                <input type="hidden" name="matkuls_id" value="{{ $jadwal->matkul->id }}">
-                                <input type="hidden" name="dosens_id" value="{{ $jadwal->dosen->id }}">
-                                <input type="hidden" name="prodis_id" value="{{ $jadwal->kelas->prodi->id }}">
-                                <input type="hidden" name="kelas_id" value="{{ $jadwal->kelas->id }}">
-                                <input type="hidden" name="tahun" value="{{ $tahun->tahun_akademik }}">
-                                @for ($i = 1; $i <= 14; $i++)
-                                    <div class="row mb-3">
-                                        <div class="col-md-12">
-                                            <h6>Pertemuan ke-{{ $i }}</h6>
-                                        </div>
-                                        <input type="hidden" name="pertemuan[{{ $i }}]"
-                                            value="{{ $i }}">
+                            <div class="card-body">
+                                <form method="POST" action="{{ route('data-kontrak.update', $kontrak->id) }}">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="row">
                                         <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="materiKontrak_{{ $i }}">Materi Perkuliahan</label>
-                                                <input type="text" id="materiKontrak_{{ $i }}"
-                                                    name="materiKontrak[{{ $i }}]"
-                                                    class="form-control form-control-sm">
+                                            <div class="mb-3 form-group">
+                                                <label for="materiKontrak">Materi Perkuliahan</label>
+                                                <input type="text" id="materiKontrak"
+                                                    class="form-control form-control-sm" name="materiKontrak"
+                                                    value="{{ $kontrak->materi }}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="pustakaKontrak_{{ $i }}">Daftar Pustaka</label>
-                                                <input type="text" id="pustakaKontrak_{{ $i }}"
-                                                    name="pustakaKontrak[{{ $i }}]"
-                                                    class="form-control form-control-sm">
+                                            <div class="mb-3 form-group">
+                                                <label for="pustakaKontrak">Daftar Pustaka</label>
+                                                <input type="text" id="pustakaKontrak"
+                                                    class="form-control form-control-sm" name="pustakaKontrak"
+                                                    value="{{ $kontrak->pustaka }}" required>
                                             </div>
                                         </div>
                                     </div>
-                                @endfor
-                                <a href="/presensi/data-kontrak" class="btn btn-info btn-sm"><span
-                                        class="mdi mdi-arrow-left"></span> Kembali</a>
-                                <button type="submit" class="btn btn-success btn-sm">
-                                    <span class="mdi mdi-content-save"></span> Simpan
-                                </button>
-                            </form>
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <span class="mdi mdi-content-save"></span> Simpan Perubahan
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
