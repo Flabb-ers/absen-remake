@@ -298,7 +298,7 @@
                                 <div class="mb-3">
                                     <label for="nidn" class="form-label">NIDN</label>
                                     <input type="number" class="form-control form-control-sm" id="nidnEdit"
-                                        name="nidn" placeholder="NIDN" min="1000000000" max="9999999999">
+                                        name="nidn" placeholder="NIDN">
                                     <div id="nidnErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -394,7 +394,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-12 col-md-4">
+                            <div class="col-12 col-md-3">
                                 <div class="mb-3">
                                     <label for="tempat_lahir" class="form-label">Tempat Lahir <span
                                             style="color: red;">*</span></label>
@@ -403,7 +403,7 @@
                                     <div id="tempatLahirErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-4">
+                            <div class="col-12 col-md-3">
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email <span
                                             style="color: red;">*</span></label>
@@ -412,7 +412,21 @@
                                     <div id="emailErrorEdit" class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-4">
+                            <div class="col-12 col-md-3">
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password <span
+                                            style="color: red;">*</span></label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control form-control-sm" id="passwordEdit"
+                                            name="password" placeholder="Password" autocomplete="off">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-eye" id="toggleEditPassword" style="cursor: pointer;"></i>
+                                        </span>
+                                    </div>
+                                    <div id="passwordError" class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
                                 <label class="form-label">Status <span style="color: red;">*</span></label><br>
                                 <div class="d-flex flex-wrap">
                                     <div class="form-group me-3">
@@ -491,7 +505,17 @@
             $('#togglePassword').on('click', function() {
                 let passwordInput = $('#password');
                 let icon = $(this);
-                // Toggle the type attribute
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+            $('#toggleEditPassword').on('click', function() {
+                let passwordInput = $('#passwordEdit');
+                let icon = $(this);
                 if (passwordInput.attr('type') === 'password') {
                     passwordInput.attr('type', 'text');
                     icon.removeClass('fa-eye').addClass('fa-eye-slash');
@@ -638,6 +662,7 @@
                 let status = $('input[name="status"]:checked').val();
                 let jenis_kelamin = $('input[name="jenis_kelaminEdit"]:checked').val();
                 let pembimbing_akademik = $('input[name="pembimbing_akademikEdit"]:checked').val();
+                let password = $('#passwordEdit').val();
 
                 $.ajax({
                     url: '{{ route('data-dosen.update', ':id') }}'.replace(':id', id),
@@ -652,7 +677,8 @@
                         tempat_lahir: tempat_lahir,
                         pembimbing_akademik: pembimbing_akademik,
                         email: email,
-                        status: status
+                        status: status,
+                        password:password
                     },
                     success: function(response) {
                         $('#editModal').modal('hide');

@@ -73,13 +73,13 @@ class KaprodiController extends Controller
 {
     $kaprodi = Kaprodi::findOrFail($id);
 
-    // Validasi data yang diterima
+    // Validasi input
     $request->validate([
         'nama' => 'required|unique:kaprodi,nama,' . $kaprodi->id,
         'prodis_id' => 'required|unique:kaprodi,prodis_id,'.$kaprodi->id,
         'no_telephone' => 'required|unique:kaprodi,no_telephone,' . $kaprodi->id,
         'email' => 'required|email|unique:kaprodi,email,' . $kaprodi->id,
-        'status' => 'required|in:0,1'
+        'status' => 'required|in:0,1',
     ], [
         'nama.required' => 'Dosen harus dipilih',
         'nama.unique' => 'Dosen sudah menjadi kaprodi',
@@ -94,28 +94,17 @@ class KaprodiController extends Controller
         'status.in' => 'Status harus 0 atau 1',
     ]);
 
-    // Update data jika ada perubahan
-    if ($kaprodi->nama !== $request->nama) {
-        $kaprodi->nama = $request->nama;
+    $updateData = $request->except('password'); 
+
+    if ($request->filled('password')) {
+        $updateData['password'] = Hash::make($request->password);
     }
 
-    if ($kaprodi->no_telephone !== $request->no_telephone) {
-        $kaprodi->no_telephone = $request->no_telephone;
-    }
-
-    if ($kaprodi->email !== $request->email) {
-        $kaprodi->email = $request->email;
-    }
-
-    if ($kaprodi->prodis_id !== $request->prodis_id) {
-        $kaprodi->prodis_id = $request->prodis_id;
-    }
-
-    $kaprodi->status = $request->status;
-    $kaprodi->save();
+    $kaprodi->update($updateData);
 
     return response()->json(['success' => 'Kaprodi berhasil diupdate!']);
 }
+
 
     /**
      * Remove the specified resource from storage.

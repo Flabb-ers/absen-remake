@@ -96,7 +96,7 @@ class DosenController extends Controller
     public function update(Request $request, $id)
     {
         $dosen = Dosen::findOrFail($id);
-
+    
         $request->validate([
             'nama' => 'required|string|max:255',
             'nidn' => [
@@ -122,46 +122,23 @@ class DosenController extends Controller
                 'email',
                 Rule::unique('dosens')->ignore($dosen->id)->whereNull('deleted_at'),
             ],
-        ], [
-            'nama.required' => 'Nama dosen harus diisi',
-            'nidn.numeric' => 'NIDN harus angka',
-            'nidn.digits' => 'NIDN harus terdiri 10 digit',
-            'jenis_kelamin.required' => 'Jenis kelamin harus dipilih',
-            'pembimbing_akademik.required' => 'Status pembimbing akademik harus dipilih',
-            'no_telephone.required' => 'Nomor WhatsApp harus diisi',
-            'no_telephone.unique' => 'Nomor WhatsApp sudah terdaftar',
-            'agama.required' => 'Agama harus dipilih',
-            'tanggal_lahir.required' => 'Tanggal lahir harus diisi',
-            'tempat_lahir.required' => 'Tempat lahir harus diisi',
-            'email.required' => 'Email harus diisi',
-            'email.email' => 'Format email tidak valid',
-            'email.unique' => 'Email sudah digunakan',
-            'status.required' => 'Status harus dipilih',
         ]);
-
-        $kolomUpdate = [
-            'nama',
-            'nidn',
-            'jenis_kelamin',
-            'no_telephone',
-            'agama',
-            'tanggal_lahir',
-            'tempat_lahir',
-            'email'
-        ];
-
-        foreach ($kolomUpdate as $kolom) {
-            if ($request->$kolom !== null && $dosen->$kolom !== $request->$kolom) {
-                $dosen->$kolom = $request->$kolom;
-            }
+    
+        $updateData = $request->except('password');
+    
+        if ($request->has('nidn') && $request->nidn === null) {
+            $updateData['nidn'] = null;
         }
-
-        $dosen->status = $request->status;
-        $dosen->pembimbing_akademik = $request->pembimbing_akademik;
-        $dosen->save();
-
+    
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->password);
+        }
+    
+        $dosen->update($updateData);
+    
         return response()->json(['success' => 'Data dosen berhasil diperbarui']);
     }
+    
 
 
 

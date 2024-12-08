@@ -73,13 +73,14 @@ class WadirController extends Controller
     public function update(Request $request, $id)
     {
         $wadir = Wadir::findOrFail($id);
-
+    
+        // Validasi input
         $request->validate([
             'nama' => 'required|string|max:255|unique:wadirs,nama,' . $wadir->id,
             'email' => 'required|email|unique:wadirs,email,' . $wadir->id,
             'no_telephone' => 'required|unique:wadirs,no_telephone,' . $wadir->id,
             'status' => 'required|boolean',
-            'no' => 'required'
+            'no' => 'required',
         ], [
             'nama.required' => 'Nama wakil direktur wajib diisi',
             'nama.unique' => 'Nama sudah menjadi wakil direktur',
@@ -87,32 +88,23 @@ class WadirController extends Controller
             'email.email' => 'Format email tidak valid',
             'email.unique' => 'Email sudah digunakan',
             'no_telephone.required' => 'Nomor WhatsApp wajib diisi',
-            'no_telephone.unique' => 'Nomor  WhatsApp sudah terdaftar',
+            'no_telephone.unique' => 'Nomor WhatsApp sudah terdaftar',
             'status.required' => 'Status wajib dipilih',
             'status.boolean' => 'Status harus berupa nilai boolean',
-            'no.required' => 'Posisi wajib diisi'
+            'no.required' => 'Posisi wajib diisi',
         ]);
-
-        if ($wadir->nama !== $request->nama) {
-            $wadir->nama = $request->nama;
+    
+        $updateData = $request->except('password');
+    
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->password);
         }
-
-        if ($wadir->email !== $request->email) {
-            $wadir->email = $request->email;
-        }
-
-        if ($wadir->no_telephone !== $request->no_telephone) {
-            $wadir->no_telephone = $request->no_telephone;
-        }
-        if ($wadir->no !== $request->no) {
-            $wadir->no = $request->no;
-        }
-
-        $wadir->status = $request->status;
-        $wadir->save();
-
+    
+        $wadir->update($updateData);
+    
         return response()->json(['success' => 'Data Wadir berhasil diperbarui']);
     }
+    
 
 
 

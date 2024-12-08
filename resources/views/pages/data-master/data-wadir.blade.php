@@ -192,7 +192,17 @@
                             <input type="email" class="form-control form-control-sm" id="emailEdit" name="email">
                             <div id="emailErrorEdit" class="invalid-feedback"></div>
                         </div>
-
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password <span style="color: red;">*</span></label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-sm" id="passwordEdit"
+                                    name="password" placeholder="Password" autocomplete="off">
+                                <span class="input-group-text">
+                                    <i class="fa fa-eye" id="toggleEditPassword" style="cursor: pointer;"></i>
+                                </span>
+                            </div>
+                            <div id="passwordError" class="invalid-feedback"></div>
+                        </div>
                         <label class="form-label">Status <span style="color: red;">*</span></label><br>
                         <div class="d-flex flex-wrap">
                             <div class="form-group me-3">
@@ -236,6 +246,17 @@
             });
             $('#togglePassword').on('click', function() {
                 let passwordInput = $('#password');
+                let icon = $(this);
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+            $('#toggleEditPassword').on('click', function() {
+                let passwordInput = $('#passwordEdit');
                 let icon = $(this);
                 if (passwordInput.attr('type') === 'password') {
                     passwordInput.attr('type', 'text');
@@ -348,6 +369,7 @@
                 let email = $('#emailEdit').val();
                 let no_telephone = $('#nomorEdit').val();
                 let status = $('input[name="status"]:checked').val();
+                let password = $('#passwordEdit').val();
 
                 $.ajax({
                     url: '{{ route('data-wadir.update', ':id') }}'.replace(':id', id),
@@ -357,7 +379,8 @@
                         email: email,
                         status: status,
                         no_telephone: no_telephone,
-                        no: no
+                        no: no,
+                        password : password
                     },
                     success: function(response) {
                         $('#editModal').modal('hide');

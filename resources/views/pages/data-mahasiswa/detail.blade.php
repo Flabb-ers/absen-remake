@@ -398,14 +398,14 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="mb-3 col-12 col-md-4">
+                            <div class="mb-3 col-12 col-md-3">
                                 <label for="editNoTelephone" class="form-label">Nomor Telephone <span
                                         style="color: red;">*</span></label>
                                 <input type="number" class="form-control form-control-sm" id="editNoTelephone"
                                     name="no_telephone" placeholder="Nomor Telephone">
                                 <div id="editNoTelephoneError" class="invalid-feedback"></div>
                             </div>
-                            <div class="mb-3 col-12 col-md-4">
+                            <div class="mb-3 col-12 col-md-3">
                                 <label class="form-label">Jenis Kelamin <span style="color: red;">*</span></label><br>
                                 <div class="d-flex flex-wrap">
                                     <div class="form-check me-3">
@@ -423,12 +423,24 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="mb-3 col-12 col-md-4">
+                            <div class="mb-3 col-12 col-md-3">
                                 <label for="editEmail" class="form-label">Email <span
                                         style="color: red;">*</span></label>
                                 <input type="email" class="form-control form-control-sm" id="editEmail"
                                     placeholder="Email" name="email">
                                 <div id="editEmailError" class="invalid-feedback"></div>
+                            </div>
+                            <div class="mb-3 col-12 col-md-3">
+                                <label for="password" class="form-label">Password <span
+                                        style="color: red;"></span></label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control form-control-sm" id="passwordEdit"
+                                        name="password" placeholder="Password">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-eye" id="toggleEditPassword" style="cursor: pointer;"></i>
+                                    </span>
+                                </div>
+                                <div id="passwordError" class="invalid-feedback"></div>
                             </div>
                         </div>
                         <div class="row">
@@ -647,6 +659,8 @@
                 let email = $('#editEmail').val();
                 let alamat = $('#editAlamat').val();
                 let dosen_pembimbing_id = $('#pembimbing_akademikEdit').val();
+                let password = $('#passwordEdit').val();
+                
 
                 $.ajax({
                     url: '{{ route('data-mahasiswa.update', ':id') }}'.replace(':id', id),
@@ -664,7 +678,8 @@
                         jenis_kelamin: jenis_kelamin,
                         email: email,
                         alamat: alamat,
-                        dosen_pembimbing_id: dosen_pembimbing_id
+                        dosen_pembimbing_id: dosen_pembimbing_id,
+                        password : password
                     },
                     success: function(response) {
                         $('#editModal').modal('hide');
@@ -839,6 +854,17 @@
 
             $('#togglePassword').on('click', function() {
                 let passwordInput = $('#password');
+                let icon = $(this);
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+            $('#toggleEditPassword').on('click', function() {
+                let passwordInput = $('#passwordEdit');
                 let icon = $(this);
                 if (passwordInput.attr('type') === 'password') {
                     passwordInput.attr('type', 'text');

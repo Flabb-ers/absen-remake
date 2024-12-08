@@ -57,6 +57,30 @@
                     <span class="menu-title">Jadwal Mengajar</span>
                 </a>
             </li>
+            <li class="nav-item {{ Request::is('presensi/data/presence*') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/data/presence">
+                    <i class="mdi  mdi-clipboard-check-outline menu-icon"></i>
+                    <span class="menu-title">Data Presensi</span>
+                </a>
+            </li>
+            <li class="nav-item {{ Request::is('presensi/data/resume*') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/data/resume">
+                    <i class="mdi mdi-file-document menu-icon"></i>
+                    <span class="menu-title">Data Berita Acara</span>
+                </a>
+            </li>
+            <li class="nav-item {{ Request::is('presensi/data/contract*') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/data/contract">
+                    <i class="mdi mdi-paperclip menu-icon"></i>
+                    <span class="menu-title">Data Kontrak</span>
+                </a>
+            </li>
+            <li class="nav-item {{ Request::is('presensi/data/value*') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/data/value">
+                    <i class="mdi  mdi-star-outline menu-icon"></i>
+                    <span class="menu-title">Data Nilai</span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#rekap-nilai" aria-expanded="false"
                     aria-controls="rekap-nilai">
@@ -128,8 +152,7 @@
                             @foreach ($kelasAll->unique('kelas_id') as $kelas)
                                 @if (isset($kelas->kelas))
                                     <li class="nav-item">
-                                        <a class="nav-link"
-                                            id="sidebar-kelas-{{ $kelas->kelas->id }}"
+                                        <a class="nav-link" id="sidebar-kelas-{{ $kelas->kelas->id }}"
                                             href="/presensi/data-nilai/{{ $kelas->kelas->id }}">
                                             {{ $kelas->kelas->nama_kelas }}
                                         </a>
@@ -165,6 +188,30 @@
                 </li>
             @endif
         @elseif(auth::guard('wakil_direktur')->check() || auth::guard('kaprodi')->check() || auth::guard('direktur')->check())
+            <li class="nav-item {{ Request::is('presensi/data/presence*') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/data/presence">
+                    <i class="mdi  mdi-clipboard-check-outline menu-icon"></i>
+                    <span class="menu-title">Data Presensi</span>
+                </a>
+            </li>
+            <li class="nav-item {{ Request::is('presensi/data/resume*') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/data/resume">
+                    <i class="mdi mdi-file-document menu-icon"></i>
+                    <span class="menu-title">Data Berita Acara</span>
+                </a>
+            </li>
+            <li class="nav-item {{ Request::is('presensi/data/contract*') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/data/contract">
+                    <i class="mdi mdi-paperclip menu-icon"></i>
+                    <span class="menu-title">Data Kontrak</span>
+                </a>
+            </li>
+            <li class="nav-item {{ Request::is('presensi/data/value*') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/data/value">
+                    <i class="mdi  mdi-star-outline menu-icon"></i>
+                    <span class="menu-title">Data Nilai</span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#pengajuan-rekap" aria-expanded="false"
                     aria-controls="pengajuan-rekap">
@@ -256,32 +303,6 @@
                     <span class="menu-title">KRS & Pembayaran</span>
                 </a>
             </li>
-        @endif
-        @if(Auth::guard('kaprodi')->check() || Auth::guard('wakil_direktur')->check() || Auth::guard('direktur')->check() || Auth::guard('admin')->check())
-        <li class="nav-item {{ Request::is('presensi/data/presence*') ? 'active' : '' }}">
-            <a class="nav-link" href="/presensi/data/presence">
-                <i class="mdi  mdi-clipboard-check-outline menu-icon"></i>
-                <span class="menu-title">Data Presensi</span>
-            </a>
-        </li>
-        <li class="nav-item {{ Request::is('presensi/data/resume*') ? 'active' : '' }}">
-            <a class="nav-link" href="/presensi/data/resume">
-                <i class="mdi mdi-file-document menu-icon"></i>
-                <span class="menu-title">Data Berita Acara</span>
-            </a>
-        </li>
-        <li class="nav-item {{ Request::is('presensi/data/contract*') ? 'active' : '' }}">
-            <a class="nav-link" href="/presensi/data/contract">
-                <i class="mdi mdi-paperclip menu-icon"></i>
-                <span class="menu-title">Data Kontrak</span>
-            </a>
-        </li>
-        <li class="nav-item {{ Request::is('presensi/data/value*') ? 'active' : '' }}">
-            <a class="nav-link" href="/presensi/data/value">
-                <i class="mdi  mdi-star-outline menu-icon"></i>
-                <span class="menu-title">Data Nilai</span>
-            </a>
-        </li>
         @endif
     </ul>
 </nav>

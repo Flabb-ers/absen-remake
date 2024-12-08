@@ -106,9 +106,8 @@ class MahasiswaController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $mahasiswa = Mahasiswa::findOrFail($id);
-
+    
         $rules = [
             'nama_lengkap' => 'required|string|max:255',
             'dosen_pembimbing_id' => 'required',
@@ -124,8 +123,7 @@ class MahasiswaController extends Controller
             'jenis_kelamin' => 'required|string',
             'kelas_id' => 'required|exists:kelas,id',
         ];
-
-
+    
         if ($request->nim !== $mahasiswa->nim) {
             $rules['nim'] .= '|unique:mahasiswas,nim';
         }
@@ -141,7 +139,7 @@ class MahasiswaController extends Controller
         if ($request->no_telephone !== $mahasiswa->no_telephone) {
             $rules['no_telephone'] .= '|unique:mahasiswas,no_telephone';
         }
-
+    
         $request->validate($rules, [
             'nama_lengkap.required' => 'Nama lengkap harus diisi',
             'nim.required' => 'NIM harus diisi',
@@ -154,7 +152,7 @@ class MahasiswaController extends Controller
             'nik.unique' => 'NIK sudah terdaftar',
             'nik.numeric' => 'NIK harus berupa angka',
             'email.required' => 'Email harus diisi',
-            'dosen_pembimbing_id' => 'Dosen pembimbing akademik harus diisi',
+            'dosen_pembimbing_id.required' => 'Dosen pembimbing akademik harus diisi',
             'email.email' => 'Format email tidak valid',
             'email.unique' => 'Email sudah terdaftar',
             'alamat.required' => 'Alamat harus diisi',
@@ -168,11 +166,18 @@ class MahasiswaController extends Controller
             'kelas_id.required' => 'Kelas harus dipilih',
             'kelas_id.exists' => 'Kelas yang dipilih tidak valid',
         ]);
-
-        $mahasiswa->update($request->all());
-
+    
+        $updateData = $request->except('password');
+    
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->password);
+        }
+    
+        $mahasiswa->update($updateData);
+    
         return response()->json(['success' => 'Data mahasiswa berhasil diperbarui'], 200);
     }
+    
 
 
     /**
@@ -201,8 +206,8 @@ class MahasiswaController extends Controller
         $kelasId = Kelas::where('id', $id);
         $kelasAll = Jadwal::all();
         $kelasSem = Kelas::where('id_prodi', $namaKelas->id_prodi)
-                            ->where('jenis_kelas',$namaKelas->jenis_kelas)                    
-        ->get();
+            ->where('jenis_kelas', $namaKelas->jenis_kelas)
+            ->get();
         $kelasAlls = Kelas::where('id_prodi', $namaKelas->id_prodi)->first();
         return view('pages.data-mahasiswa.detail', compact('mahasiswas', 'kelass', 'namaKelas', 'dosens', 'kelasAlls', 'kelasAll', 'kelasSem', 'kelasId'));
     }
@@ -214,20 +219,20 @@ class MahasiswaController extends Controller
             'mahasiswa_ids' => 'required|string',
             'kelas_id' => 'required|exists:kelas,id',
         ]);
-        
+
         $mahasiswaIds = explode(',', $request->input('mahasiswa_ids'));
         $newKelasId = $request->input('kelas_id');
-        
+
         Mahasiswa::whereIn('id', $mahasiswaIds)->each(function ($mahasiswa) use ($newKelasId) {
             $mahasiswa->update([
                 'kelas_id' => $newKelasId,
                 'status_krs' => 0,
             ]);
         });
-        
+
         return redirect('/presensi/data-mahasiswa')->with('success', 'Kelas mahasiswa berhasil diperbarui!');
     }
-    
+
 
     public function search(Request $request)
     {

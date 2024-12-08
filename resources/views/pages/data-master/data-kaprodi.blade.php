@@ -200,6 +200,17 @@
                                 placeholder="Email">
                             <div id="editEmailError" class="invalid-feedback"></div>
                         </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password <span style="color: red;"></span></label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-sm" id="passwordEdit"
+                                    name="password" placeholder="Password" autocomplete="off">
+                                <span class="input-group-text">
+                                    <i class="fa fa-eye" id="toggleEditPassword" style="cursor: pointer;"></i>
+                                </span>
+                            </div>
+                            <div id="passwordError" class="invalid-feedback"></div>
+                        </div>
                         <label class="form-label">Status <span style="color: red;">*</span></label><br>
                         <div class="d-flex flex-wrap">
                             <div class="form-group me-3">
@@ -240,6 +251,17 @@
 
             $('#togglePassword').on('click', function() {
                 let passwordInput = $('#password');
+                let icon = $(this);
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+            $('#toggleEditPassword').on('click', function() {
+                let passwordInput = $('#passwordEdit');
                 let icon = $(this);
                 if (passwordInput.attr('type') === 'password') {
                     passwordInput.attr('type', 'text');
@@ -349,6 +371,7 @@
                 let email = $('#edit_email').val();
                 let phone = $('#edit_noTelephone').val();
                 let status = $('input[name="status"]:checked').val();
+                let password = $('#passwordEdit').val();  
 
 
                 $('#editDosenError, #editProdiError, #editEmailError, #statusError')
@@ -362,7 +385,8 @@
                         prodis_id: prodi,
                         email: email,
                         status: status,
-                        no_telephone: phone
+                        no_telephone: phone,
+                        password : password
                     },
                     success: function(response) {
                         $('#editModal').modal('hide');
@@ -370,7 +394,7 @@
 
                         Swal.fire({
                             icon: 'success',
-                            title: 'Kaprodi berhasil diperbarui',
+                            title: 'Success',
                             text: response.success,
                             confirmButtonText: 'Oke'
                         }).then(() => {

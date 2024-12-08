@@ -167,6 +167,17 @@
                             <div id="emailErrorEdit" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
+                            <label for="password" class="form-label">Password <span style="color: red;">*</span></label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-sm" id="passwordEdit" name="password"
+                                    placeholder="Password" autocomplete="off">
+                                <span class="input-group-text">
+                                    <i class="fa fa-eye" id="toggleEditPassword" style="cursor: pointer;"></i>
+                                </span>
+                            </div>
+                            <div id="passwordEdit" class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
                             <label for="nomorEdit" class="form-label">Nomor WhatsApp <span
                                     style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="nomorEdit" name="email">
@@ -323,6 +334,7 @@
                 let email = $('#emailEdit').val();
                 let nomorEdit = $('#nomorEdit').val();
                 let status = $('input[name="status"]:checked').val();
+                let password = $('#passwordEdit').val();                
 
                 $.ajax({
                     url: '{{ route('data-direktur.update', ':id') }}'.replace(':id', id),
@@ -331,7 +343,8 @@
                         nama: nama,
                         email: email,
                         status: status,
-                        no_telephone: nomorEdit
+                        no_telephone: nomorEdit,
+                        password : password
                     },
                     success: function(response) {
                         $('#editModal').modal('hide');
@@ -419,6 +432,18 @@
                         });
                     }
                 });
+            });
+
+            $('#toggleEditPassword').on('click', function() {
+                let passwordInput = $('#passwordEdit');
+                let icon = $(this);
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
             });
 
             $('.addClose, .editClose').on('click', function() {

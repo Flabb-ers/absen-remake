@@ -59,45 +59,37 @@ class DirekturController extends Controller
      * Show the form for editing the specified resource.
      */
     public function update(Request $request, $id)
-{
-    $direktur = Direktur::findOrFail($id);
-
-    // Validasi data yang diterima
-    $request->validate([
-        'nama' => 'required|string|max:255|unique:direkturs,nama,' . $direktur->id,
-        'email' => 'required|email|unique:direkturs,email,' . $direktur->id,
-        'no_telephone' => 'required|unique:direkturs,no_telephone,' . $direktur->id,
-        'status' => 'required|boolean'
-    ], [
-        'nama.required' => 'Nama wajib diisi',
-        'nama.unique' => 'Nama sudah digunakan',
-        'email.required' => 'Email wajib diisi',
-        'email.email' => 'Format email tidak valid',
-        'email.unique' => 'Email sudah digunakan',
-        'no_telephone.required' => 'Nomor WhatsApp wajib diisi',
-        'no_telephone.unique' => 'Nomor WhatsApp sudah terdaftar',
-        'status.required' => 'Status wajib dipilih',
-        'status.boolean' => 'Status harus berupa nilai boolean'
-    ]);
-
-    // Update data jika ada perubahan
-    if ($direktur->nama !== $request->nama) {
-        $direktur->nama = $request->nama;
+    {
+        $direktur = Direktur::findOrFail($id);
+    
+        $request->validate([
+            'nama' => 'required|string|max:255|unique:direkturs,nama,' . $direktur->id,
+            'email' => 'required|email|unique:direkturs,email,' . $direktur->id,
+            'no_telephone' => 'required|unique:direkturs,no_telephone,' . $direktur->id,
+            'status' => 'required|boolean',
+        ], [
+            'nama.required' => 'Nama wajib diisi',
+            'nama.unique' => 'Nama sudah digunakan',
+            'email.required' => 'Email wajib diisi',
+            'email.email' => 'Format email tidak valid',
+            'email.unique' => 'Email sudah digunakan',
+            'no_telephone.required' => 'Nomor WhatsApp wajib diisi',
+            'no_telephone.unique' => 'Nomor WhatsApp sudah terdaftar',
+            'status.required' => 'Status wajib dipilih',
+            'status.boolean' => 'Status harus berupa nilai boolean',
+        ]);
+    
+        $updateData = $request->except('password'); 
+    
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->password);
+        }
+    
+        $direktur->update($updateData);
+    
+        return response()->json(['success' => 'Data direktur berhasil diperbarui']);
     }
-
-    if ($direktur->email !== $request->email) {
-        $direktur->email = $request->email;
-    }
-
-    if ($direktur->no_telephone !== $request->no_telephone) {
-        $direktur->no_telephone = $request->no_telephone;
-    }
-
-    $direktur->status = $request->status;
-    $direktur->save();
-
-    return response()->json(['success' => 'Data direktur berhasil diperbarui']);
-}
+    
 
 
 
