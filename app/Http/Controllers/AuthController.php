@@ -67,7 +67,9 @@ class AuthController extends Controller
             ]]);
             return redirect()->route('dashboard');
         } else
-            return back()->withErrors(['error' => 'Username atau Password salah']);
+            return back()->withErrors([
+                'username' => 'Username atau password salah',
+            ])->withInput($request->only('username', 'role'));
     }
 
     public function logout(Request $request)

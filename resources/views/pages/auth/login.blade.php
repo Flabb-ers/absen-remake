@@ -32,6 +32,48 @@
             color: black !important;
         }
     </style>
+    <style>
+        .error-container {
+            position: relative;
+            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
+
+        .error-alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 5px solid #dc3545;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 
 <body>
@@ -40,7 +82,7 @@
             <div class="content-wrapper d-flex align-items-center auth px-0">
                 <div class="row w-100 mx-0">
                     <div class="col-lg-4 mx-auto">
-                        <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+                        <div class="auth-form-light text-left py-5 px-4 px-sm-5 shadow-lg rounded-4">
                             <div class="brand-logo">
                                 <img src="{{ asset('/images/logo.png') }}" alt="logo">
                             </div>
@@ -48,13 +90,18 @@
                             <h6 class="font-weight-light">Login to continue.</h6>
 
                             @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <strong>Oops! Ada yang tidak beres:</strong>
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
+                                <div class="error-container">
+                                    <div class="error-alert">
+                                        <strong>
+                                            <i class="mdi mdi-alert-circle text-danger me-2"></i>
+                                            Login Gagal!
+                                        </strong>
+                                        <ul class="mb-0 ps-3">
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
                                 </div>
                             @endif
 
@@ -62,22 +109,24 @@
                                 @csrf
                                 <div class="form-group">
                                     <input type="text" name="username" class="form-control form-control-md rounded-4"
-                                        placeholder="Username" required>
+                                        placeholder="Username" value="{{ old('username') }}" required>
                                 </div>
                                 <div class="form-group">
                                     <input type="password" name="password"
                                         class="form-control form-control-md rounded-4" placeholder="Password" required>
                                 </div>
                                 <div class="form-group">
-                                    <select name="role" class="form-control form-control-lg rounded-4" required>
-                                        <option value="" disabled selected>Pilih Level</option>
-                                        <option value="admin">Admin</option>
-                                        <option value="direktur">Direktur</option>
-                                        <option value="wakil_direktur">Wakil Direktur</option>
-                                        <option value="kaprodi">Kaprodi</option>
-                                        <option value="dosen">Dosen</option>
-                                        <option value="mahasiswa">Mahasiswa</option>
-                                    </select>
+                                    <div class="form-group">
+                                        <select name="role" class="form-control form-control-lg rounded-4" required>
+                                            <option value="" {{ old('role') ? '' : 'selected' }} disabled>Pilih Level</option>
+                                            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                            <option value="direktur" {{ old('role') == 'direktur' ? 'selected' : '' }}>Direktur</option>
+                                            <option value="wakil_direktur" {{ old('role') == 'wakil_direktur' ? 'selected' : '' }}>Wakil Direktur</option>
+                                            <option value="kaprodi" {{ old('role') == 'kaprodi' ? 'selected' : '' }}>Kaprodi</option>
+                                            <option value="dosen" {{ old('role') == 'dosen' ? 'selected' : '' }}>Dosen</option>
+                                            <option value="mahasiswa" {{ old('role') == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <div class="mt-3 d-grid gap-2">
@@ -97,6 +146,7 @@
     <!-- container-scroller -->
     <!-- plugins:js -->
     <script src="{{ asset('/vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ asset('vendors/js/jquery-3.6.0.min.js') }}"></script>
     <!-- endinject -->
     <!-- Plugin js for this page -->
     <!-- End plugin js for this page -->
