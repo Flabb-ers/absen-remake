@@ -42,3 +42,4 @@
 - [x] tinggal rombak kontrak kuliah. agar bisa di lihat oleh semua role dan untuk inputnya ada 14 kolom form 
 - [ ] Sidebar belum fix untuk halaman dosen jika buka kontrak untuk nialai ikut terbuka 
 - [x] Kontrak bisa di lihat role kaprodi uppp
+- [ ] plan membuat matkul bisa di lihat oleh kaprodi
