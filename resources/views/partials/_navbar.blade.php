@@ -24,7 +24,7 @@
             <li class="nav-item nav-profile dropdown">
                 <p class="d-flex align-items-center mr-2 mb-0">{{ session()->get('user.nama') }}</p> 
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown">
-                    <img src="{{ asset('/images/faces/face28.jpg') }}" alt="profile" />
+                    <img src="{{ asset('/images/user.png') }}" alt="profile" style="width:25px; height:25px" class="border border-dark rounded-circle" />
                 </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
                     <a class="dropdown-item">
