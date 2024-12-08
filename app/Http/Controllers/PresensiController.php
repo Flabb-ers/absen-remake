@@ -262,7 +262,7 @@ class PresensiController extends Controller
     }
 
 
-    public function berita1to7($matkuls_id, $kelas_id,$jadwal_id)
+    public function berita1to7($matkuls_id, $kelas_id, $jadwal_id)
     {
         $beritas = Resume::with([
             'dosen' => function ($query) {
@@ -286,7 +286,7 @@ class PresensiController extends Controller
         ])
             ->where('matkuls_id', $matkuls_id)
             ->where('kelas_id', $kelas_id)
-            ->where('jadwals_id',$jadwal_id)
+            ->where('jadwals_id', $jadwal_id)
             ->whereBetween('pertemuan', [1, 7])
             ->get();
 
@@ -322,7 +322,7 @@ class PresensiController extends Controller
         ])
             ->where('matkuls_id', $matkuls_id)
             ->where('kelas_id', $kelas_id)
-            ->where('jadwals_id',$jadwal_id)
+            ->where('jadwals_id', $jadwal_id)
             ->whereBetween('pertemuan', [8, 14])
             ->get();
 
@@ -336,39 +336,47 @@ class PresensiController extends Controller
 
     public function kategoriInPresensi()
     {
-        $jadwals = Jadwal::select('dosens_id')->distinct()->get();
-
-        $getDosen = Dosen::whereIn('id', $jadwals->pluck('dosens_id'))->get();
-
         if ($this->role == 'kaprodi') {
             $kaprodi = Kaprodi::where('id', $this->userid)->first();
-            $prodiId = $kaprodi->prodis_id;
-            $dosenMatkulCount = Jadwal::whereIn('dosens_id', $getDosen->pluck('id'))
-                ->whereHas('matkul.prodi', function ($query) use ($prodiId) {
-                    $query->where('id', $prodiId);
+
+            $getDosen = Dosen::where('status', 1)
+                ->whereHas('jadwal', function ($query) use ($kaprodi) {
+                    $query->whereHas('kelas', function ($subQuery) use ($kaprodi) {
+                        $subQuery->where('id_prodi', $kaprodi->prodis_id);
+                    });
                 })
+                ->get();
+
+            $dosenMatkulCount = Jadwal::whereHas('kelas', function ($query) use ($kaprodi) {
+                $query->where('id_prodi', $kaprodi->prodis_id);
+            })
                 ->groupBy('dosens_id')
                 ->selectRaw('dosens_id, COUNT(*) as total')
                 ->pluck('total', 'dosens_id');
         } else {
-            $dosenMatkulCount = Jadwal::whereIn('dosens_id', $getDosen->pluck('id'))
-                ->groupBy('dosens_id')
+            $getDosen = Dosen::where('status', 1)
+                ->whereHas('jadwal')
+                ->get();
+
+            $dosenMatkulCount = Jadwal::groupBy('dosens_id')
                 ->selectRaw('dosens_id, COUNT(*) as total')
                 ->pluck('total', 'dosens_id');
         }
+        
+
         return view('pages.data-presensi.index', compact('getDosen', 'dosenMatkulCount'));
     }
-
 
     public function detailMatkulPresensi($id)
     {
         if ($this->role == 'kaprodi') {
             $kaprodi = Kaprodi::where('id', $this->userid)->first();
             $prodiId = $kaprodi->prodis_id;
+
             $jadwals = Jadwal::with('matkul', 'matkul.prodi', 'matkul.semester')
                 ->where('dosens_id', $id)
-                ->whereHas('matkul.prodi', function ($query) use ($prodiId) {
-                    $query->where('id', $prodiId);
+                ->whereHas('kelas', function ($query) use ($prodiId) {
+                    $query->where('id_prodi', $prodiId);
                 })
                 ->orderBy(function ($query) {
                     $query->select('nama_matkul')
@@ -393,7 +401,6 @@ class PresensiController extends Controller
         }
         return view('pages.data-presensi.matkul', compact('jadwals', 'pertemuanCounts'));
     }
-
     public function cekPresensi1to7($matkul_id, $kelas_id, $jadwal_id)
     {
         $absens = Absen::with([
@@ -470,23 +477,29 @@ class PresensiController extends Controller
 
     public function kategoriInResume()
     {
-        $jadwals = Jadwal::select('dosens_id')->distinct()->get();
-
-        $getDosen = Dosen::whereIn('id', $jadwals->pluck('dosens_id'))->get();
-
         if ($this->role == 'kaprodi') {
             $kaprodi = Kaprodi::where('id', $this->userid)->first();
-            $prodiId = $kaprodi->prodis_id;
-            $dosenMatkulCount = Jadwal::whereIn('dosens_id', $getDosen->pluck('id'))
-                ->whereHas('matkul.prodi', function ($query) use ($prodiId) {
-                    $query->where('id', $prodiId);
+
+            $getDosen = Dosen::where('status', 1)
+                ->whereHas('jadwal', function ($query) use ($kaprodi) {
+                    $query->whereHas('kelas', function ($subQuery) use ($kaprodi) {
+                        $subQuery->where('id_prodi', $kaprodi->prodis_id);
+                    });
                 })
+                ->get();
+
+            $dosenMatkulCount = Jadwal::whereHas('kelas', function ($query) use ($kaprodi) {
+                $query->where('id_prodi', $kaprodi->prodis_id);
+            })
                 ->groupBy('dosens_id')
                 ->selectRaw('dosens_id, COUNT(*) as total')
                 ->pluck('total', 'dosens_id');
         } else {
-            $dosenMatkulCount = Jadwal::whereIn('dosens_id', $getDosen->pluck('id'))
-                ->groupBy('dosens_id')
+            $getDosen = Dosen::where('status', 1)
+                ->whereHas('jadwal')
+                ->get();
+
+            $dosenMatkulCount = Jadwal::groupBy('dosens_id')
                 ->selectRaw('dosens_id, COUNT(*) as total')
                 ->pluck('total', 'dosens_id');
         }
@@ -498,10 +511,11 @@ class PresensiController extends Controller
         if ($this->role == 'kaprodi') {
             $kaprodi = Kaprodi::where('id', $this->userid)->first();
             $prodiId = $kaprodi->prodis_id;
+
             $jadwals = Jadwal::with('matkul', 'matkul.prodi', 'matkul.semester')
                 ->where('dosens_id', $id)
-                ->whereHas('matkul.prodi', function ($query) use ($prodiId) {
-                    $query->where('id', $prodiId);
+                ->whereHas('kelas', function ($query) use ($prodiId) {
+                    $query->where('id_prodi', $prodiId);
                 })
                 ->orderBy(function ($query) {
                     $query->select('nama_matkul')
@@ -523,11 +537,11 @@ class PresensiController extends Controller
         $pertemuanCounts = [];
         foreach ($jadwals as $jadwal) {
             $pertemuan = Resume::where('jadwals_id', $jadwal->id)->max('pertemuan');
-            $pertemuanCounts[$jadwal->id] = $pertemuan;
+            $pertemuanCounts[$jadwal->id] = $pertemuan ?? 0;
         }
         return view('pages.data-resume.matkul', compact('jadwals', 'pertemuanCounts'));
     }
-    public function cekResume1to7($matkuls_id, $kelas_id,$jadwal_id)
+    public function cekResume1to7($matkuls_id, $kelas_id, $jadwal_id)
     {
         $beritas = Resume::with([
             'dosen' => function ($query) {
@@ -551,7 +565,7 @@ class PresensiController extends Controller
         ])
             ->where('matkuls_id', $matkuls_id)
             ->where('kelas_id', $kelas_id)
-            ->where('jadwals_id',$jadwal_id)
+            ->where('jadwals_id', $jadwal_id)
             ->whereBetween('pertemuan', [1, 7])
             ->get();
 
@@ -562,7 +576,7 @@ class PresensiController extends Controller
         $tahunAkademik = TahunAkademik::where('status', 1)->get();
         return view('pages.data-resume.cek1to7', compact('beritas', 'tahunAkademik', 'sem'));
     }
-    public function cekResume8to14($matkuls_id, $kelas_id,$jadwal_id)
+    public function cekResume8to14($matkuls_id, $kelas_id, $jadwal_id)
     {
         $beritas = Resume::with([
             'dosen' => function ($query) {
@@ -586,7 +600,7 @@ class PresensiController extends Controller
         ])
             ->where('matkuls_id', $matkuls_id)
             ->where('kelas_id', $kelas_id)
-            ->where('jadwals_id',$jadwal_id)
+            ->where('jadwals_id', $jadwal_id)
             ->whereBetween('pertemuan', [8, 14])
             ->get();
 

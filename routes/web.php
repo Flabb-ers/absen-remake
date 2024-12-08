@@ -100,26 +100,24 @@ Route::prefix('/presensi')->group(function () {
     Route::resource('/data-presensi', PresensiController::class)->middleware('auth:dosen');
     Route::get('/data-presensi/isi-presensi/{id}', [PresensiController::class, 'absen'])->middleware('auth:dosen');
     Route::get('/data-presensi/edit/{id}/{matkuls_id}/{kelas_id}/{jadwal_id}', [PresensiController::class, 'edit'])->middleware('auth:dosen');
-    Route::get('/data-presensi/rekap/1-7/{matkuls_id}/{kelas_id}/{jadwal_id}', [PresensiController::class, 'rekap1to7'])->middleware('auth:dosen,kaprodi,admin,wakil_direktur');
-    Route::get('/data-presensi/rekap/8-14/{matkuls_id}/{kelas_id}/{jadwal_id}', [PresensiController::class, 'rekap8to14'])->middleware('auth:dosen,kaprodi,admin,wakil_direktur');
+    Route::get('/data-presensi/rekap/1-7/{matkuls_id}/{kelas_id}/{jadwal_id}', [PresensiController::class, 'rekap1to7'])->middleware('auth:dosen,kaprodi,admin,wakil_direktur,direktur');
+    Route::get('/data-presensi/rekap/8-14/{matkuls_id}/{kelas_id}/{jadwal_id}', [PresensiController::class, 'rekap8to14'])->middleware('auth:dosen,kaprodi,admin,wakil_direktur,direktur');
 
     // BERITA ACARA
-    Route::get('/data-presensi/rekap/berita-acara-perkuliahan/1-7/{matkuls_id}/{kelas_id}/{jadwal_id}', [PresensiController::class, 'berita1to7'])->middleware('auth:dosen,kaprodi,admin,wakil_direktur');
-    Route::get('/data-presensi/rekap/berita-acara-perkuliahan/8-14/{matkuls_id}/{kelas_id}/{jadwal_id}', [PresensiController::class, 'berita8to14'])->middleware('auth:dosen,kaprodi,admin,wakil_direktur');
+    Route::get('/data-presensi/rekap/berita-acara-perkuliahan/1-7/{matkuls_id}/{kelas_id}/{jadwal_id}', [PresensiController::class, 'berita1to7'])->middleware('auth:dosen,kaprodi,admin,wakil_direktur,direktur');
+    Route::get('/data-presensi/rekap/berita-acara-perkuliahan/8-14/{matkuls_id}/{kelas_id}/{jadwal_id}', [PresensiController::class, 'berita8to14'])->middleware('auth:dosen,kaprodi,admin,wakil_direktur,direktur');
 
     // KONTRAK
     Route::resource('/data-kontrak', KontrakController::class)->middleware('auth:dosen');
     Route::get('/data-kontrak/isi-kontrak/{id}', [KontrakController::class, 'create'])->middleware('auth:dosen');
-    Route::get('/data-kontrak/rekap/{matkuls_id}/{kelas_id}/{jadwals_id}', [KontrakController::class, 'rekap'])->middleware('auth:dosen,wakil_direktur,kaprodi,admin');
+    Route::get('/data-kontrak/rekap/{matkuls_id}/{kelas_id}/{jadwals_id}', [KontrakController::class, 'rekap'])->middleware('auth:dosen,wakil_direktur,kaprodi,admin,direktur');
 
     // PENGAJUAN PRESENSI 
-    Route::prefix('/pengajuan-konfirmasi')->group(function () {
-        Route::resource('/rekap-presensi', PengajuanRekapPresensiController::class)->middleware('auth:kaprodi,wakil_direktur');
+    Route::prefix('/pengajuan-konfirmasi')->middleware('auth:kaprodi,wakil_direktur,direktur,dosen')->group(function () {
+        Route::resource('/rekap-presensi', PengajuanRekapPresensiController::class);
         Route::get('/presensi-disetujui', [PengajuanRekapPresensiController::class, 'confirm'])->middleware('auth:kaprodi,wakil_direktur');
-        Route::get('/rekap-presensi/{pertemuan}/{matkul_id}/{kelas_id}/{jadwal_id}', [PengajuanRekapPresensiController::class, 'edit'])->middleware('auth:kaprodi,wakil_direktur');
-        route::put('/rekap-presensi/{pertemuan}/{matkul_id}/{kelas_id}/{jadwal_id}', [PengajuanRekapPresensiController::class, 'update'])->middleware('auth:kaprodi,wakil_direktur');
-
-
+        Route::get('/rekap-presensi/{pertemuan}/{matkul_id}/{kelas_id}/{jadwal_id}', [PengajuanRekapPresensiController::class, 'edit']);
+        route::put('/rekap-presensi/{pertemuan}/{matkul_id}/{kelas_id}/{jadwal_id}', [PengajuanRekapPresensiController::class, 'update']);
 
         // PENGAJUAN BERITA
         Route::resource('/rekap-berita', PengajuanRekapBeritaController::class);
@@ -136,7 +134,7 @@ Route::prefix('/presensi')->group(function () {
     });
 
 
-    Route::prefix('/data-nilai')->group(function () {
+    Route::prefix('/data-nilai')->middleware('auth:dosen')->group(function () {
         // NILAI
         Route::get('/{kelas_id}', [NilaiController::class, 'index']);
         Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/detail', [NilaiController::class, 'detail']);
@@ -224,20 +222,25 @@ Route::prefix('/presensi')->group(function () {
         // DATA PRESENSI
         Route::get('/presence', [PresensiController::class, 'kategoriInPresensi']);
         Route::get('/presence/{id}', [PresensiController::class, 'detailMatkulPresensi']);
-        Route::get('/presence/{matkul_id}/{kelas_id}/{jadwal_id}/1-7',[PresensiController::class,'cekPresensi1to7']);
-        Route::get('/presence/{matkul_id}/{kelas_id}/{jadwal_id}/8-14',[PresensiController::class,'cekPresensi8to14']);
+        Route::get('/presence/{matkul_id}/{kelas_id}/{jadwal_id}/1-7', [PresensiController::class, 'cekPresensi1to7']);
+        Route::get('/presence/{matkul_id}/{kelas_id}/{jadwal_id}/8-14', [PresensiController::class, 'cekPresensi8to14']);
 
         // DATA RESUME / BERITA ACARA PERKULAHAN
         Route::get('/resume', [PresensiController::class, 'kategoriInResume']);
-        Route::get('/resume/{id}',[PresensiController::class,'detailMatkulResume']);
-        Route::get('/resume/{matkul_id}/{kelas_id}/{jadwal_id}/1-7',[PresensiController::class,'cekResume1to7']);
-        Route::get('/resume/{matkul_id}/{kelas_id}/{jadwal_id}/8-14',[PresensiController::class,'cekResume8to14']);
+        Route::get('/resume/{id}', [PresensiController::class, 'detailMatkulResume']);
+        Route::get('/resume/{matkul_id}/{kelas_id}/{jadwal_id}/1-7', [PresensiController::class, 'cekResume1to7']);
+        Route::get('/resume/{matkul_id}/{kelas_id}/{jadwal_id}/8-14', [PresensiController::class, 'cekResume8to14']);
 
 
         // DATA NILAI
-        Route::get('/value',[NilaiController::class,'kategori']);
-        Route::get('/value/{id}',[NilaiController::class,'detailMatkul']);
-        Route::get('/value/{kelas_id}/{matkul_id}/{jadwal_id}/cek',[NilaiController::class,'cekNilai']);
+        Route::get('/value', [NilaiController::class, 'kategori']);
+        Route::get('/value/{id}', [NilaiController::class, 'detailMatkul']);
+        Route::get('/value/{kelas_id}/{matkul_id}/{jadwal_id}/cek', [NilaiController::class, 'cekNilai']);
+
+        // DATA KONTRAK 
+        Route::get('/contract', [KontrakController::class, 'kategori']);
+        Route::get('/contract/{id}', [KontrakController::class, 'detailMatkul']);
+        Route::get('/contract/{matkul_id}/{kelas_id}/{jadwal_id}/cek', [KontrakController::class, 'cekKontrak']);
     });
 
     // HALAMAN MAHASISWA

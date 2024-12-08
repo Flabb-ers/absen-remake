@@ -7,7 +7,7 @@
                 <a href="/presensi/dashboard" class="breadcrumb-item">
                     <span class="mdi mdi-home"></span> Dashboard
                 </a>
-                <span class="breadcrumb-item" id="dataMasterBreadcrumb">Data Presensi</span>
+                <span class="breadcrumb-item" id="dataMasterBreadcrumb">Data Kontrak</span>
                 <span class="breadcrumb-item active">Mata Kuliah</span>
                 <span class="breadcrumb-item active">{{ $jadwals->first()->dosen->nama }}</span>
             </div>
@@ -39,7 +39,7 @@
                                                 <td>Semester {{ $jadwal->matkul->semester->semester }}</td>
                                                 <td>
                                                     <a target="_blank" class="btn btn-sm {{ ($pertemuanCounts[$jadwal->id] ?? null) == null ? 'btn-secondary disabled' : 'btn-warning' }}"
-                                                        href="{{ ($pertemuanCounts[$jadwal->id] ?? null) == null ? '#' : '/presensi/data/value/'.$jadwal->kelas_id.'/'.$jadwal->matkuls_id.'/'.$jadwal->id.'/cek' }}">
+                                                        href="{{ ($pertemuanCounts[$jadwal->id] ?? null) == null ? '#' : '/presensi/data/contract/'.$jadwal->matkuls_id.'/'.$jadwal->kelas_id.'/'.$jadwal->id.'/cek' }}">
                                                         <i class="mdi mdi-eye"></i> Lihat
                                                     </a>
                                                 </td>

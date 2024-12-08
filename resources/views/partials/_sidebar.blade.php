@@ -270,6 +270,12 @@
                 <span class="menu-title">Data Berita Acara</span>
             </a>
         </li>
+        <li class="nav-item {{ Request::is('presensi/data/contract*') ? 'active' : '' }}">
+            <a class="nav-link" href="/presensi/data/contract">
+                <i class="mdi mdi-paperclip menu-icon"></i>
+                <span class="menu-title">Data Kontrak</span>
+            </a>
+        </li>
         <li class="nav-item {{ Request::is('presensi/data/value*') ? 'active' : '' }}">
             <a class="nav-link" href="/presensi/data/value">
                 <i class="mdi  mdi-star-outline menu-icon"></i>

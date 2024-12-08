@@ -59,39 +59,48 @@ class NilaiController extends Controller
 
     public function kategori()
     {
-        $jadwals = Jadwal::select('dosens_id')->distinct()->get();
-
-        $getDosen = Dosen::whereIn('id', $jadwals->pluck('dosens_id'))->get();
-
         if ($this->role == 'kaprodi') {
             $kaprodi = Kaprodi::where('id', $this->userId)->first();
-            $prodiId = $kaprodi->prodis_id;
-            $dosenMatkulCount = Jadwal::whereIn('dosens_id', $getDosen->pluck('id'))
-                ->whereHas('matkul.prodi', function ($query) use ($prodiId) {
-                    $query->where('id', $prodiId);
+
+            $getDosen = Dosen::where('status', 1)
+                ->whereHas('jadwal', function ($query) use ($kaprodi) {
+                    $query->whereHas('kelas', function ($subQuery) use ($kaprodi) {
+                        $subQuery->where('id_prodi', $kaprodi->prodis_id);
+                    });
                 })
+                ->get();
+
+            $dosenMatkulCount = Jadwal::whereHas('kelas', function ($query) use ($kaprodi) {
+                $query->where('id_prodi', $kaprodi->prodis_id);
+            })
                 ->groupBy('dosens_id')
                 ->selectRaw('dosens_id, COUNT(*) as total')
                 ->pluck('total', 'dosens_id');
         } else {
-            $dosenMatkulCount = Jadwal::whereIn('dosens_id', $getDosen->pluck('id'))
-                ->groupBy('dosens_id')
+            $getDosen = Dosen::where('status', 1)
+                ->whereHas('jadwal')
+                ->get();
+
+            $dosenMatkulCount = Jadwal::groupBy('dosens_id')
                 ->selectRaw('dosens_id, COUNT(*) as total')
                 ->pluck('total', 'dosens_id');
         }
+
+
         return view('pages.data-nilai.index', compact('getDosen', 'dosenMatkulCount'));
     }
 
 
-    public function detailMatkul($id){
-
+    public function detailMatkul($id)
+    {
         if ($this->role == 'kaprodi') {
             $kaprodi = Kaprodi::where('id', $this->userId)->first();
             $prodiId = $kaprodi->prodis_id;
+
             $jadwals = Jadwal::with('matkul', 'matkul.prodi', 'matkul.semester')
                 ->where('dosens_id', $id)
-                ->whereHas('matkul.prodi', function ($query) use ($prodiId) {
-                    $query->where('id', $prodiId);
+                ->whereHas('kelas', function ($query) use ($prodiId) {
+                    $query->where('id_prodi', $prodiId);
                 })
                 ->orderBy(function ($query) {
                     $query->select('nama_matkul')
@@ -282,7 +291,8 @@ class NilaiController extends Controller
 
         $wadir = Wadir::where('no', 1)->first();
 
-        return view('pages.data-nilai.rekap',
+        return view(
+            'pages.data-nilai.rekap',
             compact(
                 'mahasiswas',
                 'groupedTugas',
@@ -299,5 +309,4 @@ class NilaiController extends Controller
             )
         );
     }
-
 }

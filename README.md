@@ -39,6 +39,6 @@
 - [x] cetak krs untuk admin di kelas 
 - [x] in nilai sikap uts uas initinya itu belum ada filter where status_krs == 1
 - [x] untuk hasil presensi sudah bisa dicek untuk semua role kaprodi keatas, besok tambah untuk resume, nilai baru rombak kontrak dan baru di ubah bisa lihat kaprodi keatas
-- [ ] tinggal rombak kontrak kuliah. agar bisa di lihat oleh semua role dan untuk inputnya ada 14 kolom form 
+- [x] tinggal rombak kontrak kuliah. agar bisa di lihat oleh semua role dan untuk inputnya ada 14 kolom form 
 - [ ] Sidebar belum fix untuk halaman dosen jika buka kontrak untuk nialai ikut terbuka 
-- [ ] Kontrak bisa di lihat role kaprodi uppp
+- [x] Kontrak bisa di lihat role kaprodi uppp

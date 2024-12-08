@@ -54,11 +54,14 @@
                                         ->first();
 
                                     $latestKontrakPertemuan = $latestKontrak ? $latestKontrak->pertemuan : 0;
+                                    $maxPertemuan = Kontrak::where('jadwals_id', $jadwal->id)->max('pertemuan');
+                                    $cekKontrak = Kontrak::where('jadwals_id', $jadwal->id)->first();
+                                    $cek = Kontrak::where('jadwals_id',$jadwal->id)->max('pertemuan');
                                 @endphp
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        @if ($latestAbsenPertemuan >= 14)
+                                        @if ($cek >= 14)
                                             @if (is_null($rekapStatus))
                                                 <form action="/presensi/pengajuan-konfirmasi/rekap-kontrak" method="POST">
                                                     @csrf
@@ -83,22 +86,17 @@
                                         @endif
                                     </div>
                                 </div>
-
-                                @php
-                                    $cekKontrak = Kontrak::where('jadwals_id', $jadwal->id)->first();
-                                @endphp
-
                                 <div class="row">
                                     <div class="col-md-12">
-                                        @if ($cekKontrak != null)
+                                        @if ($cekKontrak != null && $cek < 14)
                                             <a href="/presensi/data-kontrak/{{ $jadwal->id }}/edit"
-                                                class="btn btn-info btn-sm w-100 mb-2">
+                                                class="btn btn-dark btn-sm w-100 mb-2">
                                                 <span class="mdi mdi-clipboard-edit-outline"></span> Isi Kontrak
                                                 Perkuliahan
                                             </a>
-                                        @elseif($cekKontrak == null)
+                                        @elseif($cekKontrak == null && $cek < 14)
                                             <a href="/presensi/data-kontrak/isi-kontrak/{{ $jadwal->id }}"
-                                                class="btn btn-info btn-sm w-100 mb-2">
+                                                class="btn btn-dark btn-sm w-100 mb-2">
                                                 <span class="mdi mdi-clipboard-edit-outline"></span> Isi Kontrak
                                                 Perkuliahan
                                             </a>

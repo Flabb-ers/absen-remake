@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Log;
 use App\Models\Absen;
+use App\Models\Dosen;
 use App\Models\Kelas;
 use App\Models\Wadir;
 use App\Models\Jadwal;
@@ -23,10 +24,12 @@ class KontrakController extends Controller
      */
 
     protected $userId;
+    protected $role;
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
             $this->userId = session::get('user.id');
+            $this->role = session::get('user.role');
             return $next($request);
         });
     }
@@ -168,8 +171,8 @@ class KontrakController extends Controller
         $kontrak = Kontrak::where('jadwals_id', $id)->get();
 
         $validateData = $request->validate([
-            'pustakaKontrak' => 'required|array', 
-            'materiKontrak' => 'required|array', 
+            'pustakaKontrak' => 'required|array',
+            'materiKontrak' => 'required|array',
         ]);
 
         foreach ($kontrak as $index => $item) {
@@ -203,4 +206,90 @@ class KontrakController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Kontrak $kontrak) {}
+
+
+    public function kategori()
+    {
+        if ($this->role == 'kaprodi') {
+            $kaprodi = Kaprodi::where('id', $this->userId)->first();
+
+            $getDosen = Dosen::where('status', 1)
+                ->whereHas('jadwal', function ($query) use ($kaprodi) {
+                    $query->whereHas('kelas', function ($subQuery) use ($kaprodi) {
+                        $subQuery->where('id_prodi', $kaprodi->prodis_id);
+                    });
+                })
+                ->get();
+
+            $dosenMatkulCount = Jadwal::whereHas('kelas', function ($query) use ($kaprodi) {
+                $query->where('id_prodi', $kaprodi->prodis_id);
+            })
+                ->groupBy('dosens_id')
+                ->selectRaw('dosens_id, COUNT(*) as total')
+                ->pluck('total', 'dosens_id');
+        } else {
+            $getDosen = Dosen::where('status', 1)
+                ->whereHas('jadwal')
+                ->get();
+
+            $dosenMatkulCount = Jadwal::groupBy('dosens_id')
+                ->selectRaw('dosens_id, COUNT(*) as total')
+                ->pluck('total', 'dosens_id');
+        }
+
+
+        return view('pages.data-kontrak.index', compact('getDosen', 'dosenMatkulCount'));
+    }
+
+    public function detailMatkul($id)
+    {
+        if ($this->role == 'kaprodi') {
+            $kaprodi = Kaprodi::where('id', $this->userId)->first();
+            $prodiId = $kaprodi->prodis_id;
+
+            $jadwals = Jadwal::with('matkul', 'matkul.prodi', 'matkul.semester')
+                ->where('dosens_id', $id)
+                ->whereHas('kelas', function ($query) use ($prodiId) {
+                    $query->where('id_prodi', $prodiId);
+                })
+                ->orderBy(function ($query) {
+                    $query->select('nama_matkul')
+                        ->from('matkuls')
+                        ->whereColumn('matkuls.id', 'jadwals.matkuls_id');
+                }, 'asc')
+                ->get();
+        } else {
+            $jadwals = Jadwal::with('matkul', 'matkul.prodi', 'matkul.semester')
+                ->where('dosens_id', $id)
+                ->orderBy(function ($query) {
+                    $query->select('nama_matkul')
+                        ->from('matkuls')
+                        ->whereColumn('matkuls.id', 'jadwals.matkuls_id');
+                }, 'asc')
+                ->get();
+        }
+        $pertemuanCounts = [];
+        foreach ($jadwals as $jadwal) {
+            $pertemuan = Absen::where('jadwals_id', $jadwal->id)->max('pertemuan');
+            $pertemuanCounts[$jadwal->id] = $pertemuan ?? 0;
+        }
+        return view('pages.data-kontrak.matkul', compact('jadwals', 'pertemuanCounts'));
+    }
+
+    public function cekKontrak($matkuls_id, $kelas_id, $jadwals_id)
+    {
+        $kontraks = Kontrak::with('matkul', 'kelas', 'kelas.semester', 'kelas.prodi', 'jadwal.dosen')
+            ->where('matkuls_id', $matkuls_id)
+            ->where('kelas_id', $kelas_id)
+            ->where('jadwals_id', $jadwals_id)
+            ->get();
+        $kaprodi = Kaprodi::where('prodis_id', $kontraks->first()->kelas->prodi->id)->first();
+
+        $wadir = Wadir::where('status', 1)
+            ->where('no', 1)
+            ->first();
+
+        return view('pages.data-kontrak.rekap', compact('kontraks', 'kaprodi', 'wadir'));
+    }
+
 }

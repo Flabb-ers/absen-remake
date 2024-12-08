@@ -23,7 +23,7 @@ class Dosen extends Authenticatable
 
     public function jadwal()
     {
-        return $this->hasMany(Jadwal::class);
+        return $this->hasMany(Jadwal::class,'dosens_id');
     }
 
     public function absen()

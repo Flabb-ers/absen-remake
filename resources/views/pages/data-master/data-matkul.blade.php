@@ -576,18 +576,18 @@
                 });
             });
 
-            function updatePagination(response) {
-                $('#pagination').empty();
-                for (let i = 1; i <= response.last_page; i++) {
-                    $('#pagination').append(`
-            <a href="#" class="page-link" data-page="${i}">${i}</a>
-        `);
-                }
-            }
+            //     function updatePagination(response) {
+            //         $('#pagination').empty();
+            //         for (let i = 1; i <= response.last_page; i++) {
+            //             $('#pagination').append(`
+        //     <a href="#" class="page-link" data-page="${i}">${i}</a>
+        // `);
+            //         }
+            //     }
 
             $(document).on('click', '.page-link', function(e) {
                 e.preventDefault();
-                var page = $(this).data('page');
+                var page = $(this).attr('href').split('page=')[1]; // Ambil nomor halaman dari URL
                 let searchQuery = $('#search').val();
 
                 $.ajax({
@@ -617,7 +617,6 @@
                                     data-kode="${matkul.kode}" 
                                     data-prodi="${matkul.prodi_id}" 
                                     data-semester="${matkul.semester_id}" 
-                                    data-kode="${matkul.kode}" 
                                     data-teori="${matkul.teori}" 
                                     data-praktek="${matkul.praktek}" 
                                     data-bs-toggle="modal" 
@@ -638,7 +637,7 @@
                             updatePagination(response);
                         } else {
                             $('tbody').append(
-                                '<tr><td class="text-center" colspan="5">Tidak ada hasil ditemukan</td></tr>'
+                                '<tr><td class="text-center" colspan="7">Tidak ada hasil ditemukan</td></tr>'
                             );
                         }
                     },
@@ -647,6 +646,34 @@
                     }
                 });
             });
+
+            function updatePagination(response) {
+                $('.pagination').empty();
+
+                $('.pagination').append(`
+        <li class="page-item ${response.current_page === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="?page=${response.current_page - 1}" aria-label="Previous">
+                <span aria-hidden="true">&#8249;</span>
+            </a>
+        </li>
+    `);
+
+                for (let i = 1; i <= response.last_page; i++) {
+                    $('.pagination').append(`
+            <li class="page-item ${i === response.current_page ? 'active' : ''}">
+                <a class="page-link" href="?page=${i}">${i}</a>
+            </li>
+        `);
+                }
+
+                $('.pagination').append(`
+        <li class="page-item ${response.current_page === response.last_page ? 'disabled' : ''}">
+            <a class="page-link" href="?page=${response.current_page + 1}" aria-label="Next">
+                <span aria-hidden="true">&#8250;</span>
+            </a>
+        </li>
+    `);
+            }
         });
     </script>
 @endsection
