@@ -11,4 +11,9 @@ class Wadir extends Authenticatable
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public function sentMessages()
+    {
+        return $this->morphMany(Message::class, 'sender');
+    }
 }

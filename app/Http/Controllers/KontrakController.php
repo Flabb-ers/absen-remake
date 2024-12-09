@@ -270,7 +270,7 @@ class KontrakController extends Controller
         }
         $pertemuanCounts = [];
         foreach ($jadwals as $jadwal) {
-            $pertemuan = Absen::where('jadwals_id', $jadwal->id)->max('pertemuan');
+            $pertemuan = Kontrak::where('jadwals_id', $jadwal->id)->max('pertemuan');
             $pertemuanCounts[$jadwal->id] = $pertemuan ?? 0;
         }
         return view('pages.data-kontrak.matkul', compact('jadwals', 'pertemuanCounts'));
