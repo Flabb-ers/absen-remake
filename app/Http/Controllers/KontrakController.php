@@ -10,9 +10,11 @@ use App\Models\Wadir;
 use App\Models\Jadwal;
 use App\Models\Kaprodi;
 use App\Models\Kontrak;
+use App\Models\Message;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\TahunAkademik;
+use Illuminate\Support\Collection;
 use App\Models\PengajuanRekapkontrak;
 use Illuminate\Support\Facades\Session;
 
@@ -72,7 +74,23 @@ class KontrakController extends Controller
         }
         $kelasAll = Jadwal::where('dosens_id', $this->userId)->get();
 
-        return view('pages.dosen.data-kontrak.index', compact('jadwals', 'pertemuanCounts', 'rekapKontrakStatus', 'kelasAll'));
+        $pesans = Message::with('sender')
+            ->where('receiver_id', $this->userId)
+            ->get();
+
+        $filteredPesans = $pesans->filter(function ($pesan) {
+            return $pesan->sender_type != 'App\Models\Dosen'; 
+        });
+
+        $groupedPesans = $filteredPesans->groupBy(function ($pesan) {
+            return $pesan->sender_type . '-' . $pesan->sender_id; 
+        });
+
+        $pesans = $groupedPesans->map(function (Collection $group) {
+            return $group->first();
+        })->values();
+
+        return view('pages.dosen.data-kontrak.index', compact('jadwals', 'pertemuanCounts', 'rekapKontrakStatus', 'kelasAll','pesans'));
     }
 
 
@@ -270,7 +288,7 @@ class KontrakController extends Controller
         }
         $pertemuanCounts = [];
         foreach ($jadwals as $jadwal) {
-            $pertemuan = Absen::where('jadwals_id', $jadwal->id)->max('pertemuan');
+            $pertemuan = Kontrak::where('jadwals_id', $jadwal->id)->max('pertemuan');
             $pertemuanCounts[$jadwal->id] = $pertemuan ?? 0;
         }
         return view('pages.data-kontrak.matkul', compact('jadwals', 'pertemuanCounts'));

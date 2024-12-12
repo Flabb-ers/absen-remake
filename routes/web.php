@@ -29,6 +29,7 @@ use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\RekapNilaiController;
 use App\Http\Controllers\KrsPembayaranController;
+use App\Http\Controllers\PemberitahuanController;
 use App\Http\Controllers\TahunAkademikController;
 use App\Http\Controllers\NilaiMahasiswaController;
 use App\Http\Controllers\PengajuanRekapBeritaController;
@@ -257,5 +258,19 @@ Route::prefix('/presensi')->group(function () {
         Route::post('/krs', [KrsPembayaranController::class, 'pengajuanKrs']);
         Route::put('/krs/{id}/update', [KrsPembayaranController::class, 'krsUpdate']);
         Route::get('/krs/{id}/cetak', [KrsPembayaranController::class, 'krsCetak']);
+    });
+
+    Route::prefix('/pemberitahuan')->middleware('auth:wakil_direktur,direktur,dosen')->group(function () {
+        Route::post('/send', [PemberitahuanController::class, 'sendMessage'])
+            ->name('send.message');
+        Route::get('/show', [PemberitahuanController::class, 'getMessages'])
+            ->name('get.messages');
+        Route::get('/showWhereDosen', [PemberitahuanController::class, 'getMessagesDosen'])
+            ->name('get.messages.alternative');
+        Route::get('/unread-messages', [PemberitahuanController::class, 'getUnreadMessageCount'])
+            ->name('get.unread.count');
+        Route::get('/unread-count/{contactId}/{contactType}', [
+            PemberitahuanController::class, 'getUnreadMessageCountByContact'])
+            ->name('get.unread.count.by.contact');
     });
 });

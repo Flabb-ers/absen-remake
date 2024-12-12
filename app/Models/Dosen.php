@@ -49,4 +49,14 @@ class Dosen extends Authenticatable
     {
         return $this->hasMany(Tugas::class);
     }
+
+    public function sentMessages() 
+    {
+        return $this->morphMany(Message::class, 'sender');
+    }
+
+    public function receivMessages() 
+    {
+        return $this->morphMany(Message::class, 'receiver');
+    }
 }

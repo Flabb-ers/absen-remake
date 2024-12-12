@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Dire;
 use App\Models\Absen;
 use App\Models\Dosen;
 use App\Models\Kelas;
@@ -10,10 +11,12 @@ use App\Models\Jadwal;
 use App\Models\Resume;
 use App\Models\Kaprodi;
 use App\Models\Kontrak;
+use App\Models\Message;
 use App\Models\Semester;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\TahunAkademik;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Models\PengajuanRekapBerita;
 use App\Models\PengajuanRekapPresensi;
@@ -54,7 +57,23 @@ class PresensiController extends Controller
         $berita = PengajuanRekapBerita::whereIn('jadwal_id', $jadwals->pluck('id'))->get()->groupBy('jadwal_id');
 
 
-        return view('pages.dosen.data-presensi.index', compact('jadwals', 'pertemuanCounts', 'pengajuan', 'berita', 'kelasAll'));
+        $pesans = Message::with('sender')
+            ->where('receiver_id', $this->userid)
+            ->get();
+
+        $filteredPesans = $pesans->filter(function ($pesan) {
+            return $pesan->sender_type != 'App\Models\Dosen'; 
+        });
+
+        $groupedPesans = $filteredPesans->groupBy(function ($pesan) {
+            return $pesan->sender_type . '-' . $pesan->sender_id; 
+        });
+
+        $pesans = $groupedPesans->map(function (Collection $group) {
+            return $group->first();
+        })->values();
+
+        return view('pages.dosen.data-presensi.index', compact('jadwals', 'pertemuanCounts', 'pengajuan', 'berita', 'kelasAll', 'pesans'));
     }
 
 
@@ -362,7 +381,7 @@ class PresensiController extends Controller
                 ->selectRaw('dosens_id, COUNT(*) as total')
                 ->pluck('total', 'dosens_id');
         }
-        
+
 
         return view('pages.data-presensi.index', compact('getDosen', 'dosenMatkulCount'));
     }

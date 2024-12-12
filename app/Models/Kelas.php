@@ -105,4 +105,9 @@ class Kelas extends Model
     public function krs(){
         return $this->hasMany(Krs::class);
     }
+
+    public function message()
+    {
+        return $this->hasMany(Message::class, 'kelas_id');
+    }
 }
