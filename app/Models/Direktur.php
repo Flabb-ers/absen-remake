@@ -11,7 +11,7 @@ class Direktur extends Authenticatable
 
     protected $guarded = ['id'];
 
-    public function sentMessages()
+    public function sentMessages() 
     {
         return $this->morphMany(Message::class, 'sender');
     }

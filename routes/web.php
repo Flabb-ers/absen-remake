@@ -260,7 +260,9 @@ Route::prefix('/presensi')->group(function () {
         Route::get('/krs/{id}/cetak', [KrsPembayaranController::class, 'krsCetak']);
     });
 
-    Route::prefix('/pemberitahuan')->middleware('auth:wakil_direktur,direktur')->group(function(){
+    Route::prefix('/pemberitahuan')->middleware('auth:wakil_direktur,direktur,dosen')->group(function(){
         Route::post('/kirim',[PemberitahuanController::class,'sendMessage'])->name('send.message');
+        Route::get('/lihat',[PemberitahuanController::class,'getMessages'])->name('get.messages');
+        Route::get('/lihatDosen',[PemberitahuanController::class,'getMessagesDosen'])->name('get.messages.alternative');
     });
 });
