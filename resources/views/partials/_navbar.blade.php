@@ -359,7 +359,7 @@
                 <div> 
                     <strong> Pilih Jadwal </strong> 
                 </div> 
-                <button class="btn btn-link text-white ms-auto" onclick="startChat()"> 
+                <button class="btn btn-link text-white ms-auto" onclick="closeChat()"> 
                     <i class="ti-close"></i> 
                 </button> 
             </div> 
@@ -450,6 +450,41 @@
                     chatContact.style.display = 'flex';
                     updateUnreadMessageCount();
                 }
+            }
+
+            function closeChat() {
+                const chatStart = document.getElementById('chatStart');
+                const chatContact = document.getElementById('chatContact');
+                
+                $('#jadwalSelectDosen').val('');
+                
+                $('#chatStart #chatMessages').html(`
+                    <div class="mb-3">
+                        <label for="jadwal" class="form-label">Pilih Jadwal Dosen</label>
+                        <select id="jadwalSelectDosen" class="form-select">
+                            <option value="">Pilih Jadwal</option>
+                            @foreach ($jadwals as $jadwal)
+                                <option value="{{ $jadwal->id }}" 
+                                    data-dosen="{{ $jadwal->dosen->nama }}" 
+                                    data-matkul="{{ $jadwal->matkul->nama_matkul }}">
+                                    {{ $jadwal->matkul->nama_matkul }} - {{ $jadwal->kelas->nama_kelas }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                `);
+                
+                $('#jadwalSelectDosen')
+                    .removeAttr('data-receiver-id')
+                    .removeAttr('data-receiver-type')
+                    .removeAttr('data-sender-name');
+                
+                $('#chatStart .chat-header strong').text('Pilih Jadwal');
+                
+                chatStart.style.display = 'none';
+                chatContact.style.display = 'flex';
+                
+                setupAlternativeJadwalSelect('#jadwalSelectDosen');
             }
 
             function resetJadwalDropdown(selectId) {
