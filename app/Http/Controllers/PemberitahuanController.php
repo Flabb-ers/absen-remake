@@ -33,7 +33,7 @@ class PemberitahuanController extends Controller
                 'sender_id' => 'required|integer',
                 'sender_type' => 'required|string',
                 'receiver_type' => 'required|string',
-                'receiver_id' => 'required|integer', 
+                'receiver_id' => 'required|integer',
             ]);
         } else {
             $request->validate([
@@ -43,17 +43,17 @@ class PemberitahuanController extends Controller
                 'sender_type' => 'required|string',
             ]);
         }
-    
+
         $jadwal = Jadwal::findOrFail($request->jadwal_id);
         $senderModel = "App\\Models\\" . $request->sender_type;
         $receiverType = $request->receiver_type;
-    
+
         $receiverType = trim($receiverType, '\\');
         if (strpos($receiverType, 'App\\Models\\') !== 0) {
             $receiverType = ltrim($receiverType, 'App\Models\\');
             $receiverType = "App\\Models\\" . $receiverType;
         }
-    
+
         if (!class_exists($senderModel)) {
             return response()->json([
                 'message' => 'Model pengirim tidak ditemukan.',
@@ -66,21 +66,21 @@ class PemberitahuanController extends Controller
                 'message' => 'Data pengirim tidak valid.',
             ], 400);
         }
-    
+
         if ($this->role == 'direktur' || $this->role == 'wakil_direktur') {
             $receiver = Dosen::find($jadwal->dosens_id);
-            
+
             if (!$receiver) {
                 return response()->json([
                     'message' => 'Dosen yang dituju tidak ditemukan.',
                 ], 400);
             }
-    
+
             $message = Message::create([
                 'sender_id' => $request->sender_id,
                 'sender_type' => $senderModel,
                 'receiver_type' => 'App\Models\Dosen',
-                'receiver_id' => $receiver->id, 
+                'receiver_id' => $receiver->id,
                 'matkul_id' => $jadwal->matkuls_id,
                 'message' => $request->message,
                 'sent_at' => now(),
@@ -92,7 +92,7 @@ class PemberitahuanController extends Controller
                 'sender_id' => $request->sender_id,
                 'sender_type' => $senderModel,
                 'receiver_type' => $receiverType,
-                'receiver_id' => $request->receiver_id, 
+                'receiver_id' => $request->receiver_id,
                 'matkul_id' => $jadwal->matkuls_id,
                 'message' => $request->message,
                 'sent_at' => now(),
@@ -100,72 +100,153 @@ class PemberitahuanController extends Controller
                 'kelas_id' => $jadwal->kelas_id,
             ]);
         }
-    
+
         return response()->json([
             'message' => 'Pesan berhasil dikirim!',
             'data' => $message,
         ]);
     }
-    
+
 
 
     public function getMessages(Request $request)
     {
         $jadwal = Jadwal::findOrFail($request->jadwal_id);
 
-        if ($this->role == 'wakil_direktur') {
-            $messages = Message::where('jadwal_id', $jadwal->id)
-                ->whereIn('receiver_id', [$jadwal->dosens_id, $this->userId])
-                ->whereIn('sender_id', [$jadwal->dosens_id, $this->userId])
-                ->whereIn('sender_type', ['App\Models\Wadir', 'App\Models\Dosen'])
-                ->whereIn('receiver_type', ['App\Models\Wadir', 'App\Models\Dosen'])
-                ->orderBy('sent_at', 'asc')->get();
-        }elseif($this->role == 'direktur'){
-            $messages = Message::where('jadwal_id', $jadwal->id)
-                ->whereIn('receiver_id', [$jadwal->dosens_id, $this->userId])
-                ->whereIn('sender_id', [$jadwal->dosens_id, $this->userId])
-                ->whereIn('sender_type', ['App\Models\Direktur', 'App\Models\Dosen'])
-                ->whereIn('receiver_type', ['App\Models\Direktur', 'App\Models\Dosen'])
-                ->orderBy('sent_at', 'asc')->get();
-        };
+        $receiverType = $this->getModelNamespaceFromRole($this->role);
+
+        $dosenType = $this->getModelNamespaceFromRole('dosen');
+
+        $messages = Message::where('jadwal_id', $jadwal->id)
+            ->where(function ($query) use ($jadwal, $receiverType, $dosenType) {
+                $query->where(function ($subQuery) use ($jadwal, $receiverType, $dosenType) {
+                    $subQuery->where('sender_id', $this->userId)
+                        ->where('sender_type', $receiverType)
+                        ->where('receiver_id', $jadwal->dosens_id)
+                        ->where('receiver_type', $dosenType);
+                })->orWhere(function ($subQuery) use ($jadwal, $receiverType, $dosenType) {
+                    $subQuery->where('receiver_id', $this->userId)
+                        ->where('receiver_type', $receiverType)
+                        ->where('sender_id', $jadwal->dosens_id)
+                        ->where('sender_type', $dosenType);
+                });
+            })
+            ->orderBy('sent_at', 'asc')
+            ->get();
+
+        $this->markMessagesAsRead($messages);
+
         return response()->json($messages);
     }
+
     public function getMessagesDosen(Request $request)
     {
+        $jadwalId = $request->input('jadwal_id');
+        $senderId = $request->input('sender_id');
         $senderType = $request->input('sender_type');
 
-        if (strpos($senderType, 'AppModels') === 0) {
-            $normalizedSenderType = 'App\\Models\\' . str_replace('AppModels', '', $senderType);
-        } else {
-            $normalizedSenderType = $senderType;
-        }
+        $normalizedSenderType = $this->normalizeSenderType($senderType);
 
-        $messages = Message::where('jadwal_id', $request->jadwal_id)
-            ->whereIn('sender_id', [$request->sender_id,$this->userId])
-            ->whereIn('receiver_id', [$request->sender_id,$this->userId])
-            ->whereIn('sender_type', [$normalizedSenderType, 'App\Models\Dosen'])
-            ->whereIn('receiver_type', [$normalizedSenderType, 'App\Models\Dosen'])
+        $receiverType = $this->getModelNamespaceFromRole($this->role);
+
+        $messages = Message::where('jadwal_id', $jadwalId)
+            ->where(function ($query) use ($senderId, $normalizedSenderType, $receiverType) {
+                $query->where(function ($subQuery) use ($senderId, $normalizedSenderType, $receiverType) {
+                    $subQuery->where('sender_id', $this->userId)
+                        ->where('sender_type', $receiverType)
+                        ->where('receiver_id', $senderId)
+                        ->where('receiver_type', $normalizedSenderType);
+                })->orWhere(function ($subQuery) use ($senderId, $normalizedSenderType, $receiverType) {
+                    $subQuery->where('receiver_id', $this->userId)
+                        ->where('receiver_type', $receiverType)
+                        ->where('sender_id', $senderId)
+                        ->where('sender_type', $normalizedSenderType);
+                });
+            })
+            ->orderBy('sent_at', 'asc')
             ->get();
+
+        $this->markMessagesAsRead($messages);
 
         return response()->json($messages);
     }
 
-    public function pollMessages(Request $request)
-    {
-        $userType = $request->input('user_type');
-        $userId = $request->input('user_id');
-        $jadwalId = $request->input('jadwal_id');
-        $lastMessageTime = $request->input('last_message_time');
 
-        $newMessages = Message::where('jadwal_id', $jadwalId)
-            ->where('created_at', '>', $lastMessageTime)
-            ->where(function ($query) use ($userType, $userId) {
-                $query->where('receiver_type', $userType)
-                    ->where('receiver_id', $userId);
-            })
-            ->orderBy('created_at', 'asc')
+    protected function markMessagesAsRead($messages)
+    {
+        $modelNamespace = $this->getModelNamespaceFromRole($this->role);
+
+        $unreadMessages = $messages->where('read', false)
+            ->where('receiver_id', $this->userId)
+            ->where('receiver_type', $modelNamespace);
+
+        foreach ($unreadMessages as $message) {
+            $message->update([
+                'read' => true,
+                'read_at' => now()
+            ]);
+        }
+    }
+
+    public function getUnreadMessageCount()
+    {
+        $modelNamespace = $this->getModelNamespaceFromRole($this->role);
+
+        $unreadCount = Message::where('receiver_id', $this->userId)
+            ->where('receiver_type', $modelNamespace)
+            ->where('read', false)
+            ->count();
+        $unreadGet = Message::where('receiver_id', $this->userId)
+            ->where('receiver_type', $modelNamespace)
+            ->where('read', false)
             ->get();
 
-        return response()->json($newMessages);
+        return response()->json([
+            'unread_count' => $unreadCount,
+            'unread_get'=> $unreadGet
+        ]);
     }
+
+    protected function getModelNamespaceFromRole($role)
+    {
+        $roleToModelMap = [
+            'admin' => 'App\Models\Admin',
+            'direktur' => 'App\Models\Direktur',
+            'wakil_direktur' => 'App\Models\Wadir',
+            'kaprodi' => 'App\Models\Kaprodi',
+            'mahasiswa' => 'App\Models\Mahasiswa',
+            'dosen' => 'App\Models\Dosen'
+        ];
+
+        return $roleToModelMap[$role] ?? '';
+    }
+
+    protected function normalizeSenderType($senderType)
+    {
+        if (strpos($senderType, 'AppModels') === 0) {
+            return 'App\\Models\\' . str_replace('AppModels', '', $senderType);
+        }
+        return $senderType;
+    }
+
+    public function getUnreadMessageCountByContact($contactId, $contactType)
+{
+    if (!str_contains($contactType, 'App\Models\\')) {
+        $contactType = 'App\Models\\' . $contactType;
+    }
+
+    $modelNamespace = $this->getModelNamespaceFromRole($this->role);
+
+    $unreadCount = Message::where('sender_id', $contactId)
+        ->where('sender_type', $contactType)
+        ->where('receiver_id', $this->userId)
+        ->where('receiver_type', $modelNamespace)
+        ->where('read', false)
+        ->count();
+
+    return response()->json([
+        'unread_count' => $unreadCount
+    ]);
+}
+
 }

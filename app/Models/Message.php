@@ -37,8 +37,20 @@ class Message extends Model
         return $this->belongsTo(Kelas::class);
     }
 
-    public function parentMessage()
+    public function scopeUnread($query, $receiverId, $receiverType)
     {
-        return $this->belongsTo(Message::class, 'parent_message_id');
+        return $query->where([
+            'receiver_id' => $receiverId,
+            'receiver_type' => $receiverType,
+            'read' => false
+        ]);
+    }
+
+    public function markAsRead()
+    {
+        $this->update([
+            'read' => true,
+            'read_at' => now()
+        ]);
     }
 }

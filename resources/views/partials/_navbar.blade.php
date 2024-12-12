@@ -128,6 +128,26 @@
             <span class="icon-menu"></span>
         </button>
         <ul class="navbar-nav navbar-nav-right d-flex align-items-center">
+            <li class="nav-item dropdown">
+                <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
+                  <i class="icon-bell mx-0"></i>
+                  <span class="count"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+                  <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
+                  <a class="dropdown-item preview-item">
+                    <div class="preview-thumbnail">
+                      <div class="preview-icon bg-success">
+                        <i class="ti-info-alt mx-0"></i>
+                      </div>
+                    </div>
+                    <div class="preview-item-content">
+                      <h6 class="preview-subject font-weight-normal">Application Error</h6>
+                      <p class="font-weight-light small-text mb-0 text-muted"> Just now </p>
+                    </div>
+                  </a>
+                </div>
+              </li>
             <li class="nav-item nav-profile dropdown">
                 <p class="d-flex align-items-center mr-2 mb-0">{{ session()->get('user.nama') }}</p>
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown">
@@ -159,9 +179,15 @@
         Request::is('presensi/data-presensi') ||
         Request::is('presensi/data-kontrak'))
     @if (Auth::guard('direktur')->check() || Auth::guard('wakil_direktur')->check())
-        <div class="chat-icon" onclick="toggleChat()"> <i class="ti-comments"></i> </div>
+        <div class="chat-icon" onclick="toggleChat()"> 
+            <i class="ti-comments"></i> 
+            <span id="unreadMessageBadge" class="badge bg-danger" style="display:none; position: absolute; top: -8px; right: -8px;">0</span>
+        </div>
     @else
-        <div class="chat-icon" onclick="toggleContact()"> <i class="ti-comments"></i> </div>
+        <div class="chat-icon" onclick="toggleContact()"> 
+            <i class="ti-comments"></i> 
+            <span id="unreadMessageBadge" class="badge bg-danger" style="display:none; position: absolute; top: -8px; right: -8px;">0</span>
+        </div>
     @endif
 
     @if (Auth::guard('direktur')->check() || Auth::guard('wakil_direktur')->check())
@@ -190,7 +216,108 @@
                 </button>
             </div>
         </div>
-        @else 
+    @else
+    <style>
+        .contact-list {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .contact-item:hover {
+            background-color: #f1f3f5;
+            transform: translateX(5px);
+        }
+        
+        .contact-item:last-child {
+            border-bottom: none;
+        }
+        
+        .contact-avatar {
+            margin-right: 15px;
+        }
+        
+        .contact-avatar img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .contact-info {
+            flex-grow: 1;
+        }
+        
+        .contact-info strong {
+            font-size: 16px;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .contact-info p {
+            font-size: 12px;
+            color: #6c757d;
+            margin: 0;
+        }
+        
+        .contact-item .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            min-width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            padding: 0 5px;
+        }
+        
+        .contact-item[data-contact-type*="Direktur"] .contact-avatar img {
+            border-color: #007bff;
+        }
+        
+        .contact-item[data-contact-type*="Wadir"] .contact-avatar img {
+            border-color: #28a745;
+        }
+        
+        .contact-item.active {
+            background-color: #e9ecef;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .contact-item {
+                padding: 10px;
+            }
+            
+            .contact-avatar img {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .contact-info strong {
+                font-size: 14px;
+            }
+            
+            .contact-info p {
+                font-size: 11px;
+            }
+        }
+        </style>
         <div id="chatContact" class="chat-container" style="display:none;"> 
             <div class="chat-header"> 
                 <img src="{{ asset('images/user.png') }}" alt="Chat" class="rounded-circle me-2" style="width:30px; height:30px"> 
@@ -202,24 +329,30 @@
                 </button> 
             </div> 
             <div class="chat-body" id="chatMessages"> 
-                @foreach ($pesans as $pesan ) 
-                <div class="contact-item" onclick="startChat({{ $pesan->sender_id }}, '{{ $pesan->sender_type }}', '{{ $pesan->sender->nama }}')"> 
-                    <div class="contact-avatar"> 
-                        <img src="{{ asset('images/user.png') }}" alt="Profile" class="rounded-circle" style="width: 50px; height: 50px;"> 
-                    </div> 
-                    <div class="contact-info"> 
-                        <strong>{{ $pesan->sender->nama }}</strong> 
-                        @if($pesan->sender_type == 'App\Models\Direktur') 
-                        <p>Role: Direktur</p> 
-                        @elseif($pesan->sender_type == 'App\Models\Wadir') 
-                        <p>Role: Wakil Direktur</p> 
-                        @endif 
-                    </div> 
-                </div>
-                @endforeach 
+                @foreach($pesans as $pesan)
+                    <div class="contact-item" 
+                        data-contact-id="{{ $pesan->sender_id }}" 
+                        data-contact-type="{{ $pesan->sender_type }}"
+                        onclick="startChat({{ $pesan->sender_id }}, '{{ $pesan->sender_type }}', '{{ $pesan->sender->nama }}')">
+                        <div class="contact-avatar"> 
+                            <img src="{{ asset('images/user.png') }}" alt="Profile" class="rounded-circle" style="width: 50px; height: 50px;"> 
+                        </div> 
+                        <div class="contact-info"> 
+                            <strong>{{ $pesan->sender->nama }}</strong> 
+                            @if($pesan->sender_type == 'App\Models\Direktur') 
+                            <p>Role: Direktur</p> 
+                            @elseif($pesan->sender_type == 'App\Models\Wadir') 
+                            <p>Role: Wakil Direktur</p> 
+                            @endif 
+                        </div>
+                        <span class="badge bg-danger ms-auto" style="display: none; position: absolute; right: 10px;">
+                            0
+                        </span>
+                    </div>
+                @endforeach
             </div> 
         </div> 
-        @endif 
+    @endif 
         <div id="chatStart" class="chat-container" style="display:none;"> 
             <div class="chat-header"> 
                 <img src="{{ asset('images/user.png') }}" alt="Chat" class="rounded-circle me-2" style="width:30px; height:30px"> 
@@ -253,28 +386,110 @@
         <script>
             $(document).ready(function() {
                 $('#chatContainer, #chatStart, #chatContact').hide();
-                setupJadwalSelect('#jadwalSelect');
-                setupAlternativeJadwalSelect('#jadwalSelectDosen');
+                
+                const userType = '{{ class_basename(auth()->user()::class) }}';
+                
+                switch(userType) {
+                    case 'Dosen':
+                        setupAlternativeJadwalSelect('#jadwalSelectDosen');
+                        break;
+                    case 'Direktur':
+                    case 'Wadir':
+                        setupJadwalSelect('#jadwalSelect');
+                        break;
+                    default:
+                        console.log('Tipe user tidak dikenali');
+                }
+                
+                if ($('#jadwalSelectDosen').length) {
+                    setupAlternativeJadwalSelect('#jadwalSelectDosen');
+                }
+                
+                updateUnreadMessageCount();
+                setInterval(updateUnreadMessageCount, 30000);
+            });
+
+            function updateAllContactsUnreadCount() {
+                $('.contact-item').each(function() {
+                    const contactId = $(this).data('contact-id');
+                    let contactType = $(this).data('contact-type');
+                    contactType = contactType.split('\\').pop();
+                    updateContactUnreadCount(contactId, contactType);
+                });
+            }
+
+            $(document).ready(function() {
+                updateAllContactsUnreadCount();
+
+                setInterval(updateAllContactsUnreadCount, 30000);
+            });
+
+
+            setInterval(updateUnreadMessageCount, 30000); 
+                $(document).ready(function() {
+                updateUnreadMessageCount();
             });
         
             function toggleChat() {
                 const chatContainer = document.getElementById('chatContainer');
                 if (chatContainer.style.display === 'flex') {
                     chatContainer.style.display = 'none';
+                    resetJadwalDropdown('#jadwalSelect');
                 } else {
                     chatContainer.style.display = 'flex';
+                    updateUnreadMessageCount();
                 }
             }
-        
+
             function toggleContact() {
                 const chatContact = document.getElementById('chatContact');
                 if (chatContact.style.display === 'flex') {
                     chatContact.style.display = 'none';
+                    resetJadwalDropdown('#jadwalSelectDosen');
                 } else {
                     chatContact.style.display = 'flex';
+                    updateUnreadMessageCount();
                 }
             }
-        
+
+            function resetJadwalDropdown(selectId) {
+                $(selectId).val('');
+                
+                $(selectId).closest('.chat-container').find('#chatMessages').html(`
+                    <div class="mb-3">
+                        <label for="jadwal" class="form-label">Pilih Jadwal</label>
+                        <select id="${selectId.replace('#', '')}" class="form-select">
+                            <option value="">Pilih Jadwal</option>
+                            @foreach ($jadwals as $jadwal)
+                                <option value="{{ $jadwal->id }}" 
+                                    data-dosen="{{ $jadwal->dosen->nama }}" 
+                                    data-matkul="{{ $jadwal->matkul->nama_matkul }}">
+                                    {{ $jadwal->matkul->nama_matkul }} - {{ $jadwal->kelas->nama_kelas }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                `);
+
+                $(selectId)
+                    .removeAttr('data-receiver-id')
+                    .removeAttr('data-receiver-type')
+                    .removeAttr('data-sender-name');
+
+                const userType = '{{ class_basename(auth()->user()::class) }}';
+                switch(userType) {
+                    case 'Direktur':
+                    case 'Wadir':
+                        setupJadwalSelect(selectId);
+                        break;
+                    case 'Dosen':
+                        setupAlternativeJadwalSelect(selectId);
+                        break;
+                    default:
+                        console.log('Tipe user tidak dikenali');
+                }
+            }
+
             function startChat(senderId, senderType, senderName) {
                 const chatStart = document.getElementById('chatStart');
                 const chatContact = document.getElementById('chatContact');
@@ -293,11 +508,20 @@
             }
         
             function setupJadwalSelect(selectId) {
-                $(selectId).on('change', function() {
+                $(selectId).off('change').on('change', function() {
                     const jadwalId = $(this).val();
-                    const chatMessages = $(selectId).closest('.chat-container').find('#chatMessages');
+                    const chatMessages = $(this).closest('.chat-container').find('#chatMessages');
                     const currentUserType = '{{ class_basename(auth()->user()::class) }}';
+                    
                     if (jadwalId) {
+                        const selectedOption = $(this).find('option:selected');
+                        const dosenNama = selectedOption.data('dosen');
+                        const matkulNama = selectedOption.data('matkul');
+                        
+                        $(this).closest('.chat-container')
+                            .find('.chat-header strong')
+                            .text(`${dosenNama} - ${matkulNama}`);
+
                         $.ajax({
                             url: '{{ route('get.messages') }}',
                             type: 'GET',
@@ -305,52 +529,74 @@
                                 jadwal_id: jadwalId
                             },
                             success: function(messages) {
-                                chatMessages.html(`
-                                    <div class="mb-3">
-                                        <label for="jadwal" class="form-label">Pilih Jadwal Dosen</label>
-                                        <select id="jadwalSelect" class="form-select">
-                                            <option value="">Pilih Jadwal</option>
-                                            @foreach ($jadwals as $jadwal)
-                                                <option value="{{ $jadwal->id }}" data-dosen="{{ $jadwal->dosen->nama }}" data-matkul="{{ $jadwal->matkul->nama_matkul }}" {{ old('jadwal_id') == $jadwal->id ? 'selected' : '' }}>
-                                                    {{ $jadwal->matkul->nama_matkul }} - {{ $jadwal->kelas->nama_kelas }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                `);
+                                chatMessages.find('.message-container').remove();
+
+                                const messageContainer = $('<div class="message-container"></div>');
+                                
                                 messages.forEach(message => {
-                                    const position = message.sender_type === currentUserType ? 'text-end' : 'text-start';
-                                    const bgColor = message.sender_type === currentUserType ? 'bg-primary' : 'bg-secondary';
-                                    const textColor = message.sender_type === currentUserType ? 'text-white' : 'text-dark';
+                                    const position = message.sender_type !== 'App\\Models\\Dosen' 
+                                        ? 'text-end' 
+                                        : 'text-start';
+                                    
+                                    const bgColor = message.sender_type !== 'App\\Models\\Dosen'
+                                        ? 'bg-primary text-white' 
+                                        : 'bg-secondary text-dark';
+                                    
                                     const messageElement = `
                                         <div class="mb-2 ${position}">
-                                            <div class="${bgColor} ${textColor} p-2 rounded d-inline-block">
+                                            <div class="${bgColor} p-2 rounded d-inline-block">
                                                 ${message.message}
                                             </div>
-                                            <small class="d-block text-muted">${new Date(message.sent_at).toLocaleTimeString()}</small>
+                                            <small class="d-block text-muted">
+                                                ${new Date(message.sent_at).toLocaleTimeString()}
+                                            </small>
                                         </div>
                                     `;
-                                    chatMessages.append(messageElement);
+                                    
+                                    messageContainer.append(messageElement);
                                 });
-                                $(selectId).val(jadwalId);
+
+                                chatMessages.append(messageContainer);
+                                
                                 chatMessages.scrollTop(chatMessages[0].scrollHeight);
                             },
                             error: function(xhr) {
                                 console.error('Error fetching messages:', xhr.responseText);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Kesalahan',
+                                    text: 'Gagal mengambil pesan. Silakan coba lagi.'
+                                });
                             }
                         });
+                    } else {
+                        $(this).closest('.chat-container')
+                            .find('.chat-header strong')
+                            .text('Pilih Jadwal');
+                        
+                        chatMessages.find('.message-container').remove();
                     }
                 });
             }
-        
+
             function setupAlternativeJadwalSelect(selectId) {
-                $(selectId).on('change', function() {
+                $(selectId).off('change').on('change', function() {
                     const jadwalId = $(this).val();
                     const senderId = $(this).attr('data-receiver-id');
                     const senderType = $(this).attr('data-receiver-type');
                     const senderName = $(this).attr('data-sender-name');
-                    const chatMessages = $(selectId).closest('.chat-container').find('#chatMessages');
+                    const chatMessages = $(this).closest('.chat-container').find('#chatMessages');
+                    const currentUserType = '{{ class_basename(auth()->user()::class) }}';
+                    
                     if (jadwalId) {
+                        const selectedOption = $(this).find('option:selected');
+                        const dosenNama = selectedOption.data('dosen');
+                        const matkulNama = selectedOption.data('matkul');
+                        
+                        $(this).closest('.chat-container')
+                            .find('.chat-header strong')
+                            .text(`${senderName}`);
+
                         $.ajax({
                             url: '{{ route('get.messages.alternative') }}',
                             type: 'GET',
@@ -360,130 +606,164 @@
                                 sender_type: senderType
                             },
                             success: function(messages) {
-                                chatMessages.html(`
-                                                                <div class="mb-3">
-                                <label for="jadwal" class="form-label">Pilih Jadwal Dosen</label>
-                                <select id="jadwalSelectDosen" class="form-select">
-                                    <option value="">Pilih Jadwal</option>
-                                    @foreach ($jadwals as $jadwal)
-                                        <option value="{{ $jadwal->id }}" data-dosen="{{ $jadwal->dosen->nama }}" data-matkul="{{ $jadwal->matkul->nama_matkul }}">
-                                            {{ $jadwal->matkul->nama_matkul }} - {{ $jadwal->kelas->nama_kelas }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        `);
-                        $('#jadwalSelectDosen')
-                            .attr('data-receiver-id', senderId)
-                            .attr('data-receiver-type', senderType)
-                            .attr('data-sender-name', senderName);
-                        messages.forEach(message => {
-                            const position = message.sender_type === senderType ? 'text-end' : 'text-start';
-                            const bgColor = message.sender_type === senderType ? 'bg-primary' : 'bg-secondary';
-                            const textColor = message.sender_type === senderType ? 'text-white' : 'text-dark';
-                            const messageElement = `
-                                <div class="mb-2 ${position}">
-                                    <div class="${bgColor} ${textColor} p-2 rounded d-inline-block">
-                                        ${message.message}
-                                    </div>
-                                    <small class="d-block text-muted">${new Date(message.sent_at).toLocaleTimeString()}</small>
-                                </div>
-                            `;
-                            chatMessages.append(messageElement);
+                                chatMessages.find('.message-container').remove();
+                                const messageContainer = $('<div class="message-container"></div>');
+                                
+                                messages.forEach(message => {
+                                    const position = message.sender_type === 'App\\Models\\Dosen' 
+                                        ? 'text-end' 
+                                        : 'text-start';
+                                    
+                                    const bgColor = message.sender_type === 'App\\Models\\Dosen'
+                                        ? 'bg-primary text-white' 
+                                        : 'bg-secondary text-dark';
+                                    
+                                    const messageElement = `
+                                        <div class="mb-2 ${position}">
+                                            <div class="${bgColor} p-2 rounded d-inline-block">
+                                                ${message.message}
+                                            </div>
+                                            <small class="d-block text-muted">
+                                                ${new Date(message.sent_at).toLocaleTimeString()}
+                                            </small>
+                                        </div>
+                                    `;
+                                    
+                                    messageContainer.append(messageElement);
+                                });
+
+                                chatMessages.append(messageContainer);
+                                chatMessages.scrollTop(chatMessages[0].scrollHeight);
+                            },
+                            error: function(xhr) {
+                                console.error('Error fetching messages:', xhr.responseText);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Kesalahan',
+                                    text: 'Gagal mengambil pesan. Silakan coba lagi.'
+                                });
+                            }
                         });
-                        $(selectId).val(jadwalId);
-                        chatMessages.scrollTop(chatMessages[0].scrollHeight);
-                    },
-                    error: function(xhr) {
-                        console.error('Error fetching messages:', xhr.responseText);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Kesalahan',
-                            text: 'Gagal mengambil pesan. Silakan coba lagi.'
-                        });
+                    } else {
+                        $(this).closest('.chat-container')
+                            .find('.chat-header strong')
+                            .text('Pilih Jadwal');
+                        
+                        chatMessages.find('.message-container').remove();
                     }
                 });
-                } else {
-                    chatMessages.html(`
-                        <div class="mb-3">
-                            <label for="jadwal" class="form-label">Pilih Jadwal Dosen</label>
-                            <select id="jadwalSelectDosen" class="form-select">
-                                <option value="">Pilih Jadwal</option>
-                                @foreach ($jadwals as $jadwal)
-                                    <option value="{{ $jadwal->id }}" data-dosen="{{ $jadwal->dosen->nama }}" data-matkul="{{ $jadwal->matkul->nama_matkul }}">
-                                        {{ $jadwal->matkul->nama_matkul }} - {{ $jadwal->kelas->nama_kelas }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    `);
-                }
-            });
-        }
-
-        function sendMessage(containerId) {
-            const container = $(containerId);
-            const input = container.find('#chatInput');
-            const message = input.val().trim();
-            const jadwalSelect = container.find('select[id^="jadwalSelect"]');
-            const jadwalId = jadwalSelect.val();
-            const senderType = '{{ class_basename(auth()->user()::class) }}';
-            const senderId = '{{ auth()->id() }}';
-            const receiverType = $('#jadwalSelectDosen').attr('data-receiver-type');
-            const receiverId = $('#jadwalSelectDosen').attr('data-receiver-id');
-            if (!jadwalId) {
-                alert('Silakan pilih jadwal terlebih dahulu');
-                return;
             }
-            if (message) {
-                $.ajax({
-                    url: '{{ route('send.message') }}',
-                    type: 'POST',
-                    dataType: 'json',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                        'Accept': 'application/json'
-                    },
-                    data: {
-                        message: message,
-                        jadwal_id: jadwalId,
-                        sender_id: senderId,
-                        sender_type: senderType,
-                        receiver_id: receiverId,
-                        receiver_type: receiverType
-                    },
-                    success: function(response) {
-                        if (response.message === 'Pesan berhasil dikirim!') {
-                            const chatMessages = container.find('#chatMessages');
-                            const messageElement = `
-                                <div class="mb-2 text-end">
-                                    <div class="bg-primary text-white p-2 rounded d-inline-block">
-                                        ${message}
+
+            function sendMessage(containerId) {
+                const container = $(containerId);
+                const input = container.find('#chatInput');
+                const message = input.val().trim();
+                const jadwalSelect = container.find('select[id^="jadwalSelect"]');
+                const jadwalId = jadwalSelect.val();
+                const senderType = '{{ class_basename(auth()->user()::class) }}';
+                const senderId = '{{ auth()->id() }}';
+                const receiverType = $('#jadwalSelectDosen').attr('data-receiver-type');
+                const receiverId = $('#jadwalSelectDosen').attr('data-receiver-id');
+                if (!jadwalId) {
+                    alert('Silakan pilih jadwal terlebih dahulu');
+                    return;
+                }
+                if (message) {
+                    $.ajax({
+                        url: '{{ route('send.message') }}',
+                        type: 'POST',
+                        dataType: 'json',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                            'Accept': 'application/json'
+                        },
+                        data: {
+                            message: message,
+                            jadwal_id: jadwalId,
+                            sender_id: senderId,
+                            sender_type: senderType,
+                            receiver_id: receiverId,
+                            receiver_type: receiverType
+                        },
+                        success: function(response) {
+                            if (response.message === 'Pesan berhasil dikirim!') {
+                                const chatMessages = container.find('#chatMessages');
+                                const messageElement = `
+                                    <div class="mb-2 text-end">
+                                        <div class="bg-primary text-white p-2 rounded d-inline-block">
+                                            ${message}
+                                        </div>
+                                        <small class="d-block text-muted">${new Date().toLocaleTimeString()}</small>
                                     </div>
-                                    <small class="d-block text-muted">${new Date().toLocaleTimeString()}</small>
-                                </div>
-                            `;
-                            chatMessages.append(messageElement);
-                            input.val('');
-                            chatMessages.scrollTop(chatMessages[0].scrollHeight);
+                                `;
+                                chatMessages.append(messageElement);
+                                input.val('');
+                                chatMessages.scrollTop(chatMessages[0].scrollHeight);
+                            }
+                            updateUnreadMessageCount();
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                            alert('Terjadi kesalahan saat mengirim pesan');
+                        }
+                    });
+                } else {
+                    alert('Pesan tidak boleh kosong');
+                }
+            }
+
+            function handleChatInput(event) {
+                const containerId = $(event.target).closest('.chat-container').attr('id');
+                if (event.key === 'Enter') {
+                    sendMessage(`#${containerId}`);
+                }
+            }
+
+            function updateUnreadMessageCount() {
+                $.ajax({
+                    url: '{{ route('get.unread.count') }}',
+                    type: 'GET',
+                    success: function(response) {
+                        const unreadCount = response.unread_count;
+                        
+                        if (unreadCount > 0) {
+                            $('#unreadMessageBadge')
+                                .text(unreadCount)
+                                .show();
+                        } else {
+                            $('#unreadMessageBadge').hide();
                         }
                     },
-                    error: function(xhr, status, error) {
-                        // Error handling
-                        console.error('Error:', error);
-                        alert('Terjadi kesalahan saat mengirim pesan');
+                    error: function(xhr) {
+                        console.error('Gagal mengambil jumlah pesan belum dibaca');
                     }
                 });
-            } else {
-                alert('Pesan tidak boleh kosong');
             }
-        }
+            
+            function updateContactUnreadCount(contactId, contactType) {
+                const url = `{{ route('get.unread.count.by.contact', ['contactId' => '__contactId__', 'contactType' => '__contactType__']) }}`;
+                const finalUrl = url.replace('__contactId__', contactId).replace('__contactType__', contactType);
 
-    function handleChatInput(event) {
-        const containerId = $(event.target).closest('.chat-container').attr('id');
-        if (event.key === 'Enter') {
-            sendMessage(`#${containerId}`);
-        }
-    }
-</script>
+                $.ajax({
+                    url: finalUrl,
+                    type: 'GET',
+                    success: function(response) {
+                        const unreadCount = response.unread_count;
+                        const badgeSelector = `.contact-item[data-contact-id="${contactId}"] .badge`;
+
+                        if (unreadCount > 0) {
+                            $(badgeSelector)
+                                .text(unreadCount)
+                                .show();
+                        } else {
+                            $(badgeSelector).hide();
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Gagal mengambil jumlah pesan belum dibaca');
+                    }
+                });
+            }
+
+        </script>
 @endif
