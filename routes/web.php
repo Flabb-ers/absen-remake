@@ -264,5 +264,7 @@ Route::prefix('/presensi')->group(function () {
         Route::post('/kirim',[PemberitahuanController::class,'sendMessage'])->name('send.message');
         Route::get('/lihat',[PemberitahuanController::class,'getMessages'])->name('get.messages');
         Route::get('/lihatDosen',[PemberitahuanController::class,'getMessagesDosen'])->name('get.messages.alternative');
+        Route::get('/poll-messages', [PemberitahuanController::class, 'pollMessages'])
+    ->name('poll.messages');
     });
 });

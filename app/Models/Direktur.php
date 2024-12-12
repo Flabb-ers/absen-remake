@@ -15,4 +15,10 @@ class Direktur extends Authenticatable
     {
         return $this->morphMany(Message::class, 'sender');
     }
+
+    public function receivMessages() 
+    {
+        return $this->morphMany(Message::class, 'receiver');
+    }
+
 }

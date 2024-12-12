@@ -14,14 +14,15 @@ return new class extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->morphs('sender');
-            $table->foreignId('receiver_id')->constrained('dosens');
+            $table->morphs('receiver');
             $table->foreignId('matkul_id')->constrained('matkuls'); 
             $table->text('message'); 
             $table->timestamp('sent_at');
             $table->foreignId('jadwal_id')->constrained('jadwals'); 
-            $table->foreignId('kelas_id')->constrained('kelas'); 
-            $table->foreignId('parent_message_id')->nullable()->constrained('messages'); 
-            $table->timestamps();
+            $table->foreignId('kelas_id')->constrained('kelas');
+            $table->boolean('read')->default(false); 
+            $table->timestamp('read_at')->nullable();
+            $table->timestamps(); 
         });
     }
 
