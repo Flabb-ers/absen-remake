@@ -113,6 +113,25 @@
         border-top-right-radius: 15px;
         border-top-left-radius: 15px;
     }
+    .chat-body .jadwal-select-container {
+        width: 100%;
+        max-width: 100%;
+        position: sticky; 
+        top: 0; 
+        left: 0;
+        right: 0;
+        z-index: 10; 
+        background-color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 0;
+        margin: 0;
+    }
+
+    .chat-body .jadwal-select-container .form-select {
+        width: 100%;
+        max-width: 100%;
+    }
 </style>
 <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
@@ -198,7 +217,7 @@
                     class="btn btn-link text-white ms-auto" onclick="toggleChat()"> <i class="ti-close"></i> </button>
             </div>
             <div class="chat-body" id="chatMessages">
-                <div class="mb-3"> <label for="jadwal" class="form-label">Pilih Jadwal Dosen</label> <select
+                <div class="mb-3 jadwal-select-container"> <label for="jadwal" class="form-label">Pilih Jadwal Dosen</label> <select
                         id="jadwalSelect" class="form-select">
                         <option value="">Pilih Jadwal</option>
                         @foreach ($jadwals as $jadwal)
@@ -364,7 +383,7 @@
                 </button> 
             </div> 
             <div class="chat-body" id="chatMessages"> 
-                <div class="mb-3"> 
+                <div class="mb-3 jadwal-select-container"> 
                     <label for="jadwal" class="form-label">Pilih Jadwal Dosen</label> 
                     <select id="jadwalSelectDosen" class="form-select"> 
                         <option value="">Pilih Jadwal</option> 
@@ -459,7 +478,7 @@
                 $('#jadwalSelectDosen').val('');
                 
                 $('#chatStart #chatMessages').html(`
-                    <div class="mb-3">
+                    <div class="mb-3 jadwal-select-container">
                         <label for="jadwal" class="form-label">Pilih Jadwal Dosen</label>
                         <select id="jadwalSelectDosen" class="form-select">
                             <option value="">Pilih Jadwal</option>
@@ -491,7 +510,7 @@
                 $(selectId).val('');
                 
                 $(selectId).closest('.chat-container').find('#chatMessages').html(`
-                    <div class="mb-3">
+                    <div class="mb-3 jadwal-select-container">
                         <label for="jadwal" class="form-label">Pilih Jadwal</label>
                         <select id="${selectId.replace('#', '')}" class="form-select">
                             <option value="">Pilih Jadwal</option>
@@ -731,7 +750,7 @@
                                         <small class="d-block text-muted">${new Date().toLocaleTimeString()}</small>
                                     </div>
                                 `;
-                                chatMessages.append(messageElement);
+                                chatMessages.find('.message-container').append(messageElement);
                                 input.val('');
                                 chatMessages.scrollTop(chatMessages[0].scrollHeight);
                             }
