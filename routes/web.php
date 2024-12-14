@@ -56,6 +56,8 @@ Route::get('/', function () {
 route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middleware('guest');
 route::post('/login', [AuthController::class, 'processLogin'])->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/first-login', [AuthController::class, 'processFirstLogin'])
+    ->name('first.login')->middleware(['auth:direktur,wakil_direktur,kaprodi,mahasiswa,dosen']);
 
 
 

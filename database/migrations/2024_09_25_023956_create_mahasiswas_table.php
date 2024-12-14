@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('jenis_kelamin');
             $table->foreignId('kelas_id')->constrained()->onDelete('cascade');
             $table->boolean('status_krs')->nullable();
+            $table->boolean('is_first_login')->default(true);
             $table->softDeletes();
             $table->timestamps();
         });

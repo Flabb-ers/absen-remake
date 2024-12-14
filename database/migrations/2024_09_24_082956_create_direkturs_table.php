@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('status');
             $table->string('email')->unique();
             $table->string('password');
+            $table->boolean('is_first_login')->default(true);
             $table->timestamps();
         });
     }

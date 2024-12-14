@@ -56,6 +56,7 @@ class KaprodiController extends Controller
             'email' => $request->email,
             'status' => 1,
             'password' => Hash::make($request->password),
+            'is_first_login'=>true
         ]);
 
         return response()->json([

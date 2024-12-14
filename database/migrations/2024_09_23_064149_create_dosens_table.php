@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('tempat_lahir');
             $table->string('email')->unique();
             $table->string('password');
+            $table->boolean('is_first_login')->default(true);
             $table->softDeletes();
             $table->timestamps();
         });

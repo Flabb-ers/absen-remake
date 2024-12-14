@@ -60,7 +60,8 @@ class WadirController extends Controller
             'no_telephone' => $request->no_telephone,
             'status' => 1,
             'no' => $request->no,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'is_first_login'=>true
         ]);
 
         return response()->json(['success' => 'Wakil direktur berhasil ditambahkan']);

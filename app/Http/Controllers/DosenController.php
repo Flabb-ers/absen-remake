@@ -83,7 +83,8 @@ class DosenController extends Controller
             'email' => $validateData['email'],
             'status' => 1,
             'password' => Hash::make($validateData['password']),
-            'pembimbing_akademik' => $validateData['pembimbing_akademik']
+            'pembimbing_akademik' => $validateData['pembimbing_akademik'],
+            'is_first_login'=>true
         ]);
 
         return response()->json(['success' => 'Data dosen berhasil ditambahkan!'], 200);

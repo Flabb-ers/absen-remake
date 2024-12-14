@@ -104,4 +104,47 @@ class AuthController extends Controller
             ->header('Pragma', 'no-cache')
             ->header('Expires', '0');
     }
+
+    public function processFirstLogin(Request $request)
+    {
+        $request->validate([
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8'
+            ]
+        ]);
+
+        $user = Auth::user();
+
+        $guardMap = [
+            Admin::class => 'admin',
+            Direktur::class => 'direktur',
+            Wadir::class => 'wakil_direktur',
+            Kaprodi::class => 'kaprodi',
+            Mahasiswa::class => 'mahasiswa',
+            Dosen::class => 'dosen'
+        ];
+
+        $guard = $guardMap[get_class($user)] ?? null;
+
+        if (!$guard) {
+            return back()->withErrors('Tipe pengguna tidak dikenali');
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+            'is_first_login' => false
+        ]);
+
+        Auth::guard($guard)->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')
+            ->with('success', 'Password berhasil diatur. Silakan login kembali.')
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');;
+    }
 }

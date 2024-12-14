@@ -94,7 +94,8 @@ class MahasiswaController extends Controller
             'nama_ibu' => $request->nama_ibu,
             'jenis_kelamin' => $request->jenis_kelamin,
             'kelas_id' => $request->kelas_id,
-            'dosen_pembimbing_id' => $request->pembimbing_akademik
+            'dosen_pembimbing_id' => $request->pembimbing_akademik,
+            'is_first_login'=>true
         ]);
 
         return response()->json(['success' => 'Mahasiswa berhasil ditambahkan']);

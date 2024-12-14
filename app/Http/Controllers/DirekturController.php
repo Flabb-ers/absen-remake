@@ -48,7 +48,8 @@ class DirekturController extends Controller
             'email' => $request->email,
             'status' => 1,
             'no_telephone'=>$request->no_telephone,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'is_first_login'=>true
         ]);
 
         return response()->json(['success' => 'Direktur berhasil ditambahkan']);

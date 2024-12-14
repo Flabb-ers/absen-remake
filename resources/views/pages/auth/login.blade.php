@@ -73,6 +73,41 @@
             margin-bottom: 15px;
             border-radius: 4px;
         }
+
+        .success-container {
+            margin-bottom: 15px;
+        }
+
+        .success-alert {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            padding: 10px 15px;
+            position: relative;
+        }
+
+        .success-alert strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .success-alert i {
+            margin-right: 8px;
+        }
+
+        form-group {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 10;
+        }
     </style>
 </head>
 
@@ -104,27 +139,49 @@
                                     </div>
                                 </div>
                             @endif
-
+                            @if (session('success'))
+                                <div class="success-container">
+                                    <div class="success-alert">
+                                        <strong>
+                                            <i class="mdi mdi-check-circle text-success me-2"></i>
+                                            Berhasil!
+                                        </strong>
+                                        <p class="mb-0">{{ session('success') }}</p>
+                                    </div>
+                                </div>
+                            @endif
                             <form class="pt-3" action="/login" method="POST">
                                 @csrf
                                 <div class="form-group">
                                     <input type="text" name="username" class="form-control form-control-md rounded-4"
                                         placeholder="Username" value="{{ old('username') }}" required>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group position-relative">
                                     <input type="password" name="password"
-                                        class="form-control form-control-md rounded-4" placeholder="Password" required>
+                                        class="form-control form-control-md rounded-4" id="passwordInput"
+                                        placeholder="Password" required>
+                                    <span class="toggle-password" data-target="passwordInput">
+                                        <i class="mdi mdi-eye-off-outline"></i>
+                                    </span>
                                 </div>
                                 <div class="form-group">
                                     <div class="form-group">
                                         <select name="role" class="form-control form-control-lg rounded-4" required>
-                                            <option value="" {{ old('role') ? '' : 'selected' }} disabled>Pilih Level</option>
-                                            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                                            <option value="direktur" {{ old('role') == 'direktur' ? 'selected' : '' }}>Direktur</option>
-                                            <option value="wakil_direktur" {{ old('role') == 'wakil_direktur' ? 'selected' : '' }}>Wakil Direktur</option>
-                                            <option value="kaprodi" {{ old('role') == 'kaprodi' ? 'selected' : '' }}>Kaprodi</option>
-                                            <option value="dosen" {{ old('role') == 'dosen' ? 'selected' : '' }}>Dosen</option>
-                                            <option value="mahasiswa" {{ old('role') == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
+                                            <option value="" {{ old('role') ? '' : 'selected' }} disabled>Pilih
+                                                Level</option>
+                                            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin
+                                            </option>
+                                            <option value="direktur" {{ old('role') == 'direktur' ? 'selected' : '' }}>
+                                                Direktur</option>
+                                            <option value="wakil_direktur"
+                                                {{ old('role') == 'wakil_direktur' ? 'selected' : '' }}>Wakil Direktur
+                                            </option>
+                                            <option value="kaprodi" {{ old('role') == 'kaprodi' ? 'selected' : '' }}>
+                                                Kaprodi</option>
+                                            <option value="dosen" {{ old('role') == 'dosen' ? 'selected' : '' }}>Dosen
+                                            </option>
+                                            <option value="mahasiswa"
+                                                {{ old('role') == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
                                         </select>
                                     </div>
                                 </div>
@@ -156,6 +213,27 @@
     <script src="{{ asset('/js/settings.js') }}"></script>
     <script src="{{ asset('/js/todolist.js') }}"></script>
     <!-- endinject -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.toggle-password').forEach(function(element) {
+                element.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const passwordInput = document.getElementById(targetId);
+                    const icon = this.querySelector('i');
+
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        icon.classList.remove('mdi-eye-off-outline');
+                        icon.classList.add('mdi-eye-outline');
+                    } else {
+                        passwordInput.type = 'password';
+                        icon.classList.remove('mdi-eye-outline');
+                        icon.classList.add('mdi-eye-off-outline');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
