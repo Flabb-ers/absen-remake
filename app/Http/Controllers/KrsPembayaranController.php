@@ -3,15 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Krs;
+use App\Models\Admin;
+use App\Models\Dosen;
 use App\Models\Kelas;
 use App\Models\Jadwal;
 use App\Models\Matkul;
 use App\Models\Mahasiswa;
 use App\Models\NilaiHuruf;
 use App\Models\Pembayaran;
-use App\Models\TahunAkademik;
+use App\Notifications\KRSNotification;
 use Illuminate\Http\Request;
+use App\Models\TahunAkademik;
 use Illuminate\Support\Facades\Session;
+use App\Notifications\PembayaranNotification;
 
 class KrsPembayaranController extends Controller
 {
@@ -102,7 +106,7 @@ class KrsPembayaranController extends Controller
             return back()->withErrors(['file' => 'No file uploaded']);
         }
 
-        Pembayaran::create([
+        $pembayaran = Pembayaran::create([
             'mahasiswa_id' => $mahasiswaId->id,
             'prodi_id' => $prodiId,
             'semester_id' => $semesterId,
@@ -110,6 +114,11 @@ class KrsPembayaranController extends Controller
             'bukti_pembayaran' => $buktiPembayaranPath,
             'status_pembayaran' => 0
         ]);
+
+        $receiver = Admin::all();
+        foreach ($receiver as $admin) {
+            $admin->notify(new PembayaranNotification($pembayaran));
+        }
 
         return redirect('/presensi/mahasiswa/krs_pembayaran')->with('success', 'Bukti pembayaran berhasil diunggah.');
     }
@@ -136,6 +145,7 @@ class KrsPembayaranController extends Controller
     public function update(Request $request, $id)
     {
         $pembayaran = Pembayaran::where('id', $id)->first();
+        $mahasiswa = Mahasiswa::findOrFail($pembayaran->mahasiswa_id);
         if (!$pembayaran) {
             return redirect('/presensi/pembayaran/diajukan')->with('error', 'Data pembayaran tidak ditemukan.');
         }
@@ -146,8 +156,8 @@ class KrsPembayaranController extends Controller
 
         $pembayaran->status_pembayaran = $request->status_pembayaran;
         $pembayaran->keterangan = $request->keterangan;
-
         $pembayaran->save();
+        $mahasiswa->notify(new PembayaranNotification($pembayaran));
         if ($request->status_pembayaran == 0) {
             return redirect()->back()->with('success', 'Status pembayaran berhasil diperbarui.');
         } else {
@@ -163,26 +173,6 @@ class KrsPembayaranController extends Controller
             ]);
             return redirect('/presensi/pembayaran/diajukan')->with('success', 'Status pembayaran berhasil diperbarui.');
         }
-    }
-
-    public function pengajuanKrs(Request $request)
-    {
-        $mahasiswaId = Mahasiswa::where('id', $this->userId)->first();
-        $kelasId = Kelas::where('id', $this->kelasId)->first();
-        $prodiId = $kelasId->id_prodi;
-        $semesterId = $kelasId->id_semester;
-        $tahunAjaran = TahunAkademik::where('status', 1)->first();
-
-        Krs::create([
-            'mahasiswa_id' => $mahasiswaId->id,
-            'kelas_id' => $kelasId->id,
-            'prodi_id' => $prodiId,
-            'semester_id' => $semesterId,
-            'tahun_ajaran' => $tahunAjaran->tahun_akademik,
-            'status_krs' => 0
-        ]);
-
-        return redirect()->back()->with('success', 'KRS berhasil diajukan');
     }
 
     public function krsDiajukan()
@@ -231,20 +221,34 @@ class KrsPembayaranController extends Controller
 
     public function krsUpdate(Request $request, $id)
     {
-        $krs = Krs::where('id', $id)->first();
+        $krs = Krs::with('mahasiswa', 'kelas', 'prodi', 'semester')
+            ->where('id', $id)
+            ->first();
+
+        $mahasiswa = Mahasiswa::where('id', $krs->mahasiswa_id)->first();
+
+        $dosen = Dosen::where('id', $mahasiswa->dosen_pembimbing_id)->first();
+        $admin = Admin::all();
+
         if ($request->setuju_mahasiswa) {
             $krs->setuju_mahasiswa = $request->setuju_mahasiswa;
+            $krs->save();
+            $dosen->notify(new KRSNotification($krs));
         }
         if ($request->setuju_pa) {
             $krs->setuju_pa = $request->setuju_pa;
+            $krs->save();
         }
         if ($krs->setuju_mahasiswa == 1 && $krs->setuju_pa == 1) {
             $krs->status_krs = 1;
-            $mahasiswa = Mahasiswa::where('id', $krs->mahasiswa_id)->first();
+            $krs->save();
             $mahasiswa->status_krs = true;
             $mahasiswa->save();
+            $mahasiswa->notify(new KRSNotification($krs));
+            foreach ($admin as $adm) {
+                $adm->notify(new KRSNotification($krs));
+            }
         }
-        $krs->save();
         if ($request->setuju_mahasiswa) {
             return redirect()->back()->with('success', 'KRS berhasil diverifikasi dan langsung diserahkan kepada Dosen Pembimbing Akademink');
         } else {

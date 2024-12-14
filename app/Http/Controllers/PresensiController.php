@@ -133,7 +133,7 @@ class PresensiController extends Controller
 
 
             DB::commit();
-            return redirect()->back()->with('success', 'Data berhasil disimpan');
+            return redirect('/presensi/data-presensi')->with('success', 'Data berhasil disimpan');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Data gagal disimpan: ' . $e->getMessage());

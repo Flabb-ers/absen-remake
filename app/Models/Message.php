@@ -29,7 +29,7 @@ class Message extends Model
 
     public function jadwal()
     {
-        return $this->belongsTo(Jadwal::class);
+        return $this->belongsTo(Jadwal::class,'jadwal_id');
     }
 
     public function kelas()

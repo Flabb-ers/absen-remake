@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\Dosen;
 use App\Models\Kelas;
+use App\Models\Wadir;
 use App\Models\Jadwal;
+use App\Models\Kaprodi;
 use App\Models\Kontrak;
+use App\Models\Direktur;
 use Illuminate\Http\Request;
 use App\Models\PengajuanRekapkontrak;
 use Illuminate\Support\Facades\Session;
+use App\Notifications\PengajuanKontrakNotification;
 
 class PengajuanRekapkontrakController extends Controller
 {
@@ -17,12 +22,12 @@ class PengajuanRekapkontrakController extends Controller
      */
     protected $prodiId;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->middleware(function ($request, $next) {
             $this->prodiId = Session::get('user.prodiId');
             return $next($request);
         });
-
     }
     public function index()
     {
@@ -80,15 +85,15 @@ class PengajuanRekapkontrakController extends Controller
                 $query->withTrashed();
             }
         ])
-        ->where('status', 1)
-        ->when($prodiId, function ($query) use ($prodiId) {
-            return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
-                $query->where('id', $prodiId);
-            });
-        })
-        ->latest()
-        ->get();
-        
+            ->where('status', 1)
+            ->when($prodiId, function ($query) use ($prodiId) {
+                return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
+                    $query->where('id', $prodiId);
+                });
+            })
+            ->latest()
+            ->get();
+
         $kelasAll = Jadwal::all();
         return view('pages.pengajuanRekapKontrak.disetujui', compact('kontraks', 'kelasAll'));
     }
@@ -98,18 +103,28 @@ class PengajuanRekapkontrakController extends Controller
      */
     public function store(Request $request)
     {
+        $kelas = Kelas::findOrFail($request->kelas_id);
+        $wadirs = Wadir::all();
+        $direkturs = Direktur::all();
+        $kaprodi = Kaprodi::where('prodis_id', $kelas->id_prodi)->first();
         $validateData = $request->validate([
             'jadwal_id' => 'required',
             'kelas_id' => 'required',
             'matkul_id' => 'required'
         ]);
 
-        PengajuanRekapkontrak::create([
+        $kontrak = PengajuanRekapkontrak::create([
             'jadwal_id' => $validateData['jadwal_id'],
             'kelas_id' => $validateData['kelas_id'],
             'matkul_id' => $validateData['matkul_id']
         ]);
-
+        foreach ($wadirs as $wadir) {
+            $wadir->notify(new PengajuanKontrakNotification($kontrak));
+        }
+        foreach ($direkturs as $direktur) {
+            $direktur->notify(new PengajuanKontrakNotification($kontrak));
+        }
+        $kaprodi->notify(new PengajuanKontrakNotification($kontrak));
         return redirect()->back()->with('success', 'Pengajuan Kontrak Kuliah Berhasil');
     }
 
@@ -139,62 +154,72 @@ class PengajuanRekapkontrakController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, $jadwal_id, $matkul_id, $kelas_id)
-{
-    try {
-        $kontraks = Kontrak::where('jadwals_id', $jadwal_id)
-            ->where('matkuls_id', $matkul_id)
-            ->where('kelas_id', $kelas_id)
-            ->get();
+    {
+        try {
+            $kontraks = Kontrak::where('jadwals_id', $jadwal_id)
+                ->where('matkuls_id', $matkul_id)
+                ->where('kelas_id', $kelas_id)
+                ->get();
 
-        if ($kontraks->isEmpty()) {
-            return redirect()->back()->with('error', 'Tidak ada kontrak ditemukan.');
-        }
-
-        $allKaprodiApproved = true;
-        $allWadirApproved = true;
-
-        foreach ($kontraks as $kontrak) {
-            $setujuKaprodi = $request->has('kaprodi') ? true : false;
-            $setujuWadir = $request->has('wakil_direktur') ? true : false;
-
-
-            if ($setujuKaprodi && !$kontrak->setuju_kaprodi) {
-                $kontrak->setuju_kaprodi = true;
-            }
-            if ($setujuWadir && !$kontrak->setuju_wadir) {
-                $kontrak->setuju_wadir = true;
+            if ($kontraks->isEmpty()) {
+                return redirect()->back()->with('error', 'Tidak ada kontrak ditemukan.');
             }
 
-            if (!$kontrak->setuju_kaprodi) {
-                $allKaprodiApproved = false;
+            $allKaprodiApproved = true;
+            $allWadirApproved = true;
+
+            foreach ($kontraks as $kontrak) {
+                if ($request->has('kaprodi')) {
+                    $kontrak->setuju_kaprodi = true;
+                }
+
+                if ($request->has('wakil_direktur')) {
+                    $kontrak->setuju_wadir = true;
+                }
+
+                if ($request->has('uncheck_kaprodi')) {
+                    $kontrak->setuju_kaprodi = false;
+                }
+
+                if ($request->has('uncheck_wakil_direktur')) {
+                    $kontrak->setuju_wadir = false;
+                }
+
+                if (!$kontrak->setuju_kaprodi) {
+                    $allKaprodiApproved = false;
+                }
+                if (!$kontrak->setuju_wadir) {
+                    $allWadirApproved = false;
+                }
+
+                $kontrak->save();
             }
-            if (!$kontrak->setuju_wadir) {
-                $allWadirApproved = false;
+
+            $statusKontrak = ($allKaprodiApproved && $allWadirApproved) ? true : false;
+
+            foreach ($kontraks as $kontrak) {
+                $kontrak->update(['status' => $statusKontrak]);
             }
 
-            $kontrak->save();
+            $pengajuan = PengajuanRekapKontrak::where('jadwal_id', $jadwal_id)
+                ->where('matkul_id', $matkul_id)
+                ->where('kelas_id', $kelas_id)
+                ->first();
+
+            if ($statusKontrak) {
+                $dosen = Dosen::findOrFail($kontraks->first()->jadwal->dosens_id);
+                $dosen->notify(new PengajuanKontrakNotification($pengajuan));
+            }
+
+            if ($pengajuan) {
+                $pengajuan->update(['status' => $statusKontrak]);
+            }
+
+            return redirect()->back()->with('success', 'Status persetujuan kontrak berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal memperbarui status persetujuan kontrak: ' . $e->getMessage());
         }
-
-        $statusKontrak = ($allKaprodiApproved && $allWadirApproved) ? true : false;
-
-        foreach ($kontraks as $kontrak) {
-            $kontrak->update(['status' => $statusKontrak]);
-        }
-
-        $pengajuan = PengajuanRekapKontrak::where('jadwal_id', $jadwal_id)
-            ->where('matkul_id', $matkul_id)
-            ->where('kelas_id', $kelas_id)
-            ->first();
-
-        if ($pengajuan) {
-            $pengajuan->update(['status' => $statusKontrak]);
-        }
-
-        return redirect()->back()->with('success', 'Status persetujuan kontrak berhasil diperbarui.');
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Gagal memperbarui status persetujuan kontrak: ' . $e->getMessage());
     }
-}
 
 
     /**

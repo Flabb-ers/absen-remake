@@ -28,6 +28,7 @@ use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\RekapNilaiController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\KrsPembayaranController;
 use App\Http\Controllers\PemberitahuanController;
 use App\Http\Controllers\TahunAkademikController;
@@ -135,7 +136,7 @@ Route::prefix('/presensi')->group(function () {
     });
 
 
-    Route::prefix('/data-nilai')->middleware('auth:dosen')->group(function () {
+    Route::prefix('/data-nilai')->middleware('auth:dosen,admin')->group(function () {
         // NILAI
         Route::get('/{kelas_id}', [NilaiController::class, 'index']);
         Route::get('/{kelas_id}/{matkul_id}/{jadwal_id}/detail', [NilaiController::class, 'detail']);
@@ -273,4 +274,8 @@ Route::prefix('/presensi')->group(function () {
             PemberitahuanController::class, 'getUnreadMessageCountByContact'])
             ->name('get.unread.count.by.contact');
     });
+
+    // NOTIFIKASI
+    Route::get('/get-notif', [NotificationController::class, 'getNotifications'])->middleware('auth:dosen,wakil_direktur,direktur,mahasiswa,admin,kaprodi');
+    Route::post('/mark-notif-read', [NotificationController::class, 'markNotificationsAsRead'])->middleware('auth:dosen,wakil_direktur,direktur,mahasiswa,admin,kaprodi');
 });

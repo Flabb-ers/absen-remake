@@ -6,6 +6,7 @@ use App\Models\Dosen;
 use App\Models\Jadwal;
 use App\Models\Kelas;
 use App\Models\Matkul;
+use App\Models\Message;
 use App\Models\Ruangan;
 use App\Models\TahunAkademik;
 use Illuminate\Http\Request;
@@ -140,9 +141,8 @@ class JadwalController extends Controller
     public function destroy($id)
     {
         $jadwal = Jadwal::findOrFail($id);
-
-        // Hapus jadwal
         $jadwal->delete();
+        Message::where('jadwal_id',$jadwal->id)->delete();
 
         return response()->json([
             'success' => 'Jadwal berhasil dihapus'

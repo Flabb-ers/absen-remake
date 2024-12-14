@@ -258,7 +258,7 @@
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="kaprodi" name="kaprodi"
                         {{ $beritas->where('setuju_kaprodi', 1)->count() == count($range) ? 'checked' : '' }}
-                        onchange="confirmSubmission(this)"  @if (!$isKaprodi) disabled @endif>
+                        onchange="confirmSubmission(this)" @if (!$isKaprodi) disabled @endif>
                     <label class="form-check-label" for="kaprodi">Kaprodi</label>
                 </div>
                 <div class="form-check">
@@ -278,37 +278,42 @@
             function confirmSubmission(checkbox) {
                 const isChecked = checkbox.checked;
                 const label = checkbox.nextElementSibling.innerText;
+                const formElement = document.getElementById('approvalForm');
+
+                const hiddenUncheckInput = document.createElement('input');
+                hiddenUncheckInput.type = 'hidden';
+
                 if (isChecked) {
-                    Swal.fire({
-                        title: 'Konfirmasi',
-                        text: `Apakah Anda yakin ingin menyetujui ${label}?`,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Ya, setujui',
-                        cancelButtonText: 'Tidak'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            document.getElementById('approvalForm').submit();
-                        } else {
-                            checkbox.checked = false;
-                        }
-                    });
+                    const existingUncheckInput = formElement.querySelector(`input[name="uncheck_${checkbox.name}"]`);
+                    if (existingUncheckInput) {
+                        existingUncheckInput.remove();
+                    }
                 } else {
-                    Swal.fire({
-                        title: 'Konfirmasi',
-                        text: `Apakah Anda yakin ingin membatalkan persetujuan ${label}?`,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Ya, batalkan',
-                        cancelButtonText: 'Tidak'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            document.getElementById('approvalForm').submit();
-                        } else {
-                            checkbox.checked = true;
-                        }
-                    });
+                    hiddenUncheckInput.name = `uncheck_${checkbox.name}`;
+                    hiddenUncheckInput.value = '1';
+                    formElement.appendChild(hiddenUncheckInput);
                 }
+
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: isChecked ?
+                        `Apakah Anda yakin ingin menyetujui ${label}?` :
+                        `Apakah Anda yakin ingin membatalkan persetujuan ${label}?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: isChecked ? 'Ya, setujui' : 'Ya, batalkan',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        formElement.submit();
+                    } else {
+                        checkbox.checked = !isChecked;
+
+                        if (hiddenUncheckInput.parentNode) {
+                            hiddenUncheckInput.remove();
+                        }
+                    }
+                });
             }
         </script>
         @if (session('success'))

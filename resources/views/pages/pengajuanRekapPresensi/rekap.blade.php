@@ -300,37 +300,42 @@
         function confirmSubmission(checkbox) {
             const isChecked = checkbox.checked;
             const label = checkbox.nextElementSibling.innerText;
+            const formElement = document.getElementById('attendanceForm');
+
+            const hiddenUncheckInput = document.createElement('input');
+            hiddenUncheckInput.type = 'hidden';
+
             if (isChecked) {
-                Swal.fire({
-                    title: 'Konfirmasi',
-                    text: `Apakah Anda yakin ingin menyetujui ${label}?`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, setujui',
-                    cancelButtonText: 'Tidak'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById('attendanceForm').submit();
-                    } else {
-                        checkbox.checked = false;
-                    }
-                });
+                const existingUncheckInput = formElement.querySelector(`input[name="uncheck_${checkbox.name}"]`);
+                if (existingUncheckInput) {
+                    existingUncheckInput.remove();
+                }
             } else {
-                Swal.fire({
-                    title: 'Konfirmasi',
-                    text: `Apakah Anda yakin ingin membatalkan persetujuan ${label}?`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, batalkan',
-                    cancelButtonText: 'Tidak'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById('attendanceForm').submit();
-                    } else {
-                        checkbox.checked = true;
-                    }
-                });
+                hiddenUncheckInput.name = `uncheck_${checkbox.name}`;
+                hiddenUncheckInput.value = '1';
+                formElement.appendChild(hiddenUncheckInput);
             }
+
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: isChecked ?
+                    `Apakah Anda yakin ingin menyetujui ${label}?` :
+                    `Apakah Anda yakin ingin membatalkan persetujuan ${label}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: isChecked ? 'Ya, setujui' : 'Ya, batalkan',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    formElement.submit();
+                } else {
+                    checkbox.checked = !isChecked;
+
+                    if (hiddenUncheckInput.parentNode) {
+                        hiddenUncheckInput.remove();
+                    }
+                }
+            });
         }
     </script>
     @if (session('success'))

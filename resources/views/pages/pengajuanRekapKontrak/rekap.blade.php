@@ -413,20 +413,40 @@
         function confirmSubmission(checkbox) {
             const isChecked = checkbox.checked;
             const label = checkbox.nextElementSibling.innerText;
-            const actionText = isChecked ? 'menyetujui' : 'membatalkan persetujuan';
+            const formElement = document.getElementById('attendanceForm');
+
+            const hiddenUncheckInput = document.createElement('input');
+            hiddenUncheckInput.type = 'hidden';
+
+            if (isChecked) {
+                const existingUncheckInput = formElement.querySelector(`input[name="uncheck_${checkbox.name}"]`);
+                if (existingUncheckInput) {
+                    existingUncheckInput.remove();
+                }
+            } else {
+                hiddenUncheckInput.name = `uncheck_${checkbox.name}`;
+                hiddenUncheckInput.value = '1';
+                formElement.appendChild(hiddenUncheckInput);
+            }
 
             Swal.fire({
                 title: 'Konfirmasi',
-                text: `Apakah Anda yakin ingin ${actionText} ${label}?`,
+                text: isChecked ?
+                    `Apakah Anda yakin ingin menyetujui ${label}?` :
+                    `Apakah Anda yakin ingin membatalkan persetujuan ${label}?`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Ya',
+                confirmButtonText: isChecked ? 'Ya, setujui' : 'Ya, batalkan',
                 cancelButtonText: 'Tidak'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById('attendanceForm').submit();
+                    formElement.submit();
                 } else {
-                    checkbox.checked = !isChecked; 
+                    checkbox.checked = !isChecked;
+
+                    if (hiddenUncheckInput.parentNode) {
+                        hiddenUncheckInput.remove();
+                    }
                 }
             });
         }

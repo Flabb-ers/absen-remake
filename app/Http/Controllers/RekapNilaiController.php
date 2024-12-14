@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Uas;
 use App\Models\Uts;
 use App\Models\Absen;
+use App\Models\Admin;
 use App\Models\Aktif;
+use App\Models\Dosen;
 use App\Models\Etika;
 use App\Models\Tugas;
 use App\Models\Wadir;
@@ -18,6 +20,7 @@ use App\Models\TahunAkademik;
 use Illuminate\Support\Facades\DB;
 use App\Models\PengajuanRekapNilai;
 use Illuminate\Support\Facades\Log;
+use App\Notifications\PengajuanNilaiNotification;
 
 class RekapNilaiController extends Controller
 {
@@ -180,6 +183,7 @@ class RekapNilaiController extends Controller
 
     public function store(Request $request)
     {
+        $admins = Admin::all();
         $validateData = $request->validate([
             'kelas_id' => 'required',
             'jadwal_id' => 'required',
@@ -188,12 +192,15 @@ class RekapNilaiController extends Controller
 
         $tahun = TahunAkademik::where('status', 1)->first();
 
-        PengajuanRekapNilai::create([
+        $nilai = PengajuanRekapNilai::create([
             'kelas_id' => $validateData['kelas_id'],
             'matkul_id' => $validateData['matkul_id'],
             'jadwal_id' => $validateData['jadwal_id'],
             'tahun' => $tahun->tahun_akademik
         ]);
+        foreach($admins as $admin){
+            $admin->notify(new PengajuanNilaiNotification($nilai,null));
+        }
 
         session()->flash('success', 'Pengajuan verifikasi nilai berhasil');
         session()->flash('tab', 'rekap');
@@ -400,38 +407,31 @@ class RekapNilaiController extends Controller
         DB::beginTransaction();
 
         try {
-            Log::info('Update process started', compact('kelas_id', 'matkul_id', 'jadwal_id'));
 
             if ($request->has('konfirmasi')) {
                 $updateData['setuju'] = true;
-                Log::info('Konfirmasi diterima, setuju diubah menjadi true');
             }
 
-            Log::info('Melakukan update pada tabel Tugas');
             Tugas::where('kelas_id', $kelas_id)
                 ->where('jadwal_id', $jadwal_id)
                 ->where('matkul_id', $matkul_id)
                 ->update($updateData);
 
-            Log::info('Melakukan update pada tabel Etika');
             Etika::where('kelas_id', $kelas_id)
                 ->where('jadwal_id', $jadwal_id)
                 ->where('matkul_id', $matkul_id)
                 ->update($updateData);
 
-            Log::info('Melakukan update pada tabel Aktif');
             Aktif::where('kelas_id', $kelas_id)
                 ->where('jadwal_id', $jadwal_id)
                 ->where('matkul_id', $matkul_id)
                 ->update($updateData);
 
-            Log::info('Melakukan update pada tabel Uas');
             Uas::where('kelas_id', $kelas_id)
                 ->where('jadwal_id', $jadwal_id)
                 ->where('matkul_id', $matkul_id)
                 ->update($updateData);
 
-            Log::info('Melakukan update pada tabel Uts');
             Uts::where('kelas_id', $kelas_id)
                 ->where('jadwal_id', $jadwal_id)
                 ->where('matkul_id', $matkul_id)
@@ -442,44 +442,49 @@ class RekapNilaiController extends Controller
                 ->where('matkul_id', $matkul_id)
                 ->where('setuju', true)
                 ->exists();
-            Log::info('Tugas setuju: ' . ($tugasSetuju ? 'Yes' : 'No'));
 
             $etikaSetuju = Etika::where('kelas_id', $kelas_id)
                 ->where('jadwal_id', $jadwal_id)
                 ->where('matkul_id', $matkul_id)
                 ->where('setuju', true)
                 ->exists();
-            Log::info('Etika setuju: ' . ($etikaSetuju ? 'Yes' : 'No'));
 
             $aktifSetuju = Aktif::where('kelas_id', $kelas_id)
                 ->where('jadwal_id', $jadwal_id)
                 ->where('matkul_id', $matkul_id)
                 ->where('setuju', true)
                 ->exists();
-            Log::info('Aktif setuju: ' . ($aktifSetuju ? 'Yes' : 'No'));
 
             $uasSetuju = Uas::where('kelas_id', $kelas_id)
                 ->where('jadwal_id', $jadwal_id)
                 ->where('matkul_id', $matkul_id)
                 ->where('setuju', true)
                 ->exists();
-            Log::info('Uas setuju: ' . ($uasSetuju ? 'Yes' : 'No'));
 
             $utsSetuju = Uts::where('kelas_id', $kelas_id)
                 ->where('jadwal_id', $jadwal_id)
                 ->where('matkul_id', $matkul_id)
                 ->where('setuju', true)
                 ->exists();
-            Log::info('Uts setuju: ' . ($utsSetuju ? 'Yes' : 'No'));
+            
 
             if ($tugasSetuju && $etikaSetuju && $aktifSetuju && $uasSetuju && $utsSetuju) {
-                Log::info('Semua setuju, melanjutkan ke pengajuan rekap nilai');
+
+                $pengajuan = PengajuanRekapNilai::with('jadwal')
+                    ->where('kelas_id', $kelas_id)
+                    ->where('jadwal_id', $jadwal_id)
+                    ->where('matkul_id', $matkul_id)
+                    ->first();
+
+                if ($pengajuan) {
+                    $pengajuan->update(['status' => 1]);
+                }
 
                 $mahasiswas = Mahasiswa::with('kelas.semester')->where('kelas_id', $kelas_id)->get();
                 foreach ($mahasiswas as $mahasiswa) {
                     $nilaiTotal = $this->calculateTotalNilai($mahasiswa->id, $kelas_id, $matkul_id, $jadwal_id);
                     $nilaiHuruf = $this->getKeterangan($nilaiTotal);
-                    NilaiHuruf::create([
+                    $nilai = NilaiHuruf::create([
                         'mahasiswa_id' => $mahasiswa->id,
                         'semester_id' => $mahasiswa->kelas->semester->id,
                         'kelas_id' => $kelas_id,
@@ -487,27 +492,18 @@ class RekapNilaiController extends Controller
                         'nilai_total' => $nilaiTotal,
                         'nilai_huruf' => $nilaiHuruf,
                     ]);
+                    $mahasiswa->notify(new PengajuanNilaiNotification($pengajuan,$nilai));
                 }
+                $dosen = Dosen::findOrFail($pengajuan->jadwal->dosens_id);
+                $dosen->notify(new PengajuanNilaiNotification($pengajuan,null));
 
-                $pengajuan = PengajuanRekapNilai::where('kelas_id', $kelas_id)
-                    ->where('jadwal_id', $jadwal_id)
-                    ->where('matkul_id', $matkul_id)
-                    ->first();
-                if ($pengajuan) {
-                    $pengajuan->update(['status' => 1]);
-                    Log::info('Pengajuan status diperbarui menjadi 1');
-                }
             }
 
             DB::commit();
-            Log::info('Transaksi berhasil');
-
             return redirect('/presensi/data-nilai/pengajuan/rekap-nilai')
                 ->with('success', 'Data berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Terjadi kesalahan: ' . $e->getMessage());
-
             return redirect('/presensi/data-nilai/pengajuan/rekap-nilai')
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }

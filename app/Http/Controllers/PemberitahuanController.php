@@ -9,6 +9,7 @@ use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Notifications\MessageSentNotification;
 
 class PemberitahuanController extends Controller
 {
@@ -43,39 +44,39 @@ class PemberitahuanController extends Controller
                 'sender_type' => 'required|string',
             ]);
         }
-
+    
         $jadwal = Jadwal::findOrFail($request->jadwal_id);
         $senderModel = "App\\Models\\" . $request->sender_type;
         $receiverType = $request->receiver_type;
-
+    
         $receiverType = trim($receiverType, '\\');
         if (strpos($receiverType, 'App\\Models\\') !== 0) {
             $receiverType = ltrim($receiverType, 'App\Models\\');
             $receiverType = "App\\Models\\" . $receiverType;
         }
-
+    
         if (!class_exists($senderModel)) {
             return response()->json([
                 'message' => 'Model pengirim tidak ditemukan.',
             ], 400);
         }
-
+    
         $sender = $senderModel::find($request->sender_id);
         if (!$sender) {
             return response()->json([
                 'message' => 'Data pengirim tidak valid.',
             ], 400);
         }
-
+    
         if ($this->role == 'direktur' || $this->role == 'wakil_direktur') {
             $receiver = Dosen::find($jadwal->dosens_id);
-
+    
             if (!$receiver) {
                 return response()->json([
                     'message' => 'Dosen yang dituju tidak ditemukan.',
                 ], 400);
             }
-
+    
             $message = Message::create([
                 'sender_id' => $request->sender_id,
                 'sender_type' => $senderModel,
@@ -87,7 +88,17 @@ class PemberitahuanController extends Controller
                 'jadwal_id' => $request->jadwal_id,
                 'kelas_id' => $jadwal->kelas_id,
             ]);
+    
+            $receiver->notify(new MessageSentNotification($message));
         } elseif ($this->role == 'dosen') {
+            $receiver = $receiverType::find($request->receiver_id);
+    
+            if (!$receiver) {
+                return response()->json([
+                    'message' => 'Penerima tidak ditemukan.',
+                ], 400);
+            }
+    
             $message = Message::create([
                 'sender_id' => $request->sender_id,
                 'sender_type' => $senderModel,
@@ -99,8 +110,10 @@ class PemberitahuanController extends Controller
                 'jadwal_id' => $request->jadwal_id,
                 'kelas_id' => $jadwal->kelas_id,
             ]);
+    
+            $receiver->notify(new MessageSentNotification($message));
         }
-
+    
         return response()->json([
             'message' => 'Pesan berhasil dikirim!',
             'data' => $message,
@@ -188,22 +201,29 @@ class PemberitahuanController extends Controller
         }
     }
 
-    public function getUnreadMessageCount()
+    public function getUnreadMessageCount(Request $request)
     {
         $modelNamespace = $this->getModelNamespaceFromRole($this->role);
-
-        $unreadCount = Message::where('receiver_id', $this->userId)
-            ->where('receiver_type', $modelNamespace)
-            ->where('read', false)
-            ->count();
-        $unreadGet = Message::where('receiver_id', $this->userId)
+        if ($this->role == 'direktur' || $this->role == 'wakil_direktur') {
+            $unreadCount = Message::where('receiver_id', $this->userId)
+                ->where('sender_id', $request->dosen_id)
+                ->where('receiver_type', $modelNamespace)
+                ->where('read', false)
+                ->count();
+        } elseif ($this->role == 'dosen') {
+            $unreadCount = Message::where('receiver_id', $this->userId)
+                ->where('receiver_type', $modelNamespace)
+                ->where('read', false)
+                ->count();
+        }
+        $unreadGet = Message::with('sender','kelas','jadwal.matkul')->where('receiver_id', $this->userId)
             ->where('receiver_type', $modelNamespace)
             ->where('read', false)
             ->get();
 
         return response()->json([
             'unread_count' => $unreadCount,
-            'unread_get'=> $unreadGet
+            'unread_get' => $unreadGet
         ]);
     }
 
@@ -230,23 +250,22 @@ class PemberitahuanController extends Controller
     }
 
     public function getUnreadMessageCountByContact($contactId, $contactType)
-{
-    if (!str_contains($contactType, 'App\Models\\')) {
-        $contactType = 'App\Models\\' . $contactType;
+    {
+        if (!str_contains($contactType, 'App\Models\\')) {
+            $contactType = 'App\Models\\' . $contactType;
+        }
+
+        $modelNamespace = $this->getModelNamespaceFromRole($this->role);
+
+        $unreadCount = Message::where('sender_id', $contactId)
+            ->where('sender_type', $contactType)
+            ->where('receiver_id', $this->userId)
+            ->where('receiver_type', $modelNamespace)
+            ->where('read', false)
+            ->count();
+
+        return response()->json([
+            'unread_count' => $unreadCount
+        ]);
     }
-
-    $modelNamespace = $this->getModelNamespaceFromRole($this->role);
-
-    $unreadCount = Message::where('sender_id', $contactId)
-        ->where('sender_type', $contactType)
-        ->where('receiver_id', $this->userId)
-        ->where('receiver_type', $modelNamespace)
-        ->where('read', false)
-        ->count();
-
-    return response()->json([
-        'unread_count' => $unreadCount
-    ]);
-}
-
 }

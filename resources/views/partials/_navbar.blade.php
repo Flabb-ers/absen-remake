@@ -132,6 +132,19 @@
         width: 100%;
         max-width: 100%;
     }
+    .count-indicator .badge {
+        font-size: 0.6rem;
+        padding: 0.2rem 0.4rem;
+    }
+
+    .max-height-300 {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .dropdown-menu .dropdown-item:hover {
+        background-color: #f8f9fa;
+    }
 </style>
 <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
@@ -148,25 +161,24 @@
         </button>
         <ul class="navbar-nav navbar-nav-right d-flex align-items-center">
             <li class="nav-item dropdown">
-                <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
-                  <i class="icon-bell mx-0"></i>
-                  <span class="count"></span>
+                <a class="nav-link count-indicator dropdown-toggle position-relative" id="notificationDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="icon-bell mx-0"></i>
+                    <span class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle" 
+                          style="font-size: 0.5rem; padding: 0.1rem 0.3rem; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;" 
+                          id="notificationCount">0</span>
                 </a>
-                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-                  <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                      <div class="preview-icon bg-success">
-                        <i class="ti-info-alt mx-0"></i>
-                      </div>
+                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list shadow-sm" aria-labelledby="notificationDropdown">
+                    <h6 class="dropdown-header d-flex justify-content-between align-items-center">
+                        Notifications 
+                        <span class="badge bg-secondary" style="font-size: 0.6rem; padding: 0.1rem 0.1rem;" id="totalNotificationCount">0</span>
+                    </h6>
+                    <div id="notificationList" style="max-height: 250px; overflow-y: auto;">
                     </div>
-                    <div class="preview-item-content">
-                      <h6 class="preview-subject font-weight-normal">Application Error</h6>
-                      <p class="font-weight-light small-text mb-0 text-muted"> Just now </p>
+                    <div class="dropdown-footer text-center py-2">
+                        <a href="#" class="text-muted small">Mark all as read</a>
                     </div>
-                  </a>
                 </div>
-              </li>
+            </li>
             <li class="nav-item nav-profile dropdown">
                 <p class="d-flex align-items-center mr-2 mb-0">{{ session()->get('user.nama') }}</p>
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown">
@@ -359,9 +371,9 @@
                         <div class="contact-info"> 
                             <strong>{{ $pesan->sender->nama }}</strong> 
                             @if($pesan->sender_type == 'App\Models\Direktur') 
-                            <p>Role: Direktur</p> 
+                            <p>Direktur</p> 
                             @elseif($pesan->sender_type == 'App\Models\Wadir') 
-                            <p>Role: Wakil Direktur</p> 
+                            <p>Wakil Direktur</p> 
                             @endif 
                         </div>
                         <span class="badge bg-danger ms-auto" style="display: none; position: absolute; right: 10px;">
@@ -774,12 +786,25 @@
             }
 
             function updateUnreadMessageCount() {
+                const guard = '{{ Session::get('user.role') }}';
+                let dosenId = null;
+
+                if (guard === 'dosen') {
+                    dosenId = null;
+                } else if (guard === 'wakil_direktur' || guard === 'direktur') {
+                    dosenId = {{ request()->segment(4) ?? 'null' }};
+                }
+
                 $.ajax({
                     url: '{{ route('get.unread.count') }}',
                     type: 'GET',
+                    data: {
+                        dosen_id: dosenId
+                    },
                     success: function(response) {
                         const unreadCount = response.unread_count;
-                        
+                        const unreadMessages = response.unread_get;
+
                         if (unreadCount > 0) {
                             $('#unreadMessageBadge')
                                 .text(unreadCount)
@@ -793,6 +818,7 @@
                     }
                 });
             }
+
             
             function updateContactUnreadCount(contactId, contactType) {
                 const url = `{{ route('get.unread.count.by.contact', ['contactId' => '__contactId__', 'contactType' => '__contactType__']) }}`;
@@ -821,3 +847,365 @@
 
         </script>
 @endif
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function fetchNotifications() {
+        fetch('/presensi/get-notif').then(response => response.json())
+            .then(data => {
+                const notificationCountElements = document.querySelectorAll('#notificationCount');
+                notificationCountElements.forEach(el => {
+                    el.textContent = data.unread_count;
+                    el.classList.toggle('d-none', data.unread_count === 0);
+                });
+
+                const totalNotificationCount = document.getElementById('totalNotificationCount');
+                totalNotificationCount.textContent = data.unread_count;
+                
+                const notificationList = document.getElementById('notificationList');
+                notificationList.innerHTML = '';
+                
+                if (data.notifications.length === 0) {
+                    notificationList.innerHTML = `
+                        <div class="text-center text-muted py-3">
+                            <small>No new notifications</small>
+                        </div>
+                    `;
+                }
+
+                data.notifications.forEach(notification => {
+                    const notificationItem = document.createElement('a');
+                    notificationItem.className = 'dropdown-item preview-item';
+                    notificationItem.setAttribute('data-notification-id', notification.id);
+                    
+                    const notificationIcon = getNotificationIcon(notification.data.notification_type);
+                    
+                    if(notification.data.notification_type == 'pemberitahuan'){
+                        notificationItem.innerHTML = `
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon ${notificationIcon.bgClass}">
+                                    <i class="${notificationIcon.iconClass} mx-0"></i>
+                                </div>
+                            </div>
+                            <div class="preview-item-content">
+                                <h6 class="preview-subject font-weight-normal">
+                                    ${notification.data.title}
+                                </h6>
+                                <h6 class="preview-subject font-weight-light text-muted" style="font-size: 0.8em;">
+                                    ${notification.data.kelas || ''}
+                                </h6>
+                                <p class="font-weight-light small-text mb-0 text-muted">
+                                    ${notification.data.message_content} · ${formatTimeAgo(notification.created_at)}
+                                    ${!notification.read_at ? '<span class="badge bg-primary ms-2">New</span>' : ''}
+                                </p>
+                            </div>
+                        `;
+                    }else if(notification.data.notification_type == 'pembayaran'){
+                        if(notification.data.keterangan == null && notification.data.status == 0){
+                            notificationItem.innerHTML = `
+                                <div class="preview-thumbnail">
+                                    <div class="preview-icon bg-success">
+                                        <i class="mdi mdi-cash-multiple mx-0"></i>
+                                    </div>
+                                </div>
+                                <div class="preview-item-content">
+                                    <h6 class="preview-subject font-weight-normal">
+                                        ${notification.data.title}
+                                    </h6>
+                                    <h6 class="preview-subject font-weight-light text-muted" style="font-size: 0.8em;">
+                                        ${notification.data.class} || ${notification.data.prodi}
+                                    </h6>
+                                    <p class="font-weight-light small-text mb-0 text-muted">
+                                        ${notification.data.name} · ${formatTimeAgo(notification.created_at)}
+                                        ${!notification.read_at ? '<span class="badge bg-primary ms-2">New</span>' : ''}
+                                    </p>
+                                </div>
+                            `;
+                        }if(notification.data.keterangan == 'Sudah' && notification.data.status == 1){
+                            notificationItem.innerHTML = `
+                                <div class="preview-thumbnail">
+                                    <div class="preview-icon bg-success">
+                                        <i class="ti-check mx-0"></i>
+                                    </div>
+                                </div>
+                                <div class="preview-item-content">
+                                    <h6 class="preview-subject font-weight-normal">
+                                        ${notification.data.title}
+                                    </h6>
+                                    <p class="font-weight-light small-text mb-0 text-muted">
+                                        ${notification.data.message_content} · ${formatTimeAgo(notification.created_at)}
+                                        ${!notification.read_at ? '<span class="badge bg-primary ms-2">New</span>' : ''}
+                                    </p>
+                                </div>
+                            `;
+                        }else if(notification.data.keterangan == 'Belum' && notification.data.status == 0){
+                            notificationItem.innerHTML = `
+                                <div class="preview-thumbnail">
+                                    <div class="preview-icon bg-danger">
+                                        <i class="ti-close mx-0"></i>
+                                    </div>
+                                </div>
+                                <div class="preview-item-content">
+                                    <h6 class="preview-subject font-weight-normal">
+                                        ${notification.data.title}
+                                    </h6>
+                                    <p class="font-weight-light small-text mb-0 text-muted">
+                                        ${notification.data.message_content} · ${formatTimeAgo(notification.created_at)}
+                                        ${!notification.read_at ? '<span class="badge bg-primary ms-2">New</span>' : ''}
+                                    </p>
+                                </div>
+                            `;
+                        }
+                    }else if(notification.data.notification_type == 'krs'){
+                        notificationItem.innerHTML = `
+                            <div class="preview-thumbnail">
+                                @if(Auth::guard('admin')->check() || Auth::guard('mahasiswa')->check())
+                                    <div class="preview-icon bg-success">
+                                        <i class="ti-check mx-0"></i>
+                                    </div>
+                                @else
+                                    <div class="preview-icon bg-info">
+                                        <i class="${notificationIcon.iconClass} mx-0"></i>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="preview-item-content">
+                                <h6 class="preview-subject font-weight-normal">
+                                    ${notification.data.title}
+                                    </h6>
+                                    @if(Auth::guard('admin')->check())
+                                        <h6 class="preview-subject font-weight-light text-muted" style="font-size: 0.8em;">
+                                        ${notification.data.name} | ${notification.data.kelas}
+                                        </h6>
+                                    @endif
+                                <p class="font-weight-light small-text mb-0 text-muted">
+                                    ${notification.data.message_content} · ${formatTimeAgo(notification.created_at)}
+                                    ${!notification.read_at ? '<span class="badge bg-primary ms-2">New</span>' : ''}
+                                </p>
+                            </div>
+                        `; 
+                    }else if(notification.data.notification_type == 'presensi'){
+                        notificationItem.innerHTML = `
+                            <div class="preview-thumbnail">
+                                @if(Auth::guard('dosen')->check())
+                                <div class="preview-icon bg-success">
+                                    <i class="ti-check mx-0"></i>
+                                </div>
+                                @else
+                                <div class="preview-icon bg-info">
+                                    <i class="ti-bell mx-0"></i>
+                                </div>
+                                @endif
+                            </div>
+                            <div class="preview-item-content">
+                                <h6 class="preview-subject font-weight-normal">
+                                    ${notification.data.title}
+                                </h6>
+                                <h6 class="preview-subject font-weight-light text-muted" style="font-size: 0.8em;">
+                                    ${notification.data.class || ''} · ${notification.data.matkul}
+                                    @if(Auth::guard('dosen')->check())
+                                    @else
+                                     · ${notification.data.name}
+                                     @endif
+                                </h6>
+                                <p class="font-weight-light small-text mb-0 text-muted">
+                                    ${notification.data.message_content} · ${formatTimeAgo(notification.created_at)}
+                                    ${!notification.read_at ? '<span class="badge bg-primary ms-2">New</span>' : ''}
+                                </p>
+                            </div>
+                        `;
+                    }else if(notification.data.notification_type == 'resume'){
+                        notificationItem.innerHTML = `
+                            <div class="preview-thumbnail">
+                                @if(Auth::guard('dosen')->check())
+                                <div class="preview-icon bg-success">
+                                    <i class="ti-check mx-0"></i>
+                                </div>
+                                @else
+                                <div class="preview-icon bg-info">
+                                    <i class="ti-bell mx-0"></i>
+                                </div>
+                                @endif
+                            </div>
+                            <div class="preview-item-content">
+                                <h6 class="preview-subject font-weight-normal">
+                                    ${notification.data.title}
+                                </h6>
+                                <h6 class="preview-subject font-weight-light text-muted" style="font-size: 0.8em;">
+                                    ${notification.data.class || ''} · ${notification.data.matkul}
+                                    @if(Auth::guard('dosen')->check())
+                                    @else
+                                     · ${notification.data.name}
+                                     @endif
+                                </h6>
+                                <p class="font-weight-light small-text mb-0 text-muted">
+                                    ${notification.data.message_content} · ${formatTimeAgo(notification.created_at)}
+                                    ${!notification.read_at ? '<span class="badge bg-primary ms-2">New</span>' : ''}
+                                </p>
+                            </div>
+                        `;
+                    }else if(notification.data.notification_type == 'kontrak'){
+                        notificationItem.innerHTML = `
+                            <div class="preview-thumbnail">
+                                @if(Auth::guard('dosen')->check())
+                                <div class="preview-icon bg-success">
+                                    <i class="ti-book mx-0"></i>
+                                </div>
+                                @else
+                                <div class="preview-icon bg-info">
+                                    <i class="ti-bell mx-0"></i>
+                                </div>
+                                @endif
+                            </div>
+                            <div class="preview-item-content">
+                                <h6 class="preview-subject font-weight-normal">
+                                    ${notification.data.title}
+                                </h6>
+                                <h6 class="preview-subject font-weight-light text-muted" style="font-size: 0.8em;">
+                                    ${notification.data.class || ''} · ${notification.data.matkul}
+                                    @if(Auth::guard('dosen')->check())
+                                    @else
+                                     · ${notification.data.name}
+                                     @endif
+                                </h6>
+                                <p class="font-weight-light small-text mb-0 text-muted">
+                                    ${notification.data.message_content} · ${formatTimeAgo(notification.created_at)}
+                                    ${!notification.read_at ? '<span class="badge bg-primary ms-2">New</span>' : ''}
+                                </p>
+                            </div>
+                        `;
+                    }else if(notification.data.notification_type == 'nilai'){
+                        @if (Auth::guard('dosen')->check() || Auth::guard('admin')->check())
+                        notificationItem.innerHTML = `
+                            <div class="preview-thumbnail">
+                                @if(Auth::guard('dosen')->check())
+                                <div class="preview-icon bg-success">
+                                    <i class="ti-star mx-0"></i>
+                                </div>
+                                @else
+                                <div class="preview-icon bg-info">
+                                    <i class="ti-bell mx-0"></i>
+                                </div>
+                                @endif
+                            </div>
+                            <div class="preview-item-content">
+                                <h6 class="preview-subject font-weight-normal">
+                                    ${notification.data.title}
+                                </h6>
+                                <h6 class="preview-subject font-weight-light text-muted" style="font-size: 0.8em;">
+                                    ${notification.data.class || ''} · ${notification.data.matkul}
+                                    @if(Auth::guard('dosen')->check())
+                                    @else
+                                     · ${notification.data.name}
+                                     @endif
+                                </h6>
+                                <p class="font-weight-light small-text mb-0 text-muted">
+                                    ${notification.data.message_content} · ${formatTimeAgo(notification.created_at)}
+                                    ${!notification.read_at ? '<span class="badge bg-primary ms-2">New</span>' : ''}
+                                </p>
+                            </div>
+                        `;
+                        @elseif(Auth::guard('mahasiswa')->check() )
+                        notificationItem.innerHTML = `
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon bg-success">
+                                    <i class="ti-cup mx-0"></i>
+                                </div>
+                            </div>
+                            <div class="preview-item-content">
+                                <h6 class="preview-subject font-weight-normal">
+                                    Pemberitahuan Nilai
+                                </h6>
+                                <h6 class="preview-subject font-weight-light text-muted" style="font-size: 0.8em;">
+                                    ${notification.data.matkul}
+                                </h6>
+                                <p class="font-weight-light small-text mb-0 text-muted">
+                                    Anda Mendapatkan Nilai <b>${notification.data.nilai}</b> · ${formatTimeAgo(notification.created_at)}
+                                    ${!notification.read_at ? '<span class="badge bg-primary ms-2">New</span>' : ''}
+                                </p>
+                            </div>
+                        `;
+                        @endif
+                    }
+                    notificationItem.addEventListener('click', function() {
+                        markNotificationAsRead(notification.id);
+                    });
+                    
+                    notificationList.appendChild(notificationItem);
+                });
+            }).catch(error => {
+                console.error('Error fetching notifications:', error);
+        });
+    }
+
+    function getNotificationIcon(type) {
+        switch(type) {
+            case 'pemberitahuan':
+                return {
+                    bgClass: 'bg-info', 
+                    iconClass: 'ti-info'
+                };
+            case 'peringatan':
+                return {
+                    bgClass: 'bg-warning', 
+                    iconClass: 'ti-warning'
+                };
+            case 'presensi':
+                return {
+                    bgClass: 'bg-success', 
+                    iconClass: 'ti-check'
+                };
+            default:
+                return {
+                    bgClass: 'bg-secondary', 
+                    iconClass: 'ti-bell'
+                };
+        }
+    }
+
+
+        function markNotificationAsRead(notificationId = null) {
+            const payload = notificationId 
+                ? { notification_id: notificationId }
+                : {};
+
+            fetch('/presensi/mark-notif-read', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                fetchNotifications();
+            })
+            .catch(error => {
+                console.error('Error marking notifications as read:', error);
+            });
+        }
+
+
+        document.querySelector('.dropdown-footer a').addEventListener('click', function(e) {
+            e.preventDefault();
+            markNotificationAsRead(); 
+        });
+
+            function formatTimeAgo(dateString) {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffInSeconds = Math.floor((now - date) / 1000);
+                
+                if (diffInSeconds < 60) return 'Baru saja';
+                if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} menit yang lalu`;
+                if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} jam yang lalu`;
+                return `${Math.floor(diffInSeconds / 86400)} hari yang lalu`;
+            }
+
+            fetchNotifications();
+
+            setInterval(fetchNotifications, 60000);
+        });
+
+</script>

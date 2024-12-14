@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Absen;
 use App\Models\Kelas;
+use App\Models\Wadir;
 use App\Models\Jadwal;
+use App\Models\Kaprodi;
+use App\Models\Direktur;
+use App\Models\Dosen;
 use Illuminate\Http\Request;
 use App\Models\PengajuanRekapPresensi;
+use App\Notifications\PengajuanPresensiNotification;
 use Illuminate\Support\Facades\Session;
 
 
@@ -97,6 +102,10 @@ class PengajuanRekapPresensiController extends Controller
 
     public function store(Request $request)
     {
+        $kelas = Kelas::findOrFail($request->kelas_id);
+        $wadirs = Wadir::all();
+        $direkturs = Direktur::all();
+        $kaprodi = Kaprodi::where('prodis_id', $kelas->id_prodi)->first();
         $validateData = $request->validate([
             'kelas_id' => 'required',
             'rentang' => 'required',
@@ -104,13 +113,19 @@ class PengajuanRekapPresensiController extends Controller
             'jadwal_id' => 'required',
         ]);
 
-        PengajuanRekapPresensi::create([
+        $presensi = PengajuanRekapPresensi::with('jadwal','jadwal.dosen','kelas','matkul')->create([
             'kelas_id' => $validateData['kelas_id'],
             'matkul_id' => $validateData['matkul_id'],
             'pertemuan' => $validateData['rentang'],
             'jadwals_id' => $validateData['jadwal_id']
         ]);
-
+        foreach ($wadirs as $wadir) {
+            $wadir->notify(new PengajuanPresensiNotification($presensi));
+        }
+        foreach ($direkturs as $direktur) {
+            $direktur->notify(new PengajuanPresensiNotification($presensi));
+        }
+        $kaprodi->notify(new PengajuanPresensiNotification($presensi));
         return redirect()->back()->with('success', 'Pengajuan Rekap Presensi Berhasil');
     }
 
@@ -165,48 +180,60 @@ class PengajuanRekapPresensiController extends Controller
         } elseif ($pertemuan == '8-14') {
             $rentang = range(8, 14);
         }
-
+    
         try {
-            $absenRecords = Absen::where('matkuls_id', $matkul_id)
+            $absenRecords = Absen::with('dosen')->where('matkuls_id', $matkul_id)
                 ->where('kelas_id', $kelas_id)
                 ->whereIn('pertemuan', $rentang)
                 ->where('jadwals_id', $jadwal_id)
                 ->get();
-
+    
             $allKaprodiApproved = true;
             $allWadirApproved = true;
-
+    
             foreach ($absenRecords as $absen) {
-                $setujuKaprodi = $request->has('kaprodi') ? true : false;
-                $setujuWadir = $request->has('wakil_direktur') ? true : false;
-
-                if ($setujuKaprodi && !$absen->setuju_kaprodi) {
+                if ($request->has('kaprodi')) {
                     $absen->setuju_kaprodi = true;
                 }
-                if ($setujuWadir && !$absen->setuju_wadir) {
+                
+                if ($request->has('wakil_direktur')) {
                     $absen->setuju_wadir = true;
                 }
-
+    
+                if ($request->has('uncheck_kaprodi')) {
+                    $absen->setuju_kaprodi = false;
+                }
+                
+                if ($request->has('uncheck_wakil_direktur')) {
+                    $absen->setuju_wadir = false;
+                }
+    
                 if (!$absen->setuju_kaprodi) {
                     $allKaprodiApproved = false;
                 }
                 if (!$absen->setuju_wadir) {
                     $allWadirApproved = false;
                 }
-
+    
                 $absen->save();
             }
+    
             $statusPresensi = ($allKaprodiApproved && $allWadirApproved) ? 1 : 0;
-
+            
             $presensi = PengajuanRekapPresensi::where('matkul_id', $matkul_id)
                 ->where('kelas_id', $kelas_id)
                 ->where('pertemuan', $pertemuan)
                 ->first();
-
+            
             if ($presensi) {
                 $presensi->update(['status' => $statusPresensi]);
             }
-
+    
+            if($statusPresensi){
+                $dosen = Dosen::findOrFail($absenRecords->first()->dosens_id);
+                $dosen->notify(new PengajuanPresensiNotification($presensi));
+            }
+            
             return redirect()->back()->with('success', 'Status persetujuan berhasil diperbarui');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal memperbarui status persetujuan: ' . $e->getMessage());

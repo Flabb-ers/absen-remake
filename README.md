@@ -43,3 +43,5 @@
 - [ ] Sidebar belum fix untuk halaman dosen jika buka kontrak untuk nialai ikut terbuka 
 - [x] Kontrak bisa di lihat role kaprodi uppp
 - [ ] plan membuat matkul bisa di lihat oleh kaprodi
+- [x] membuat notif 
+- [ ] mengganti ............................. di halaman rekap pengajuan

@@ -89,6 +89,6 @@ class Jadwal extends Model
 
     public function message()
     {
-        return $this->hasMany(Message::class, 'jadwal_id');
+        return $this->hasMany(Message::class);
     }
 }
