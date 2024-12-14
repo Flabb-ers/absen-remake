@@ -134,8 +134,9 @@ class PengajuanRekapkontrakController extends Controller
      */
     public function edit($jadwal_id, $matkul_id, $kelas_id)
     {
+        
         $prodiId = $this->prodiId;
-        $kontraks = Kontrak::with('matkul', 'kelas.semester', 'kelas.prodi')
+        $kontraks = Kontrak::with('matkul', 'kelas.semester', 'kelas.prodi','jadwal.dosen')
             ->where('matkuls_id', $matkul_id)
             ->where('kelas_id', $kelas_id)
             ->where('jadwals_id', $jadwal_id)
@@ -145,9 +146,10 @@ class PengajuanRekapkontrakController extends Controller
                 });
             })
             ->get();
-
-
-        return view('pages.pengajuanRekapKontrak.rekap', compact('kontraks'));
+        $kelas = Kelas::with('prodi')->where('id',$kelas_id)->first();
+        $kaprodi = Kaprodi::where('prodis_id',$kelas->id_prodi)->first();
+        $wadir = Wadir::where('no',1)->first();
+        return view('pages.pengajuanRekapKontrak.rekap', compact('kontraks','kaprodi','wadir'));
     }
 
     /**

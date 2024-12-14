@@ -349,7 +349,7 @@
                 <tr>
                     <td>
                         <p>Dosen Pengampu</p>
-                        <span class="signature-line">.....................................................</span>
+                        <span class="signature-line">{{ $kontraks->first()->jadwal->dosen->nama ?? '.....................................................' }}</span>
                     </td>
                     <td>
                         <p>Komting Mahasiswa</p>
@@ -364,11 +364,11 @@
                 <tr>
                     <td>
                         <p>Kaprodi</p>
-                        <span class="signature-line">.....................................................</span>
+                        <span class="signature-line">{{ $kaprodi ?? '.....................................................' }}</span>
                     </td>
                     <td>
                         <p>Wakil Direktur</p>
-                        <span class="signature-line">.....................................................</span>
+                        <span class="signature-line">{{ $wadir ?? '.....................................................' }}</span>
                     </td>
                 </tr>
             </table>

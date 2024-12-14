@@ -168,8 +168,8 @@ class PengajuanRekapPresensiController extends Controller
             })
             ->get();
 
-
-        return view('pages.pengajuanRekapPresensi.rekap', compact('absens', 'rentang'));
+            $kaprodi = Kaprodi::where('prodis_id',$absens->first()->prodis_id)->first();
+        return view('pages.pengajuanRekapPresensi.rekap', compact('absens', 'rentang','kaprodi'));
     }
 
     public function update(Request $request, $pertemuan, $matkul_id, $kelas_id, $jadwal_id)
