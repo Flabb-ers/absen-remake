@@ -8,6 +8,16 @@
 @endphp
 
 @section('container')
+    <style>
+        .hover-effect {
+            transition: transform 0.3s ease;
+        }
+
+        .hover-effect:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+    </style>
     <div class="main-panel">
         <div class="content-wrapper">
             <div class="breadcrumb">
@@ -19,7 +29,7 @@
             <div class="row">
                 @forelse ($jadwals as $jadwal)
                     <div class="col-lg-4 col-md-6 col-sm-12 grid-margin stretch-card">
-                        <div class="card text-bg-light mb-3">
+                        <div class="card hover-effect text-bg-light mb-3">
                             <div class="card-header">[KONTRAK] {{ $jadwal->matkul->nama_matkul }}</div>
                             <div class="card-body">
                                 <ul class="info-list">
@@ -56,7 +66,7 @@
                                     $latestKontrakPertemuan = $latestKontrak ? $latestKontrak->pertemuan : 0;
                                     $maxPertemuan = Kontrak::where('jadwals_id', $jadwal->id)->max('pertemuan');
                                     $cekKontrak = Kontrak::where('jadwals_id', $jadwal->id)->first();
-                                    $cek = Kontrak::where('jadwals_id',$jadwal->id)->max('pertemuan');
+                                    $cek = Kontrak::where('jadwals_id', $jadwal->id)->max('pertemuan');
                                 @endphp
 
                                 <div class="row">

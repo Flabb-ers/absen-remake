@@ -6,6 +6,16 @@
 @endphp
 
 @section('container')
+    <style>
+        .hover-effect {
+            transition: transform 0.3s ease;
+        }
+
+        .hover-effect:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+    </style>
     <div class="main-panel">
         <div class="content-wrapper">
             <div class="breadcrumb">
@@ -13,11 +23,11 @@
                     <span class="mdi mdi-home"></span> Dashboard
                 </a>
                 <span class="breadcrumb-item" id="dataMasterBreadcrumb">Presensi</span>
-            </div> 
+            </div>
             <div class="row">
                 @forelse ($jadwals as $jadwal)
                     <div class="col-lg-4 col-md-6 col-sm-12 grid-margin stretch-card">
-                        <div class="card text-bg-light mb-3">
+                        <div class="card hover-effect text-bg-light mb-3">
                             <div class="card-header"> [PRESENSI] {{ $jadwal->matkul->nama_matkul }} </div>
                             <div class="card-body">
                                 <ul class="info-list">
@@ -44,15 +54,15 @@
                                     <div class="col-md-12">
                                         @if (($pertemuanCounts[$jadwal->id] ?? 0) < 14)
                                             @if ($absens->isEmpty())
-                                            <a href="/presensi/data-presensi/isi-presensi/{{ $jadwal->id }}"
-                                                class="btn btn-dark btn-sm w-100 mb-2">
-                                                <span class="mdi mdi-clipboard-edit-outline"></span> Isi Presensi
-                                            </a>
+                                                <a href="/presensi/data-presensi/isi-presensi/{{ $jadwal->id }}"
+                                                    class="btn btn-dark btn-sm w-100 mb-2">
+                                                    <span class="mdi mdi-clipboard-edit-outline"></span> Isi Presensi
+                                                </a>
                                             @else
-                                            <a href="/presensi/data-presensi/edit/{{ $pertemuanCounts[$jadwal->id] ?? 0 }}/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}/{{ $jadwal->id }}"
-                                                class="btn btn-warning btn-sm w-100 mb-2">
-                                                <span class="mdi mdi-clipboard-edit-outline"></span> Edit Presensi
-                                            </a>
+                                                <a href="/presensi/data-presensi/edit/{{ $pertemuanCounts[$jadwal->id] ?? 0 }}/{{ $jadwal->matkul->id }}/{{ $jadwal->kelas->id }}/{{ $jadwal->id }}"
+                                                    class="btn btn-warning btn-sm w-100 mb-2">
+                                                    <span class="mdi mdi-clipboard-edit-outline"></span> Edit Presensi
+                                                </a>
                                             @endif
                                         @else
                                             <button class="btn btn-secondary btn-sm w-100 mb-2" disabled>
@@ -96,7 +106,7 @@
                                                                     class="dropdown-item text-center text-success">
                                                                     <span class="mdi mdi-file-document-outline"></span>
                                                                     Rekap 1 - 7 (
-                                                                        Approved)
+                                                                    Approved)
                                                                 </a>
                                                             </li>
                                                         @elseif($rekap_1_7_pending)

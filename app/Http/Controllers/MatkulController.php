@@ -7,14 +7,26 @@ use App\Models\Prodi;
 use App\Models\Jadwal;
 use App\Models\Matkul;
 use App\Models\Semester;
+use GuzzleHttp\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Session;
 
 class MatkulController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+    protected $prodiId;
+
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->prodiId = Session::get('user.prodiId');
+            return $next($request);
+        });
+    }
     public function index()
     {
         $kelasAll = Jadwal::all();
@@ -37,7 +49,7 @@ class MatkulController extends Controller
                 'max:255',
                 Rule::unique('matkuls')->where(function ($query) use ($request) {
                     return $query->where('semester_id', $request->semester_id)
-                                 ->where('prodi_id', $request->prodi_id);
+                        ->where('prodi_id', $request->prodi_id);
                 })
             ],
             'alias' => [
@@ -46,14 +58,14 @@ class MatkulController extends Controller
                 'max:255',
                 Rule::unique('matkuls')->where(function ($query) use ($request) {
                     return $query->where('semester_id', $request->semester_id)
-                                 ->where('prodi_id', $request->prodi_id);
+                        ->where('prodi_id', $request->prodi_id);
                 })
             ],
             'kode' => [
                 'required',
                 Rule::unique('matkuls')->where(function ($query) use ($request) {
                     return $query->where('semester_id', $request->semester_id)
-                                 ->where('prodi_id', $request->prodi_id);
+                        ->where('prodi_id', $request->prodi_id);
                 })
             ],
             'prodi_id' => 'required|exists:prodi,id',
@@ -70,7 +82,7 @@ class MatkulController extends Controller
             'semester_id.required' => 'Semester harus dipilih',
             'semester_id.exists' => 'Semester yang dipilih tidak valid',
         ]);
-        
+
         Matkul::create([
             'nama_matkul' => $request->nama_matkul,
             'alias' => $request->alias,
@@ -80,7 +92,7 @@ class MatkulController extends Controller
             'praktek' => $request->praktek,
             'teori' => $request->teori,
         ]);
-        
+
 
         return response()->json(['success' => 'Data mata kuliah berhasil ditambahkan']);
     }
@@ -100,7 +112,7 @@ class MatkulController extends Controller
                 'max:255',
                 Rule::unique('matkuls', 'nama_matkul')->ignore($id)->where(function ($query) use ($request) {
                     return $query->where('semester_id', $request->semester_id)
-                                 ->where('prodi_id', $request->prodi_id);
+                        ->where('prodi_id', $request->prodi_id);
                 }),
             ],
             'alias' => [
@@ -109,14 +121,14 @@ class MatkulController extends Controller
                 'max:255',
                 Rule::unique('matkuls', 'alias')->ignore($id)->where(function ($query) use ($request) {
                     return $query->where('semester_id', $request->semester_id)
-                                 ->where('prodi_id', $request->prodi_id);
+                        ->where('prodi_id', $request->prodi_id);
                 }),
             ],
             'kode' => [
                 'required',
                 Rule::unique('matkuls', 'kode')->ignore($id)->where(function ($query) use ($request) {
                     return $query->where('semester_id', $request->semester_id)
-                                 ->where('prodi_id', $request->prodi_id);
+                        ->where('prodi_id', $request->prodi_id);
                 }),
             ],
             'prodi_id' => 'required|exists:prodi,id',
@@ -133,9 +145,9 @@ class MatkulController extends Controller
             'semester_id.required' => 'Semester harus dipilih',
             'semester_id.exists' => 'Semester yang dipilih tidak valid',
         ]);
-    
+
         $matkul = Matkul::findOrFail($id);
-    
+
         $matkul->update([
             'nama_matkul' => $request->nama_matkul,
             'alias' => $request->alias,
@@ -148,7 +160,7 @@ class MatkulController extends Controller
 
         return response()->json(['success' => 'Data mata kuliah berhasil diupdate']);
     }
-    
+
 
 
 
@@ -168,10 +180,24 @@ class MatkulController extends Controller
     {
         $search = $request->input('search');
 
-        $matkuls = Matkul::with('prodi','semester')->where('nama_matkul', 'LIKE', "%$search%")
+        $matkuls = Matkul::with('prodi', 'semester')->where('nama_matkul', 'LIKE', "%$search%")
             ->orWhere('kode', 'LIKE', "%$search%")
             ->paginate(6);
 
         return response()->json($matkuls);
+    }
+
+    public function kategoriSemester()
+    {
+        $semesters = Semester::all();
+        return view('pages.data-matkul.index', compact('semesters'));
+    }
+
+    public function detailMatkulSemester($id){
+        $matkuls = Matkul::where('semester_id',$id)
+                    ->where('prodi_id',$this->prodiId)
+                    ->paginate(6);
+        $semester = Semester::findOrFail($id);
+        return view('pages.data-matkul.detail',compact('matkuls','semester'));
     }
 }

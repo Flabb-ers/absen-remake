@@ -57,7 +57,7 @@ route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middl
 route::post('/login', [AuthController::class, 'processLogin'])->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/first-login', [AuthController::class, 'processFirstLogin'])
-    ->name('first.login')->middleware(['auth:direktur,wakil_direktur,kaprodi,mahasiswa,dosen']);
+    ->name('first.login')->middleware(['auth:admin,direktur,wakil_direktur,kaprodi,mahasiswa,dosen']);
 
 
 
@@ -245,6 +245,11 @@ Route::prefix('/presensi')->group(function () {
         Route::get('/contract', [KontrakController::class, 'kategori']);
         Route::get('/contract/{id}', [KontrakController::class, 'detailMatkul']);
         Route::get('/contract/{matkul_id}/{kelas_id}/{jadwal_id}/cek', [KontrakController::class, 'cekKontrak']);
+
+        // DATA MATKUL (KAPRODI)
+        Route::get('/matkul',[MatkulController::class,'kategoriSemester']);
+        Route::get('/matkul/{id}',[MatkulController::class,'detailMatkulSemester']);
+        Route::get('/presensi/data-master/data-matkul/search', [MatkulController::class, 'search'])->name('data-matkul.search');
     });
 
     // HALAMAN MAHASISWA

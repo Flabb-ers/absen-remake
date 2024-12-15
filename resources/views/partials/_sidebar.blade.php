@@ -188,6 +188,15 @@
                 </li>
             @endif
         @elseif(auth::guard('wakil_direktur')->check() || auth::guard('kaprodi')->check() || auth::guard('direktur')->check())
+            @if (Auth::guard('kaprodi')->check())
+                </li>
+                <li class="nav-item {{ Request::is('presensi/data/matkul*') ? 'active' : '' }}">
+                    <a class="nav-link" href="/presensi/data/matkul">
+                        <i class="mdi mdi-book menu-icon"></i>
+                        <span class="menu-title">Data Matkul</span>
+                    </a>
+                </li>
+            @endif
             <li class="nav-item {{ Request::is('presensi/data/presence*') ? 'active' : '' }}">
                 <a class="nav-link" href="/presensi/data/presence">
                     <i class="mdi  mdi-clipboard-check-outline menu-icon"></i>

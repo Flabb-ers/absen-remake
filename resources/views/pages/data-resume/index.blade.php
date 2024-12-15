@@ -7,7 +7,7 @@
                 <a href="/presensi/dashboard" class="breadcrumb-item">
                     <span class="mdi mdi-home"></span> Dashboard
                 </a>
-                <span class="breadcrumb-item" id="dataMasterBreadcrumb">Data Resume</span>
+                <span class="breadcrumb-item" id="dataMasterBreadcrumb">Data Berita Acara</span>
             </div>
             <div class="row">
                 @forelse ($getDosen as $dosen)
@@ -29,9 +29,10 @@
                         </div>
                     </div>
                 @empty
-                    <p>Data tidak ditemukan</p>
+                    <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
+                        <p class="text-center">Belum Ada Data 🚀🚀....</p>
+                    </div>
                 @endforelse
-
             </div>
         </div>
     </div>

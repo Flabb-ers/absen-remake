@@ -29,9 +29,10 @@
                         </div>
                     </div>
                 @empty
-                    <p>Data tidak ditemukan</p>
+                    <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
+                        <p class="text-center">Belum Ada Data 🚀🚀....</p>
+                    </div>
                 @endforelse
-
             </div>
         </div>
     </div>

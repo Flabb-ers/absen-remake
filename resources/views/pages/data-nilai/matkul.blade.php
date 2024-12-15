@@ -7,7 +7,7 @@
                 <a href="/presensi/dashboard" class="breadcrumb-item">
                     <span class="mdi mdi-home"></span> Dashboard
                 </a>
-                <span class="breadcrumb-item" id="dataMasterBreadcrumb">Data Presensi</span>
+                <span class="breadcrumb-item" id="dataMasterBreadcrumb">Data Niai</span>
                 <span class="breadcrumb-item active">Mata Kuliah</span>
                 <span class="breadcrumb-item active">{{ $jadwals->first()->dosen->nama }}</span>
             </div>

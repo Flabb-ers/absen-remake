@@ -34,7 +34,7 @@
             </div>
         </div>
     </div>
-    @if (Auth::check() && Auth::user()->is_first_login)
+    {{-- @if (Auth::check() && Auth::user()->is_first_login)
         <div class="modal fade" id="firstLoginModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content border-0 shadow-sm">
@@ -143,5 +143,5 @@
                 });
             });
         </script>
-    @endif
+    @endif --}}
 @endsection
