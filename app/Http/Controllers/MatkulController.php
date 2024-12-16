@@ -19,11 +19,13 @@ class MatkulController extends Controller
      */
 
     protected $prodiId;
+    protected $role;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
             $this->prodiId = Session::get('user.prodiId');
+            $this->role = Session::get('user.role');
             return $next($request);
         });
     }
@@ -179,10 +181,18 @@ class MatkulController extends Controller
     public function search(Request $request)
     {
         $search = $request->input('search');
-
-        $matkuls = Matkul::with('prodi', 'semester')->where('nama_matkul', 'LIKE', "%$search%")
-            ->orWhere('kode', 'LIKE', "%$search%")
-            ->paginate(6);
+        if ($this->role == 'kaprodi') {
+            $matkuls = Matkul::with('prodi', 'semester')
+                ->where('prodi_id',$this->prodiId)
+                ->where('nama_matkul', 'LIKE', "%$search%")
+                ->orWhere('kode', 'LIKE', "%$search%")
+                ->paginate(6);
+        } else {
+            $matkuls = Matkul::with('prodi', 'semester')
+                ->where('nama_matkul', 'LIKE', "%$search%")
+                ->orWhere('kode', 'LIKE', "%$search%")
+                ->paginate(6);
+        }
 
         return response()->json($matkuls);
     }
@@ -193,11 +203,12 @@ class MatkulController extends Controller
         return view('pages.data-matkul.index', compact('semesters'));
     }
 
-    public function detailMatkulSemester($id){
-        $matkuls = Matkul::where('semester_id',$id)
-                    ->where('prodi_id',$this->prodiId)
-                    ->paginate(6);
+    public function detailMatkulSemester($id)
+    {
+        $matkuls = Matkul::where('semester_id', $id)
+            ->where('prodi_id', $this->prodiId)
+            ->paginate(6);
         $semester = Semester::findOrFail($id);
-        return view('pages.data-matkul.detail',compact('matkuls','semester'));
+        return view('pages.data-matkul.detail', compact('matkuls', 'semester'));
     }
 }
