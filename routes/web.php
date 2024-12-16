@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Models\Kelas;
 use App\Models\Jadwal;
 use App\Models\NilaiHuruf;
@@ -36,6 +37,7 @@ use App\Http\Controllers\NilaiMahasiswaController;
 use App\Http\Controllers\PengajuanRekapBeritaController;
 use App\Http\Controllers\PengajuanRekapkontrakController;
 use App\Http\Controllers\PengajuanRekapPresensiController;
+use League\CommonMark\Extension\SmartPunct\DashParser;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,17 +65,9 @@ Route::post('/first-login', [AuthController::class, 'processFirstLogin'])
 
 Route::prefix('/presensi')->group(function () {
     // DASHBOARD
-    Route::get('/dashboard', function () {
-        $userId = Session::get('user.id');
-        $kelasAll = Jadwal::where('dosens_id', $userId)->get();
-        $semesters = NilaiHuruf::where('mahasiswa_id', $userId)
-            ->select('semester_id')
-            ->with('semester')
-            ->groupBy('semester_id')
-            ->get();
-        return view('pages.dashboard.index', compact('kelasAll', 'semesters'));
-    })->name('dashboard')->middleware('auth:admin,mahasiswa,direktur,wakil_direktur,dosen,kaprodi');
+    Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard')->middleware('auth:admin,mahasiswa,direktur,wakil_direktur,dosen,kaprodi');
 
+    // DATA MASTER
     Route::prefix('/data-master')->middleware('auth:admin')->group(function () {
         Route::resource('/data-kelas', KelasController::class)->except(['show']);
         Route::get('/data-matkul/search', [MatkulController::class, 'search'])->name('data-matkul.search');
@@ -268,6 +262,7 @@ Route::prefix('/presensi')->group(function () {
         Route::get('/krs/{id}/cetak', [KrsPembayaranController::class, 'krsCetak']);
     });
 
+    // PEMBERITAHUAN / CHAT
     Route::prefix('/pemberitahuan')->middleware('auth:wakil_direktur,direktur,dosen')->group(function () {
         Route::post('/send', [PemberitahuanController::class, 'sendMessage'])
             ->name('send.message');

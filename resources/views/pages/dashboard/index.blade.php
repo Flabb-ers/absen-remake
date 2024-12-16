@@ -1,6 +1,9 @@
 @extends('layouts.main')
 
 @section('container')
+@php
+    use Carbon\Carbon;
+@endphp
     <div class="main-panel">
         <div class="content-wrapper">
             <div class="row">
@@ -24,7 +27,73 @@
                                 <p>Konten khusus untuk Mahasiswa</p>
                             @elseif(Auth::guard('kaprodi')->check())
                                 <h4>Dashboard Kaprodi</h4>
-                                <p>Konten khusus untuk Kaprodi</p>
+                                <p>Rekapitulasi Presensi</p>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="card bg-primary text-white mb-4">
+                                            <div class="card-body">
+                                                <h5>Total Mahasiswa {{ $prodi->nama_prodi }}</h5>
+                                                <h3>{{ $mahasiswa }}</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card bg-success text-white mb-4">
+                                            <div class="card-body">
+                                                <h5>Total Dosen Hadir</h5>
+                                                <h3>15</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card bg-warning text-white mb-4">
+                                            <div class="card-body">
+                                                <h5>Kelas Belum Terisi</h5>
+                                                <h3>3</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h5>Jadwal Hari Ini</h5>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Kelas</th>
+                                            <th>Mata Kuliah</th>
+                                            <th>Ruangan</th>
+                                            <th>Jam</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($jadwals as $jadwal)
+                                            @php
+                                                $now = Carbon::now(); 
+                                                $mulai = Carbon::createFromFormat('H:i:s', $jadwal->waktu_mulai);
+                                                $selesai = Carbon::createFromFormat('H:i:s', $jadwal->waktu_selesai);
+                                            @endphp
+                                            <tr>
+                                                <td>{{ $jadwal->kelas->nama_kelas }}</td>
+                                                <td>{{ $jadwal->matkul->nama_matkul }}</td>
+                                                <td>{{ $jadwal->ruangan->nama }}</td>
+                                                <td>{{ $mulai->format('H:i') }} - {{ $selesai->format('H:i') }}</td>
+                                                <td>
+                                                    @if ($now->lessThan($mulai))
+                                                        <span class="badge badge-warning">Belum</span>
+                                                    @elseif ($now->between($mulai, $selesai))
+                                                        <span class="badge badge-success">Berlangsung</span>
+                                                    @else
+                                                        <span class="badge badge-danger">Selesai</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr class="text-center">
+                                                <td colspan="5">Belum Ada jadwal</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
                             @else
                                 <p>Anda harus login terlebih dahulu.</p>
                             @endif
@@ -34,6 +103,7 @@
             </div>
         </div>
     </div>
+
     {{-- @if (Auth::check() && Auth::user()->is_first_login)
         <div class="modal fade" id="firstLoginModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
             <div class="modal-dialog modal-dialog-centered" role="document">
