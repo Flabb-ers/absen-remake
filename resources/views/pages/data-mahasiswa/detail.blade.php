@@ -75,7 +75,8 @@
                                             <tr>
                                                 <td><input type="checkbox" class="select-checkbox"
                                                         data-id="{{ $mahasiswa->id }}" /></td>
-                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $loop->iteration + ($mahasiswas->currentPage() - 1) * $mahasiswas->perPage() }}
+                                                </td>
                                                 <td>{{ $mahasiswa->nim }}</td>
                                                 <td>{{ $mahasiswa->nama_lengkap }}</td>
                                                 <td>{{ $mahasiswa->jenis_kelamin }}</td>
@@ -120,13 +121,14 @@
                                     </tbody>
                                 </table>
                             </div>
+                            {{ $mahasiswas->links() }}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
 
     <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -641,7 +643,6 @@
                 modal.modal('show');
             });
 
-            // AJAX untuk submit form edit
             $('#editForm').submit(function(e) {
                 e.preventDefault();
 
@@ -660,7 +661,7 @@
                 let alamat = $('#editAlamat').val();
                 let dosen_pembimbing_id = $('#pembimbing_akademikEdit').val();
                 let password = $('#passwordEdit').val();
-                
+
 
                 $.ajax({
                     url: '{{ route('data-mahasiswa.update', ':id') }}'.replace(':id', id),
@@ -679,7 +680,7 @@
                         email: email,
                         alamat: alamat,
                         dosen_pembimbing_id: dosen_pembimbing_id,
-                        password : password
+                        password: password
                     },
                     success: function(response) {
                         $('#editModal').modal('hide');
@@ -929,70 +930,120 @@
             $('#search').on('keyup', function() {
                 let searchQuery = $(this).val();
                 let kelasId = $('#kelas_id').val();
+
+                searchMahasiswa(searchQuery, kelasId, 1); // Mulai dari halaman 1
+            });
+
+            // Tambahkan event listener untuk paginasi
+            $(document).on('click', '.pagination .page-link', function(e) {
+                e.preventDefault();
+                let page = $(this).data('page');
+                let searchQuery = $('#search').val();
+                let kelasId = $('#kelas_id').val();
+
+                searchMahasiswa(searchQuery, kelasId, page);
+            });
+
+            function searchMahasiswa(searchQuery, kelasId, page) {
                 $.ajax({
                     url: '{{ route('data-mahasiswa.search') }}',
                     method: 'GET',
                     data: {
                         search: searchQuery,
-                        kelas_id: kelasId
+                        kelas_id: kelasId,
+                        page: page 
                     },
                     success: function(response) {
-                        $('tbody').empty(); // Kosongkan tabel sebelumnya
+                        $('tbody').empty();
                         if (response.data.length > 0) {
                             response.data.forEach(function(mahasiswa, index) {
                                 $('tbody').append(`
-                <tr>
-                    <td><input type="checkbox" class="select-checkbox" data-id="${mahasiswa.id}" /></td>
-                    <td>${index + 1}</td>
-                    <td>${mahasiswa.nim}</td>
-                    <td>${mahasiswa.nama_lengkap}</td>
-                    <td>${mahasiswa.jenis_kelamin}</td>
-                    <td>${mahasiswa.kelas ? mahasiswa.kelas.nama_kelas : 'N/A'}</td>
-                    <td>${mahasiswa.kelas && mahasiswa.kelas.semester ? 'Semester ' + mahasiswa.kelas.semester.semester : 'N/A'}</td>
-                    <td>${mahasiswa.email}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm edit-btn" 
-                            data-id="${mahasiswa.id}" 
-                            data-nama="${mahasiswa.nama_lengkap}" 
-                            data-nim="${mahasiswa.nim}" 
-                            data-nisn="${mahasiswa.nisn}" 
-                            data-pembimbing="${mahasiswa.dosen_pembimbing_id}" 
-                            data-nik="${mahasiswa.nik}" 
-                            data-kelas="${mahasiswa.kelas_id}" 
-                            data-semester="${mahasiswa.kelas.semester ? mahasiswa.kelas.semester.semester : 'N/A'}" 
-                            data-prodi="${mahasiswa.kelas.prodi.nama_prodi}" 
-                            data-jenis="${mahasiswa.kelas.jenis_kelas}" 
-                            data-tanggallahir="${mahasiswa.tanggal_lahir}" 
-                            data-tempatlahir="${mahasiswa.tempat_lahir}" 
-                            data-namaibu="${mahasiswa.nama_ibu}" 
-                            data-telephone="${mahasiswa.no_telephone}" 
-                            data-jeniskelamin="${mahasiswa.jenis_kelamin}" 
-                            data-email="${mahasiswa.email}" 
-                            data-alamat="${mahasiswa.alamat}" 
-                            data-toggle="modal" 
-                            data-target="#editModal">
-                            <span class="mdi mdi-eye"></span> Lihat
-                        </button>
-                        <button class="btn btn-danger btn-sm delete-btn" 
-                            data-id="${mahasiswa.id}">
-                            <span class="mdi mdi-delete"></span> Hapus
-                        </button>
-                    </td>
-                </tr>
-            `);
+                    <tr>
+                        <td><input type="checkbox" class="select-checkbox" data-id="${mahasiswa.id}" /></td>
+                        <td>${(page - 1) * response.per_page + index + 1}</td>
+                        <td>${mahasiswa.nim}</td>
+                        <td>${mahasiswa.nama_lengkap}</td>
+                        <td>${mahasiswa.jenis_kelamin}</td>
+                        <td>${mahasiswa.kelas ? mahasiswa.kelas.nama_kelas : 'N/A'}</td>
+                        <td>${mahasiswa.kelas && mahasiswa.kelas.semester ? 'Semester ' + mahasiswa.kelas.semester.semester : 'N/A'}</td>
+                        <td>${mahasiswa.email}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm edit-btn" 
+                                data-id="${mahasiswa.id}" 
+                                data-nama="${mahasiswa.nama_lengkap}" 
+                                data-nim="${mahasiswa.nim}" 
+                                data-nisn="${mahasiswa.nisn}" 
+                                data-pembimbing="${mahasiswa.dosen_pembimbing_id}" 
+                                data-nik="${mahasiswa.nik}" 
+                                data-kelas="${mahasiswa.kelas_id}" 
+                                data-semester="${mahasiswa.kelas.semester ? mahasiswa.kelas.semester.semester : 'N/A'}" 
+                                data-prodi="${mahasiswa.kelas.prodi.nama_prodi}" 
+                                data-jenis="${mahasiswa.kelas.jenis_kelas}" 
+                                data-tanggallahir="${mahasiswa.tanggal_lahir}" 
+                                data-tempatlahir="${mahasiswa.tempat_lahir}" 
+                                data-namaibu="${mahasiswa.nama_ibu}" 
+                                data-telephone="${mahasiswa.no_telephone}" 
+                                data-jeniskelamin="${mahasiswa.jenis_kelamin}" 
+                                data-email="${mahasiswa.email}" 
+                                data-alamat="${mahasiswa.alamat}" 
+                                data-toggle="modal" 
+                                data-target="#editModal">
+                                <span class="mdi mdi-eye"></span> Lihat
+                            </button>
+                            <button class="btn btn-danger btn-sm delete-btn" 
+                                data-id="${mahasiswa.id}">
+                                <span class="mdi mdi-delete"></span> Hapus
+                            </button>
+                        </td>
+                    </tr>
+                `);
                             });
+
+                            // Perbarui navigasi paginasi
+                            updatePagination(response);
                         } else {
                             $('tbody').append(
                                 '<tr><td class="text-center" colspan="9">Tidak ada hasil ditemukan</td></tr>'
                             );
+                            $('.pagination').empty(); // Bersihkan paginasi jika tidak ada hasil
                         }
                     },
-
                     error: function(xhr) {
                         console.error('Error:', xhr);
                     }
                 });
-            });
+            }
+
+            function updatePagination(response) {
+                $('.pagination').empty();
+
+                // Tombol Previous
+                $('.pagination').append(`
+        <li class="page-item ${response.current_page === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" data-page="${response.current_page - 1}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+    `);
+
+                // Nomor Halaman
+                for (let i = 1; i <= response.last_page; i++) {
+                    $('.pagination').append(`
+            <li class="page-item ${i === response.current_page ? 'active' : ''}">
+                <a class="page-link" href="#" data-page="${i}">${i}</a>
+            </li>
+        `);
+                }
+
+                // Tombol Next
+                $('.pagination').append(`
+        <li class="page-item ${response.current_page === response.last_page ? 'disabled' : ''}">
+            <a class="page-link" href="#" data-page="${response.current_page + 1}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    `);
+            }
         });
     </script>
 @endsection

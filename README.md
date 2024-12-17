@@ -15,7 +15,7 @@
 - [x] Add sikap mahasiswa
 - [x] Add Keaktifan mahasiswa
 - [x] Add KHS
-- [ ] Add KRS
+- [x] Add KRS
 - [ ] Add import export 
 - [x] Add dosen pa null when dosen on deleted or status = 0, kelas deleted = null in mahasiswa
 - [x] ADd kode kelas huaaaa
@@ -42,6 +42,6 @@
 - [x] tinggal rombak kontrak kuliah. agar bisa di lihat oleh semua role dan untuk inputnya ada 14 kolom form 
 - [ ] Sidebar belum fix untuk halaman dosen jika buka kontrak untuk nialai ikut terbuka 
 - [x] Kontrak bisa di lihat role kaprodi uppp
-- [ ] plan membuat matkul bisa di lihat oleh kaprodi
+- [x] plan membuat matkul bisa di lihat oleh kaprodi
 - [x] membuat notif 
 - [x] mengganti ............................. di halaman rekap pengajuan

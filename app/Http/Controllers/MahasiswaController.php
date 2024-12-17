@@ -95,7 +95,7 @@ class MahasiswaController extends Controller
             'jenis_kelamin' => $request->jenis_kelamin,
             'kelas_id' => $request->kelas_id,
             'dosen_pembimbing_id' => $request->pembimbing_akademik,
-            'is_first_login'=>true
+            'is_first_login' => true
         ]);
 
         return response()->json(['success' => 'Mahasiswa berhasil ditambahkan']);
@@ -108,7 +108,7 @@ class MahasiswaController extends Controller
     public function update(Request $request, $id)
     {
         $mahasiswa = Mahasiswa::findOrFail($id);
-    
+
         $rules = [
             'nama_lengkap' => 'required|string|max:255',
             'dosen_pembimbing_id' => 'required',
@@ -124,7 +124,7 @@ class MahasiswaController extends Controller
             'jenis_kelamin' => 'required|string',
             'kelas_id' => 'required|exists:kelas,id',
         ];
-    
+
         if ($request->nim !== $mahasiswa->nim) {
             $rules['nim'] .= '|unique:mahasiswas,nim';
         }
@@ -140,7 +140,7 @@ class MahasiswaController extends Controller
         if ($request->no_telephone !== $mahasiswa->no_telephone) {
             $rules['no_telephone'] .= '|unique:mahasiswas,no_telephone';
         }
-    
+
         $request->validate($rules, [
             'nama_lengkap.required' => 'Nama lengkap harus diisi',
             'nim.required' => 'NIM harus diisi',
@@ -167,18 +167,18 @@ class MahasiswaController extends Controller
             'kelas_id.required' => 'Kelas harus dipilih',
             'kelas_id.exists' => 'Kelas yang dipilih tidak valid',
         ]);
-    
+
         $updateData = $request->except('password');
-    
+
         if ($request->filled('password')) {
             $updateData['password'] = Hash::make($request->password);
         }
-    
+
         $mahasiswa->update($updateData);
-    
+
         return response()->json(['success' => 'Data mahasiswa berhasil diperbarui'], 200);
     }
-    
+
 
 
     /**
@@ -198,7 +198,7 @@ class MahasiswaController extends Controller
         $mahasiswas = Mahasiswa::with('kelas.semester', 'kelas')
             ->where('kelas_id', $namaKelas->id)
             ->orderBy('nim', 'asc')
-            ->get();
+            ->paginate(5);
 
         $kelass = Kelas::with('prodi', 'semester')->get();
         $dosens = Dosen::where('pembimbing_akademik', 1)
@@ -246,11 +246,11 @@ class MahasiswaController extends Controller
                 $query->where('nama_lengkap', 'LIKE', "%$search%")
                     ->orWhere('nim', 'LIKE', "%$search%");
             })
-            ->get();
+            ->paginate(5);
 
-        return response()->json([
-            'data' => $mahasiswas
-        ]);
+        return response()->json(
+            $mahasiswas
+        );
     }
 
 

@@ -20,6 +20,7 @@
                                 <div class="input-group input-group-sm" style="width: 200px;">
                                     <input type="text" id="search" class="form-control"
                                         placeholder="Cari Mata Kuliah...">
+                                    <input type="hidden" name="semester" value="{{ $semester->id }}" id="semester">
                                     <button class="btn btn-outline-secondary" type="button" id="clearSearchButton">
                                         <span class="mdi mdi-close"></span>
                                     </button>
@@ -83,12 +84,14 @@
 
             $('#search').on('keyup', function() {
                 let searchQuery = $(this).val();
-
+                let semesterQuery = $('#semester').val();
+                
                 $.ajax({
                     url: '{{ route('data-matkul.search') }}',
                     method: 'GET',
                     data: {
-                        search: searchQuery
+                        search: searchQuery,
+                        semester: semesterQuery
                     },
                     success: function(response) {
                         $('tbody').empty();
@@ -119,26 +122,21 @@
                 });
             });
 
-            //     function updatePagination(response) {
-            //         $('#pagination').empty();
-            //         for (let i = 1; i <= response.last_page; i++) {
-            //             $('#pagination').append(`
-        //     <a href="#" class="page-link" data-page="${i}">${i}</a>
-        // `);
-            //         }
-            //     }
 
             $(document).on('click', '.page-link', function(e) {
                 e.preventDefault();
                 var page = $(this).attr('href').split('page=')[1];
                 let searchQuery = $('#search').val();
+                let semesterQuery = $('#semester').val();
+                
 
                 $.ajax({
                     url: '{{ route('data-matkul.search') }}',
                     method: 'GET',
                     data: {
                         search: searchQuery,
-                        page: page
+                        page: page,
+                        semester :semesterQuery
                     },
                     success: function(response) {
                         $('tbody').empty();

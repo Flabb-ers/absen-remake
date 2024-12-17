@@ -13,6 +13,7 @@ use App\Models\Prodi;
 use App\Models\Matkul;
 use App\Models\Ruangan;
 use App\Models\Semester;
+use App\Models\Mahasiswa;
 use App\Models\TahunAkademik;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -32,158 +33,158 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         Prodi::create([
-            'nama_prodi'=>'Teknik Informatika',
-            'singkatan'=>'TI',
-            'kode_prodi'=>'WKWKWKW',
-            'Jenjang'=>'D3',
+            'nama_prodi' => 'Teknik Informatika',
+            'singkatan' => 'TI',
+            'kode_prodi' => 'WKWKWKW',
+            'Jenjang' => 'D3',
         ]);
         Prodi::create([
-            'nama_prodi'=>'Akuntansi',
-            'singkatan'=>'AK',
-            'kode_prodi'=>'WKWKWKW',
-            'Jenjang'=>'D3',
+            'nama_prodi' => 'Akuntansi',
+            'singkatan' => 'AK',
+            'kode_prodi' => 'WKWKWKW',
+            'Jenjang' => 'D3',
         ]);
         Prodi::create([
-            'nama_prodi'=>'Administrasi Bisnis',
-            'singkatan'=>'AB',
-            'kode_prodi'=>'WKWKWKW',
-            'Jenjang'=>'D3',
+            'nama_prodi' => 'Administrasi Bisnis',
+            'singkatan' => 'AB',
+            'kode_prodi' => 'WKWKWKW',
+            'Jenjang' => 'D3',
         ]);
 
         Semester::create([
-            'semester'=>1,
-            'status'=>1
+            'semester' => 1,
+            'status' => 1
         ]);
         Semester::create([
-            'semester'=>12,
-            'status'=>1
+            'semester' => 12,
+            'status' => 1
         ]);
         Semester::create([
-            'semester'=>3,
-            'status'=>1
+            'semester' => 3,
+            'status' => 1
         ]);
         Semester::create([
-            'semester'=>4,
-            'status'=>1
+            'semester' => 4,
+            'status' => 1
         ]);
         Semester::create([
-            'semester'=>5,
-            'status'=>1
+            'semester' => 5,
+            'status' => 1
         ]);
         Semester::create([
-            'semester'=>6,
-            'status'=>1
+            'semester' => 6,
+            'status' => 1
         ]);
         Semester::create([
-            'semester'=>7,
-            'status'=>1
+            'semester' => 7,
+            'status' => 1
         ]);
         Semester::create([
-            'semester'=>8,
-            'status'=>1
+            'semester' => 8,
+            'status' => 1
         ]);
 
         TahunAkademik::create([
-            'tahun_akademik'=>'2024/2025',
-            'status'=>1
+            'tahun_akademik' => '2024/2025',
+            'status' => 1
         ]);
         TahunAkademik::create([
-            'tahun_akademik'=>'2024/2026',
-            'status'=>0
+            'tahun_akademik' => '2024/2026',
+            'status' => 0
         ]);
         TahunAkademik::create([
-            'tahun_akademik'=>'2024/2027',
-            'status'=>0
+            'tahun_akademik' => '2024/2027',
+            'status' => 0
         ]);
         TahunAkademik::create([
-            'tahun_akademik'=>'2024/2028',
-            'status'=>0
+            'tahun_akademik' => '2024/2028',
+            'status' => 0
         ]);
 
         Dosen::create([
-            'nama'=>'Dosen stau',
-            'nidn'=>'121456645674',
-            'jenis_kelamin'=>'Laki - Laki',
-            'pembimbing_akademik'=>1,
-            'no_telephone'=>'098329931710',
-            'agama'=>'islam',
-            'status'=>1,
-            'tanggal_lahir'=>'12/12/12',
-            'tempat_lahir'=>'Purworejo',
-            'email'=>'dhimdafas@gmail.com',
-            'password'=>Hash::make('password')
+            'nama' => 'Dosen stau',
+            'nidn' => '121456645674',
+            'jenis_kelamin' => 'Laki - Laki',
+            'pembimbing_akademik' => 1,
+            'no_telephone' => '098329931710',
+            'agama' => 'islam',
+            'status' => 1,
+            'tanggal_lahir' => '12/12/12',
+            'tempat_lahir' => 'Purworejo',
+            'email' => 'dhimdafas@gmail.com',
+            'password' => Hash::make('password')
         ]);
         Dosen::create([
-            'nama'=>'Dosen tiga',
-            'nidn'=>'121456645434',
-            'pembimbing_akademik'=>1,
-            'jenis_kelamin'=>'Laki - Laki',
-            'no_telephone'=>'098329931710',
-            'agama'=>'islam',
-            'status'=>1,
-            'tanggal_lahir'=>'12/12/12',
-            'tempat_lahir'=>'Purworejo',
-            'email'=>'dhimdfas@gmail.com',
-            'password'=>Hash::make('password')
+            'nama' => 'Dosen tiga',
+            'nidn' => '121456645434',
+            'pembimbing_akademik' => 1,
+            'jenis_kelamin' => 'Laki - Laki',
+            'no_telephone' => '098329931710',
+            'agama' => 'islam',
+            'status' => 1,
+            'tanggal_lahir' => '12/12/12',
+            'tempat_lahir' => 'Purworejo',
+            'email' => 'dhimdfas@gmail.com',
+            'password' => Hash::make('password')
         ]);
         Dosen::create([
-            'nama'=>'Dosen empat',
-            'nidn'=>'12145632644',
-            'pembimbing_akademik'=>1,
-            'jenis_kelamin'=>'Laki - Laki',
-            'no_telephone'=>'098329931710',
-            'agama'=>'islam',
-            'status'=>1,
-            'tanggal_lahir'=>'12/12/12',
-            'tempat_lahir'=>'Purworejo',
-            'email'=>'dimfawsaas@gmail.com',
-            'password'=>Hash::make('password')
+            'nama' => 'Dosen empat',
+            'nidn' => '12145632644',
+            'pembimbing_akademik' => 1,
+            'jenis_kelamin' => 'Laki - Laki',
+            'no_telephone' => '098329931710',
+            'agama' => 'islam',
+            'status' => 1,
+            'tanggal_lahir' => '12/12/12',
+            'tempat_lahir' => 'Purworejo',
+            'email' => 'dimfawsaas@gmail.com',
+            'password' => Hash::make('password')
         ]);
         Dosen::create([
-            'nama'=>'Dosen dua',
-            'nidn'=>'1214562334644',
-            'pembimbing_akademik'=>1,
-            'jenis_kelamin'=>'Laki - Laki',
-            'no_telephone'=>'09832993172323',
-            'agama'=>'islam',
-            'status'=>1,
-            'tanggal_lahir'=>'12/12/12',
-            'tempat_lahir'=>'Purworejo',
-            'email'=>'dhiafawass@gmail.com',
-            'password'=>Hash::make('password')
+            'nama' => 'Dosen dua',
+            'nidn' => '1214562334644',
+            'pembimbing_akademik' => 1,
+            'jenis_kelamin' => 'Laki - Laki',
+            'no_telephone' => '09832993172323',
+            'agama' => 'islam',
+            'status' => 1,
+            'tanggal_lahir' => '12/12/12',
+            'tempat_lahir' => 'Purworejo',
+            'email' => 'dhiafawass@gmail.com',
+            'password' => Hash::make('password')
         ]);
 
         Ruangan::create([
-            'nama'=>'LS.1.1'
+            'nama' => 'LS.1.1'
         ]);
         Ruangan::create([
-            'nama'=>'LS.1.2'
+            'nama' => 'LS.1.2'
         ]);
         Ruangan::create([
-            'nama'=>'LS.2.1'
+            'nama' => 'LS.2.1'
         ]);
         Ruangan::create([
-            'nama'=>'LS.2.2'
+            'nama' => 'LS.2.2'
         ]);
         Ruangan::create([
-            'nama'=>'A.1.1'
+            'nama' => 'A.1.1'
         ]);
         Ruangan::create([
-            'nama'=>'A.1.2'
+            'nama' => 'A.1.2'
         ]);
 
         Admin::create([
-            'nama'=> 'Admin',
-            'email'=>'admin@email.com',
-            'password'=> Hash::make('admin123'),
+            'nama' => 'Admin',
+            'email' => 'admin@email.com',
+            'password' => Hash::make('admin123'),
         ]);
 
         Kelas::create([
-            'kode_kelas'=>'22222',
-            'nama_kelas'=>'TI1A',
-            'jenis_kelas'=>'Reguler',
-            'id_prodi'=>1,
-            'id_semester'=>1
+            'kode_kelas' => '22222',
+            'nama_kelas' => 'TI1A',
+            'jenis_kelas' => 'Reguler',
+            'id_prodi' => 1,
+            'id_semester' => 1
         ]);
 
         $matkuls = [
@@ -291,6 +292,25 @@ class DatabaseSeeder extends Seeder
         foreach ($matkuls as $matkul) {
             Matkul::create($matkul);
         }
-
+        for ($i = 1; $i <= 15; $i++) {
+            Mahasiswa::create([
+                'dosen_pembimbing_id' => null, // Diisi null
+                'nama_lengkap' => 'Mahasiswa ' . $i,
+                'nim' => 'NIM' . str_pad($i, 4, '0', STR_PAD_LEFT),
+                'nisn' => 'NISN' . str_pad($i, 4, '0', STR_PAD_LEFT),
+                'nik' => '320101' . str_pad($i, 6, '0', STR_PAD_LEFT),
+                'email' => 'mahasiswa' . $i . '@example.com',
+                'password' => Hash::make('password'), // Password default
+                'alamat' => 'Alamat Mahasiswa ' . $i,
+                'no_telephone' => '081234567' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                'tanggal_lahir' => now()->subYears(rand(18, 24))->format('Y-m-d'),
+                'tempat_lahir' => 'Kota ' . $i,
+                'nama_ibu' => 'Ibu Mahasiswa ' . $i,
+                'jenis_kelamin' => $i % 2 == 0 ? 'Laki-laki' : 'Perempuan',
+                'kelas_id' => 1, // Semua kelas_id diisi 1
+                'status_krs' => rand(0, 1),
+                'is_first_login' => true,
+            ]);
+        }
     }
 }

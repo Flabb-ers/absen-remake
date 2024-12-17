@@ -45,7 +45,17 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                <a href="/presensi/krs/kategori/cetak/{{ $mahasiswa->id }}" target="_blank" class="btn btn-info btn-sm"><i class="mdi mdi-printer"></i> Cetak</a>
+                                                    @if ($mahasiswa->status_krs == 0)
+                                                        <button class="btn btn-info btn-sm" disabled>
+                                                            <i class="mdi mdi-printer"></i> Cetak
+                                                        </button>
+                                                    @else
+                                                        <a href="/presensi/krs/kategori/cetak/{{ $mahasiswa->id }}"
+                                                            target="_blank" class="btn btn-info btn-sm">
+                                                            <i class="mdi mdi-printer"></i> Cetak
+                                                        </a>
+                                                    @endif
+
                                                 </td>
                                             </tr>
                                         @empty

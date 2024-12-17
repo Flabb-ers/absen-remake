@@ -180,10 +180,12 @@ class MatkulController extends Controller
 
     public function search(Request $request)
     {
+        $semester = $request->input('semester');
         $search = $request->input('search');
         if ($this->role == 'kaprodi') {
             $matkuls = Matkul::with('prodi', 'semester')
                 ->where('prodi_id',$this->prodiId)
+                ->where('semester_id',$semester)
                 ->where('nama_matkul', 'LIKE', "%$search%")
                 ->orWhere('kode', 'LIKE', "%$search%")
                 ->paginate(6);
