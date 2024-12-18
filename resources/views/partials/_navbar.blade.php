@@ -214,7 +214,7 @@
             <i class="ti-comments"></i> 
             <span id="unreadMessageBadge" class="badge bg-danger" style="display:none; position: absolute; top: -8px; right: -8px;">0</span>
         </div>
-    @else
+    @elseif(Auth::guard('dosen')->check())
         <div class="chat-icon" onclick="toggleContact()"> 
             <i class="ti-comments"></i> 
             <span id="unreadMessageBadge" class="badge bg-danger" style="display:none; position: absolute; top: -8px; right: -8px;">0</span>
@@ -247,7 +247,7 @@
                 </button>
             </div>
         </div>
-    @else
+    @elseif(Auth::guard('dosen')->check())
     <style>
         .contact-list {
             max-height: 500px;
@@ -892,7 +892,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     ${notification.data.title}
                                 </h6>
                                 <h6 class="preview-subject font-weight-light text-muted" style="font-size: 0.8em;">
-                                    ${notification.data.kelas || ''}
+                                    ${notification.data.sender_name} · ${notification.data.matkul} · ${notification.data.class}
                                 </h6>
                                 <p class="font-weight-light small-text mb-0 text-muted">
                                     ${notification.data.message_content} · ${formatTimeAgo(notification.created_at)}

@@ -37,7 +37,7 @@ class Jadwal extends Model
 
     public function absen()
     {
-        return $this->hasMany(Absen::class);
+        return $this->hasMany(Absen::class,'jadwals_id');
     }
     public function resume()
     {

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PengajuanRekapBerita;
+use App\Models\PengajuanRekapkontrak;
 use Carbon\Carbon;
 use App\Models\Absen;
 use App\Models\Dosen;
@@ -13,17 +15,21 @@ use App\Models\Mahasiswa;
 use App\Models\NilaiHuruf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\PengajuanRekapPresensi;
 use Illuminate\Support\Facades\Session;
 
 class DashboardController extends Controller
 {
     protected $userId;
     protected $prodiId;
+    protected $role;
+
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
             $this->userId = Session::get('user.id');
             $this->prodiId = Session::get('user.prodiId');
+            $this->role = Session::get('user.role');
             return $next($request);
         });
     }
@@ -57,7 +63,73 @@ class DashboardController extends Controller
                 ->where('hari', $hariIni)
                 ->get();
 
-            return view('pages.dashboard.index', compact('mahasiswa', 'prodi', 'jadwals'));
+            $presensis = PengajuanRekapPresensi::with([
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                },
+            ])
+                ->whereHas('jadwal.absen', function ($query) {
+                    $query->where('setuju_kaprodi', 0);
+                })
+                ->count();
+
+            $kontrak = PengajuanRekapkontrak::with([
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                },
+            ])
+                ->whereHas('jadwal.absen', function ($query) {
+                    $query->where('setuju_kaprodi', 0);
+                })
+                ->count();
+
+            $resume = PengajuanRekapBerita::with([
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                },
+            ])
+                ->whereHas('jadwal.absen', function ($query) {
+                    $query->where('setuju_kaprodi', 0);
+                })
+                ->count();
+
+            return view('pages.dashboard.index', compact('mahasiswa', 'prodi', 'jadwals', 'resume', 'kontrak', 'presensis'));
 
             // MAHASISWA
         } elseif (Auth::guard('mahasiswa')->check()) {
@@ -67,6 +139,7 @@ class DashboardController extends Controller
 
             $totalKehadiran  = Absen::where('mahasiswas_id', $this->userId)
                 ->where('kelas_id', $kelas->id)
+                ->whereIn('status',['H','T'])
                 ->count();
 
             $totalMatakuliah = Matkul::with('prodi', 'semester')
@@ -80,13 +153,20 @@ class DashboardController extends Controller
                 ->where('hari', $hariIni)
                 ->get();
 
+            $absensHariIni = Absen::whereIn('jadwals_id', $jadwalsMahasiswa->pluck('id'))
+                ->whereDate('created_at', $tanggal->toDateString()) 
+                ->where('mahasiswas_id', auth()->user()->id) 
+                ->get();
+
             $semesters = NilaiHuruf::where('mahasiswa_id', $this->userId)
                 ->select('semester_id')
                 ->with('semester')
                 ->groupBy('semester_id')
                 ->get();
 
-            return view('pages.dashboard.index', compact('totalKehadiran', 'totalMatakuliah', 'jadwalsMahasiswa', 'semesters'));
+
+
+            return view('pages.dashboard.index', compact('totalKehadiran', 'totalMatakuliah', 'jadwalsMahasiswa', 'semesters','absensHariIni'));
 
 
             // DOSEN
@@ -95,7 +175,7 @@ class DashboardController extends Controller
             return view('pages.dashboard.index', compact('kelasAll'));
 
             // ADMIN
-        } elseif (Auth::guard('admin')) {
+        } elseif (Auth::guard('admin')->check()) {
             $totalMahaiswa = Mahasiswa::all()->count();
 
             $totalKelas = Kelas::with('semester')
@@ -134,6 +214,91 @@ class DashboardController extends Controller
                 ];
             });
             return view('pages.dashboard.index', compact('totalMahaiswa', 'totalKelas', 'totalDosen', 'totalHadir', 'totalTidakHadir', 'data'));
+
+            // WADIR DAN DIREKTUR
+        } elseif (Auth::guard('wakil_direktur')->check() || Auth::guard('direktur')->check()) {
+            $today = Carbon::today();
+
+            $totalMahaiswa = Mahasiswa::all()->count();
+
+            $totalDosen = Dosen::where('status', 1)->count();
+
+            $totalMahasiswaHariIni = Absen::whereDate('created_at', $today)->count();
+
+            $totalHadirHariIni = Absen::whereDate('created_at', $today)
+                ->whereIn('status', ['H', 'T'])
+                ->count();
+
+            $persentaseKehadiran = $totalMahasiswaHariIni > 0
+                ? ($totalHadirHariIni / $totalMahasiswaHariIni) * 100
+                : 0;
+
+            $presensis = PengajuanRekapPresensi::with([
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                },
+            ])
+                ->whereHas('jadwal.absen', function ($query) {
+                    $query->where('setuju_wadir', 0);
+                })
+                ->count();
+
+            $kontrak = PengajuanRekapkontrak::with([
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                },
+            ])
+                ->whereHas('jadwal.absen', function ($query) {
+                    $query->where('setuju_wadir', 0);
+                })
+                ->count();
+
+            $resume = PengajuanRekapBerita::with([
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                },
+            ])
+                ->whereHas('jadwal.absen', function ($query) {
+                    $query->where('setuju_wadir', 0);
+                })
+                ->count();
+            return view('pages.dashboard.index', compact('persentaseKehadiran', 'totalDosen', 'totalMahaiswa', 'presensis', 'kontrak', 'resume'));
         } else {
             return view('pages.dashboard.index');
         }

@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Kelas;
 use App\Models\Matkul;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Session;
@@ -38,7 +39,7 @@ class MessageSentNotification extends Notification
      * @return array<string, mixed>
      */
     public function toArray(object $notifiable): array
-    {
+    {   $kelas = Kelas::findOrFail($this->message->kelas_id);
         $matkul = Matkul::find($this->message->matkul_id);
         $dari = '';
         if ($this->message->sender_type == 'App\Models\Direktur') {
@@ -51,6 +52,7 @@ class MessageSentNotification extends Notification
                 'sender_name' => $this->getSenderName(),
                 'notification_type' => 'pemberitahuan',
                 'message_content' => $this->message->message,
+                'class'=>$kelas->nama_kelas,
                 'matkul' => $matkul->nama_matkul,
                 'title' => 'Pemberitahuan dari ' . $dari
             ];
@@ -59,6 +61,7 @@ class MessageSentNotification extends Notification
                 'sender_name' => $this->getSenderName(),
                 'notification_type' => 'pemberitahuan',
                 'message_content' => $this->message->message,
+                'class'=>$kelas->nama_kelas,
                 'matkul' => $matkul->nama_matkul,
                 'title' => 'Membalas Pemberitahuan'
             ];

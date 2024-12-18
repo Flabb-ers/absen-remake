@@ -22,41 +22,68 @@ class PengajuanRekapBeritaController extends Controller
      * Display a listing of the resource.
      */
     protected $prodiId;
+    protected $role;
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
             $this->prodiId = Session::get('user.prodiId');
+            $this->role = Session::get('user.role');
             return $next($request);
         });
     }
     public function index()
     {
-        $prodiId = $this->prodiId;
-        $beritas = PengajuanRekapBerita::with([
-            'matkul' => function ($query) {
-                $query->withTrashed();
-            },
-            'kelas' => function ($query) {
-                $query->withTrashed();
-            },
-            'kelas.prodi' => function ($query) {
-                $query->withTrashed();
-            },
-            'jadwal' => function ($query) {
-                $query->withTrashed();
-            },
-            'jadwal.dosen' => function ($query) {
-                $query->withTrashed();
-            }
-        ])
-            ->where('status', 0)
-            ->when($prodiId, function ($query) use ($prodiId) {
-                return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
-                    $query->where('id', $prodiId);
-                });
-            })
-            ->latest()
-            ->get();
+        if ($this->role == 'kaprodi') {
+            $prodiId = $this->prodiId;
+
+            $beritas = PengajuanRekapBerita::with([
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
+                ->where('status', 0)
+                ->when($prodiId, function ($query) use ($prodiId) {
+                    return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
+                        $query->where('id', $prodiId);
+                    });
+                })
+                ->latest()
+                ->get();
+        } elseif ($this->role == 'direktur' || $this->role == 'wakil_direktur') {
+
+            $beritas = PengajuanRekapBerita::with([
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
+                ->where('status', 0)
+                ->latest()
+                ->get();
+        }
 
 
         $kelasAll = Jadwal::all();
@@ -66,32 +93,55 @@ class PengajuanRekapBeritaController extends Controller
 
     public function confirm()
     {
-        $prodiId = $this->prodiId;
-        $beritas = PengajuanRekapBerita::with([
-            'matkul' => function ($query) {
-                $query->withTrashed();
-            },
-            'kelas' => function ($query) {
-                $query->withTrashed();
-            },
-            'kelas.prodi' => function ($query) {
-                $query->withTrashed();
-            },
-            'jadwal' => function ($query) {
-                $query->withTrashed();
-            },
-            'jadwal.dosen' => function ($query) {
-                $query->withTrashed();
-            }
-        ])
-            ->where('status', 1)
-            ->when($prodiId, function ($query) use ($prodiId) {
-                return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
-                    $query->where('id', $prodiId);
-                });
-            })
-            ->latest()
-            ->get();
+        if ($this->role == 'kaprodi') {
+            $prodiId = $this->prodiId;
+            $beritas = PengajuanRekapBerita::with([
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
+                ->where('status', 1)
+                ->when($prodiId, function ($query) use ($prodiId) {
+                    return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
+                        $query->where('id', $prodiId);
+                    });
+                })
+                ->latest()
+                ->get();
+        } elseif ($this->role == 'direktur' || $this->role == 'wakil_direktur') {
+            $beritas = PengajuanRekapBerita::with([
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
+                ->where('status', 1)
+                ->latest()
+                ->get();
+        }
 
         $kelasAll = Jadwal::all();
 
@@ -115,7 +165,7 @@ class PengajuanRekapBeritaController extends Controller
             "dosen_id" => 'required'
         ]);
 
-        $resume = PengajuanRekapBerita::with('matkul','kelas','jadwal','dosen')->create([
+        $resume = PengajuanRekapBerita::with('matkul', 'kelas', 'jadwal', 'dosen')->create([
             'matkuls_id' => $validateData['matkul_id'],
             'kelas_id' => $validateData['kelas_id'],
             'jadwal_id' => $validateData['jadwal_id'],
@@ -176,61 +226,61 @@ class PengajuanRekapBeritaController extends Controller
         } elseif ($pertemuan == '8-14') {
             $rentang = range(8, 14);
         }
-    
+
         try {
             $resumeRecords = Resume::where('matkuls_id', $matkul_id)
                 ->where('kelas_id', $kelas_id)
                 ->where('jadwals_id', $jadwal_id)
                 ->whereIn('pertemuan', $rentang)
                 ->get();
-    
+
             $allKaprodiApproved = true;
             $allWadirApproved = true;
-    
+
             foreach ($resumeRecords as $resume) {
                 if ($request->has('kaprodi')) {
                     $resume->setuju_kaprodi = true;
                 }
-                
+
                 if ($request->has('wakil_direktur')) {
                     $resume->setuju_wadir = true;
                 }
-    
+
                 if ($request->has('uncheck_kaprodi')) {
                     $resume->setuju_kaprodi = false;
                 }
-                
+
                 if ($request->has('uncheck_wakil_direktur')) {
                     $resume->setuju_wadir = false;
                 }
-    
+
                 if (!$resume->setuju_kaprodi) {
                     $allKaprodiApproved = false;
                 }
                 if (!$resume->setuju_wadir) {
                     $allWadirApproved = false;
                 }
-    
+
                 $resume->save();
             }
-    
+
             $statusBerita = ($allKaprodiApproved && $allWadirApproved) ? 1 : 0;
-    
+
             $pengajuan = PengajuanRekapBerita::where('matkuls_id', $matkul_id)
                 ->where('kelas_id', $kelas_id)
                 ->where('pertemuan', $pertemuan)
                 ->where('jadwal_id', $jadwal_id)
                 ->first();
-    
+
             if ($pengajuan) {
                 $pengajuan->update(['status' => $statusBerita]);
             }
 
-            if($statusBerita){
+            if ($statusBerita) {
                 $dosen = Dosen::findOrFail($resumeRecords->first()->dosens_id);
                 $dosen->notify(new PengajuanResumeNotification($pengajuan));
             }
-    
+
             return redirect()->back()->with('success', 'Status persetujuan berhasil diperbarui');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal memperbarui status persetujuan: ' . $e->getMessage());

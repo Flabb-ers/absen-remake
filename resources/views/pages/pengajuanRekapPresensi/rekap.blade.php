@@ -249,7 +249,7 @@
         <div class="signature-section">
             <div class="signature-box left">
                 <h5 style="margin-bottom:50px">Mengetahui</h5>
-                <h5>{{ $kaprodi ?? '.....................................................' }}</h5>
+                <h5>{{ $kaprodi->nama ?? '.....................................................' }}</h5>
                 <h5>Kaprodi</h5>
             </div>
             <div class="signature-box right">

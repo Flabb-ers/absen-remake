@@ -4,6 +4,19 @@
     @php
         use Carbon\Carbon;
     @endphp
+    <style>
+        input[type="checkbox"]:disabled {
+    background-color: #e0e0e0;
+    border-color: #ccc;
+    cursor: not-allowed;
+}
+
+input[type="checkbox"]:disabled:checked {
+    background-color: #d6d6d6;
+    border-color: #bbb; 
+}
+
+    </style>
     <div class="main-panel">
         <div class="content-wrapper">
             <div class="row">
@@ -61,30 +74,31 @@
                                 </div>
 
                                 <h5>Rekapitulasi Presensi</h5>
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Program Studi</th>
-                                            <th>Total Mahasiswa Hadir</th>
-                                            <th>Total Mahasiswa Tidak Hadir</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($data as $row)
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
                                             <tr>
-                                                <td>{{ $row['nama_prodi'] }}</td>
-                                                <td>{{ $row['total_hadir'] }}</td>
-                                                <td>{{ $row['total_tidak_hadir'] }}</td>
+                                                <th>Program Studi</th>
+                                                <th>Total Mahasiswa Hadir</th>
+                                                <th>Total Mahasiswa Tidak Hadir</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($data as $row)
+                                                <tr>
+                                                    <td>{{ $row['nama_prodi'] }}</td>
+                                                    <td>{{ $row['total_hadir'] }}</td>
+                                                    <td>{{ $row['total_tidak_hadir'] }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             @elseif(Auth::guard('direktur')->check() || Auth::guard('wakil_direktur')->check())
                                 <div class="dashboard">
                                     <h4>Dashboard {{ Auth::guard('direktur')->check() ? 'Direktur' : 'Wakil Direktur' }}
                                     </h4>
                                     <p>Selamat datang, {{ Auth::user()->nama }}!</p>
-
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="card bg-primary text-white mb-4">
@@ -106,7 +120,7 @@
                                             <div class="card bg-warning text-white mb-4">
                                                 <div class="card-body">
                                                     <h5><i class="mdi mdi-calendar-check"></i> Persentase Kehadiran</h5>
-                                                    <h3>{{ $totalKelas }}</h3>
+                                                    <h3>{{ number_format($persentaseKehadiran, 2) }}%</h3>
                                                 </div>
                                             </div>
                                         </div>
@@ -117,45 +131,58 @@
                                             <div class="bg-light p-4 rounded">
                                                 <div class="row">
                                                     <div class="col-md-4 text-center">
-                                                        <div class="card shadow-sm">
-                                                            <div class="card-body">
-                                                                <i class="mdi mdi-file-document fs-2 text-primary mb-3"></i>
-                                                                <h5>Kontrak</h5>
-                                                                <span class="badge bg-danger">3 Pending</span>
-                                                                <div class="mt-3">
-                                                                    <button class="btn btn-outline-primary btn-sm">Lihat
-                                                                        Detail</button>
-                                                                </div>
+                                                        <div class="card-body position-relative">
+                                                            <i
+                                                                class="mdi mdi-file-document fs-2 text-primary mb-3 position-relative">
+                                                                @if ($kontrak > 0)
+                                                                    <span
+                                                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                                        {{ $kontrak }}
+                                                                    </span>
+                                                                @endif
+                                                            </i>
+                                                            <h5>Kontrak</h5>
+                                                            <div class="mt-3">
+                                                                <a href="/presensi/pengajuan-konfirmasi/rekap-kontrak"
+                                                                    class="btn btn-outline-primary btn-sm">Lihat Detail</a>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div class="col-md-4 text-center">
-                                                        <div class="card shadow-sm">
-                                                            <div class="card-body">
-                                                                <i
-                                                                    class="mdi mdi-calendar-check fs-2 text-success mb-3"></i>
-                                                                <h5>Presensi</h5>
-                                                                <span class="badge bg-danger">2 Pending</span>
-                                                                <div class="mt-3">
-                                                                    <button class="btn btn-outline-primary btn-sm">Lihat
-                                                                        Detail</button>
-                                                                </div>
+                                                        <div class="card-body position-relative">
+                                                            <i
+                                                                class="mdi mdi-calendar-check fs-2 text-success mb-3 position-relative">
+                                                                @if ($presensis > 0)
+                                                                    <span
+                                                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                                        {{ $presensis }}
+                                                                    </span>
+                                                                @endif
+                                                            </i>
+                                                            <h5>Presensi</h5>
+                                                            <div class="mt-3">
+                                                                <a href="/presensi/pengajuan-konfirmasi/rekap-presensi"
+                                                                    class="btn btn-outline-primary btn-sm">Lihat Detail</a>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div class="col-md-4 text-center">
-                                                        <div class="card shadow-sm">
-                                                            <div class="card-body">
-                                                                <i
-                                                                    class="mdi mdi-file-document-edit fs-2 text-warning mb-3"></i>
-                                                                <h5>Berita Acara</h5>
-                                                                <span class="badge bg-danger">2 Pending</span>
-                                                                <div class="mt-3">
-                                                                    <button class="btn btn-outline-primary btn-sm">Lihat
-                                                                        Detail</button>
-                                                                </div>
+                                                        <div class="card-body position-relative">
+                                                            <i
+                                                                class="mdi mdi-file-document-edit fs-2 text-warning mb-3 position-relative">
+                                                                @if ($resume > 0)
+                                                                    <span
+                                                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                                        {{ $resume }}
+                                                                    </span>
+                                                                @endif
+                                                            </i>
+                                                            <h5>Berita Acara</h5>
+                                                            <div class="mt-3">
+                                                                <a href="/presensi/pengajuan-konfirmasi/rekap-berita"
+                                                                    class="btn btn-outline-primary btn-sm">Lihat Detail</a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -167,113 +194,184 @@
                                     <h4>Dashboard Dosen</h4>
                                     <p>Konten khusus untuk Dosen</p>
                                 @elseif(Auth::guard('mahasiswa')->check())
-                                    <h4>Dashboard Mahasiswa</h4>
-                                    <p>Selamat datang, {{ Auth::guard('mahasiswa')->user()->nama_lengkap }}!</p>
-                                    <h5>Presensi Anda</h5>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="card bg-primary text-white mb-4">
-                                                <div class="card-body">
-                                                    <h5>Total Kehadiran</h5>
-                                                    <h3>{{ $totalKehadiran }}</h3>
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-2">
+                                                <div class="stats-card bg-primary text-white p-3 rounded">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <h5 class="mb-2">Total Kehadiran</h5>
+                                                            <h3>{{ $totalKehadiran }}</h3>
+                                                        </div>
+
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="card bg-success text-white mb-4">
-                                                <div class="card-body">
-                                                    <h5>Total Matakuliah</h5>
-                                                    <h3>{{ $totalMatakuliah }}</h3>
+                                            <div class="col-md-4 mb-2">
+                                                <div class="stats-card bg-success text-white p-3 rounded">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <h5 class="mb-2">Total Matakuliah</h5>
+                                                            <h3>{{ $totalMatakuliah }}</h3>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            {{-- </div>
-                                    <div class="col-md-4">
-                                        <div class="card bg-warning text-white mb-4">
-                                            <div class="card-body">
-                                                <h5>Kehadiran Bulan Ini</h5>
-                                                <h3>{{ $kehadiranBulanIni }}</h3>
+                                            <div class="col-md-4 mb-2">
+                                                <div class="stats-card bg-warning text-white p-3 rounded">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <h5 class="mb-2">Status KRS</h5>
+                                                            @if (auth()->user()->status_krs == 1)
+                                                                <h3>Sudah</h3>
+                                                            @else
+                                                                <h3>Belum</h3>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div> --}}
                                         </div>
 
-                                        <h5>Jadwal Kuliah Hari Ini</h5>
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>Kelas</th>
-                                                    <th>Mata Kuliah</th>
-                                                    <th>Ruangan</th>
-                                                    <th>Jam</th>
-                                                    <th>Status Kehadiran</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @forelse ($jadwalsMahasiswa as $jadwal)
-                                                    @php
-                                                        $now = Carbon::now();
-                                                        $mulai = Carbon::createFromFormat(
-                                                            'H:i:s',
-                                                            $jadwal->waktu_mulai,
-                                                        );
-                                                        $selesai = Carbon::createFromFormat(
-                                                            'H:i:s',
-                                                            $jadwal->waktu_selesai,
-                                                        );
-                                                    @endphp
-                                                    <tr>
-                                                        <td>{{ $jadwal->kelas->nama_kelas }}</td>
-                                                        <td>{{ $jadwal->matkul->nama_matkul }}</td>
-                                                        <td>{{ $jadwal->ruangan->nama }}</td>
-                                                        <td>{{ $mulai->format('H:i') }} - {{ $selesai->format('H:i') }}
-                                                        </td>
-                                                        <td>
-                                                            @if ($now->lessThan($mulai))
-                                                                <span class="badge badge-warning">Belum Mulai</span>
-                                                            @elseif ($now->between($mulai, $selesai))
-                                                                <span class="badge badge-success">Berlangsung</span>
-                                                            @else
-                                                                <span class="badge badge-danger">Sudah Selesai</span>
-                                                            @endif
-                                                        </td>
-                                                    </tr>
-                                                @empty
-                                                    <tr class="text-center">
-                                                        <td colspan="5">Belum Ada jadwal</td>
-                                                    </tr>
-                                                @endforelse
-                                            </tbody>
-                                        </table>
-                                    @elseif(Auth::guard('kaprodi')->check())
-                                        <h4>Dashboard Kaprodi</h4>
-                                        <p>Rekapitulasi Presensi</p>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="card bg-primary text-white mb-4">
-                                                    <div class="card-body">
-                                                        <h5>Total Mahasiswa {{ $prodi->nama_prodi }}</h5>
-                                                        <h3>{{ $mahasiswa }}</h3>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="card bg-success text-white mb-4">
-                                                    <div class="card-body">
-                                                        <h5>Total Dosen Hadir</h5>
-                                                        <h3>15</h3>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="card bg-warning text-white mb-4">
-                                                    <div class="card-body">
-                                                        <h5>Kelas Belum Terisi</h5>
-                                                        <h3>3</h3>
-                                                    </div>
+                                        <h5 class="mt-3">Jadwal Kuliah Hari Ini</h5>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Kelas</th>
+                                                                <th>Mata Kuliah</th>
+                                                                <th>Ruangan</th>
+                                                                <th>Jam</th>
+                                                                <th>Status Kehadiran</th>
+                                                                <th>Presensi</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @forelse ($jadwalsMahasiswa as $jadwal)
+                                                                @php
+                                                                    $now = Carbon::now();
+                                                                    $mulai = Carbon::createFromFormat(
+                                                                        'H:i:s',
+                                                                        $jadwal->waktu_mulai,
+                                                                    );
+                                                                    $selesai = Carbon::createFromFormat(
+                                                                        'H:i:s',
+                                                                        $jadwal->waktu_selesai,
+                                                                    );
+                                                                    $absen = $absensHariIni
+                                                                        ->where('jadwals_id', $jadwal->id)
+                                                                        ->first();
+                                                                @endphp
+                                                                <tr>
+                                                                    <td>{{ $jadwal->kelas->nama_kelas }}</td>
+                                                                    <td>{{ $jadwal->matkul->nama_matkul }}</td>
+                                                                    <td>{{ $jadwal->ruangan->nama }}</td>
+                                                                    <td>{{ $mulai->format('H:i') }} -
+                                                                        {{ $selesai->format('H:i') }}</td>
+                                                                    <td>
+                                                                        @if ($now->lessThan($mulai))
+                                                                            <span class="badge badge-warning">Belum
+                                                                                Mulai</span>
+                                                                        @elseif ($now->between($mulai, $selesai))
+                                                                            <span
+                                                                                class="badge badge-success">Berlangsung</span>
+                                                                        @else
+                                                                            <span class="badge badge-danger">Selesai</span>
+                                                                        @endif
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <div class="form-check form-check-primary">
+                                                                            <label class="form-check-label">
+                                                                                <input type="checkbox"
+                                                                                    {{ $absen ? 'checked' : '' }} disabled>
+                                                                                    <i class="input-helper"></i>
+                                                                            </label>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            @empty
+                                                                <tr class="text-center">
+                                                                    <td colspan="6">Belum Ada Jadwal</td>
+                                                                </tr>
+                                                            @endforelse
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
                                         </div>
-                                        <h5>Jadwal Hari Ini</h5>
+                                    </div>
+                                @elseif(Auth::guard('kaprodi')->check())
+                                    <h4>Dashboard Kaprodi</h4>
+                                    <p>Selamat Datang, {{ auth()->user()->nama }}</p>
+                                    <div class="row">
+                                        <div class="col-md-3 text-center">
+                                            <div class="card bg-primary text-white mb-4">
+                                                <div class="card-body">
+                                                    <h5>Total Mahasiswa {{ $prodi->nama_prodi }}</h5>
+                                                    <h3>{{ $mahasiswa }}</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 text-center">
+                                            <div class="card-body position-relative">
+                                                <i class="mdi mdi-file-document fs-2 text-primary mb-3 position-relative">
+                                                    @if ($kontrak > 0)
+                                                        <span
+                                                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                            {{ $kontrak }}
+                                                        </span>
+                                                    @endif
+                                                </i>
+                                                <h5>Kontrak</h5>
+                                                <div class="mt-3">
+                                                    <button class="btn btn-outline-primary btn-sm">Lihat
+                                                        Detail</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 text-center">
+                                            <div class="card-body position-relative">
+                                                <i class="mdi mdi-calendar-check fs-2 text-success mb-3 position-relative">
+                                                    @if ($presensis > 0)
+                                                        <span
+                                                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                            {{ $presensis }}
+                                                        </span>
+                                                    @endif
+                                                </i>
+                                                <h5>Presensi</h5>
+                                                <div class="mt-3">
+                                                    <button class="btn btn-outline-primary btn-sm">Lihat
+                                                        Detail</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 text-center">
+                                            <div class="card-body position-relative">
+                                                <i
+                                                    class="mdi mdi-file-document-edit fs-2 text-warning mb-3 position-relative">
+                                                    @if ($resume > 0)
+                                                        <span
+                                                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                            {{ $resume }}
+                                                        </span>
+                                                    @endif
+                                                </i>
+                                                <h5>Berita Acara</h5>
+                                                <div class="mt-3">
+                                                    <button class="btn btn-outline-primary btn-sm">Lihat
+                                                        Detail</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h5>Jadwal Hari Ini</h5>
+                                    <div class="table-responsive">
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
@@ -301,7 +399,8 @@
                                                         <td>{{ $jadwal->kelas->nama_kelas }}</td>
                                                         <td>{{ $jadwal->matkul->nama_matkul }}</td>
                                                         <td>{{ $jadwal->ruangan->nama }}</td>
-                                                        <td>{{ $mulai->format('H:i') }} - {{ $selesai->format('H:i') }}
+                                                        <td>{{ $mulai->format('H:i') }} -
+                                                            {{ $selesai->format('H:i') }}
                                                         </td>
                                                         <td>
                                                             @if ($now->lessThan($mulai))
@@ -320,8 +419,9 @@
                                                 @endforelse
                                             </tbody>
                                         </table>
-                                    @else
-                                        <p>Anda harus login terlebih dahulu.</p>
+                                    </div>
+                                @else
+                                    <p>Anda harus login terlebih dahulu.</p>
                             @endif
                         </div>
                     </div>

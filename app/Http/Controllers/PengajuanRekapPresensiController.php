@@ -22,43 +22,68 @@ class PengajuanRekapPresensiController extends Controller
      */
 
     protected $prodiId;
+    protected $role;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
             $this->prodiId = Session::get('user.prodiId');
+            $this->role = Session::get('user.role');
             return $next($request);
         });
     }
 
     public function index()
     {
-        $prodiId = $this->prodiId;
-        $presensis = PengajuanRekapPresensi::with([
-            'matkul' => function ($query) {
-                $query->withTrashed();
-            },
-            'kelas.prodi' => function ($query) {
-                $query->withTrashed();
-            },
-            'kelas' => function ($query) {
-                $query->withTrashed();
-            },
-            'jadwal' => function ($query) {
-                $query->withTrashed();
-            },
-            'jadwal.dosen' => function ($query) {
-                $query->withTrashed();
-            }
-        ])
-            ->where('status', 0)
-            ->when($prodiId, function ($query) use ($prodiId) {
-                return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
-                    $query->where('id', $prodiId);
-                });
-            })
-            ->latest()
-            ->get();
+        if ($this->role == 'kaprodi') {
+            $prodiId = $this->prodiId;
+            $presensis = PengajuanRekapPresensi::with([
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
+                ->where('status', 0)
+                ->when($prodiId, function ($query) use ($prodiId) {
+                    return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
+                        $query->where('id', $prodiId);
+                    });
+                })
+                ->latest()
+                ->get();
+        } elseif ($this->role == 'direktur' || $this->role == 'wakil_direktur') {
+            $presensis = PengajuanRekapPresensi::with([
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
+                ->where('status', 0)
+                ->latest()
+                ->get();
+        }
 
         $kelasAll = Jadwal::all();
 
@@ -67,32 +92,56 @@ class PengajuanRekapPresensiController extends Controller
 
     public function confirm()
     {
-        $prodiId = $this->prodiId;
-        $presensis = PengajuanRekapPresensi::with([
-            'matkul' => function ($query) {
-                $query->withTrashed();
-            },
-            'kelas.prodi' => function ($query) {
-                $query->withTrashed();
-            },
-            'kelas' => function ($query) {
-                $query->withTrashed();
-            },
-            'jadwal' => function ($query) {
-                $query->withTrashed();
-            },
-            'jadwal.dosen' => function ($query) {
-                $query->withTrashed();
-            }
-        ])
-            ->where('status', 1)
-            ->when($prodiId, function ($query) use ($prodiId) {
-                return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
-                    $query->where('id', $prodiId);
-                });
-            })
-            ->latest()
-            ->get();
+        if ($this->role == 'kaprodi') {
+            $prodiId = $this->prodiId;
+            $presensis = PengajuanRekapPresensi::with([
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
+                ->where('status', 1)
+                ->when($prodiId, function ($query) use ($prodiId) {
+                    return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
+                        $query->where('id', $prodiId);
+                    });
+                })
+                ->latest()
+                ->get();
+
+        } elseif ($this->role == 'direktur' || $this->role == 'wakil_direktur') {
+            $presensis = PengajuanRekapPresensi::with([
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
+                ->where('status', 1)
+                ->latest()
+                ->get();
+        }
 
         $kelasAll = Jadwal::all();
 
@@ -113,7 +162,7 @@ class PengajuanRekapPresensiController extends Controller
             'jadwal_id' => 'required',
         ]);
 
-        $presensi = PengajuanRekapPresensi::with('jadwal','jadwal.dosen','kelas','matkul')->create([
+        $presensi = PengajuanRekapPresensi::with('jadwal', 'jadwal.dosen', 'kelas', 'matkul')->create([
             'kelas_id' => $validateData['kelas_id'],
             'matkul_id' => $validateData['matkul_id'],
             'pertemuan' => $validateData['rentang'],
@@ -168,8 +217,8 @@ class PengajuanRekapPresensiController extends Controller
             })
             ->get();
 
-            $kaprodi = Kaprodi::where('prodis_id',$absens->first()->prodis_id)->first();
-        return view('pages.pengajuanRekapPresensi.rekap', compact('absens', 'rentang','kaprodi'));
+        $kaprodi = Kaprodi::where('prodis_id', $absens->first()->prodis_id)->first();
+        return view('pages.pengajuanRekapPresensi.rekap', compact('absens', 'rentang', 'kaprodi'));
     }
 
     public function update(Request $request, $pertemuan, $matkul_id, $kelas_id, $jadwal_id)
@@ -180,60 +229,60 @@ class PengajuanRekapPresensiController extends Controller
         } elseif ($pertemuan == '8-14') {
             $rentang = range(8, 14);
         }
-    
+
         try {
             $absenRecords = Absen::with('dosen')->where('matkuls_id', $matkul_id)
                 ->where('kelas_id', $kelas_id)
                 ->whereIn('pertemuan', $rentang)
                 ->where('jadwals_id', $jadwal_id)
                 ->get();
-    
+
             $allKaprodiApproved = true;
             $allWadirApproved = true;
-    
+
             foreach ($absenRecords as $absen) {
                 if ($request->has('kaprodi')) {
                     $absen->setuju_kaprodi = true;
                 }
-                
+
                 if ($request->has('wakil_direktur')) {
                     $absen->setuju_wadir = true;
                 }
-    
+
                 if ($request->has('uncheck_kaprodi')) {
                     $absen->setuju_kaprodi = false;
                 }
-                
+
                 if ($request->has('uncheck_wakil_direktur')) {
                     $absen->setuju_wadir = false;
                 }
-    
+
                 if (!$absen->setuju_kaprodi) {
                     $allKaprodiApproved = false;
                 }
                 if (!$absen->setuju_wadir) {
                     $allWadirApproved = false;
                 }
-    
+
                 $absen->save();
             }
-    
+
             $statusPresensi = ($allKaprodiApproved && $allWadirApproved) ? 1 : 0;
-            
+
             $presensi = PengajuanRekapPresensi::where('matkul_id', $matkul_id)
                 ->where('kelas_id', $kelas_id)
                 ->where('pertemuan', $pertemuan)
                 ->first();
-            
+
             if ($presensi) {
                 $presensi->update(['status' => $statusPresensi]);
             }
-    
-            if($statusPresensi){
+
+            if ($statusPresensi) {
                 $dosen = Dosen::findOrFail($absenRecords->first()->dosens_id);
                 $dosen->notify(new PengajuanPresensiNotification($presensi));
             }
-            
+
             return redirect()->back()->with('success', 'Status persetujuan berhasil diperbarui');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal memperbarui status persetujuan: ' . $e->getMessage());

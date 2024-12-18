@@ -21,43 +21,67 @@ class PengajuanRekapkontrakController extends Controller
      * Display a listing of the resource.
      */
     protected $prodiId;
+    protected $role;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
             $this->prodiId = Session::get('user.prodiId');
+            $this->role = Session::get('user.role');
             return $next($request);
         });
     }
     public function index()
     {
         $prodiId = $this->prodiId;
-
-        $kontraks = PengajuanRekapkontrak::with([
-            'kelas.prodi' => function ($query) {
-                $query->withTrashed();
-            },
-            'kelas' => function ($query) {
-                $query->withTrashed();
-            },
-            'jadwal' => function ($query) {
-                $query->withTrashed();
-            },
-            'jadwal.dosen' => function ($query) {
-                $query->withTrashed();
-            },
-            'matkul' => function ($query) {
-                $query->withTrashed();
-            }
-        ])
-            ->where('status', 0)
-            ->when($prodiId, function ($query) use ($prodiId) {
-                return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
-                    $query->where('id', $prodiId);
-                });
-            })
-            ->latest()
-            ->get();
+        if ($this->role == 'kaprodi') {
+            $kontraks = PengajuanRekapkontrak::with([
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                },
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
+                ->where('status', 0)
+                ->when($prodiId, function ($query) use ($prodiId) {
+                    return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
+                        $query->where('id', $prodiId);
+                    });
+                })
+                ->latest()
+                ->get();
+        } elseif ($this->role == 'direktur' || $this->role == 'wakil_direktur') {
+            $kontraks = PengajuanRekapkontrak::with([
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                },
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
+                ->where('status', 0)
+                ->latest()
+                ->get();
+        }
 
         $kelasAll = Jadwal::all();
         return view('pages.pengajuanRekapKontrak.index', compact('kontraks', 'kelasAll'));
@@ -66,33 +90,55 @@ class PengajuanRekapkontrakController extends Controller
 
     public function confirm()
     {
-
-        $prodiId = $this->prodiId;
-        $kontraks = PengajuanRekapkontrak::with([
-            'kelas' => function ($query) {
-                $query->withTrashed();
-            },
-            'kelas.prodi' => function ($query) {
-                $query->withTrashed();
-            },
-            'jadwal' => function ($query) {
-                $query->withTrashed();
-            },
-            'jadwal.dosen' => function ($query) {
-                $query->withTrashed();
-            },
-            'matkul' => function ($query) {
-                $query->withTrashed();
-            }
-        ])
-            ->where('status', 1)
-            ->when($prodiId, function ($query) use ($prodiId) {
-                return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
-                    $query->where('id', $prodiId);
-                });
-            })
-            ->latest()
-            ->get();
+        if ($this->role == 'kaprodi') {
+            $prodiId = $this->prodiId;
+            $kontraks = PengajuanRekapkontrak::with([
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                },
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
+                ->where('status', 1)
+                ->when($prodiId, function ($query) use ($prodiId) {
+                    return $query->whereHas('kelas.prodi', function ($query) use ($prodiId) {
+                        $query->where('id', $prodiId);
+                    });
+                })
+                ->latest()
+                ->get();
+        } elseif ($this->role == 'direktur' || $this->role == 'wakil_direktur') {
+            $kontraks = PengajuanRekapkontrak::with([
+                'kelas' => function ($query) {
+                    $query->withTrashed();
+                },
+                'kelas.prodi' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal' => function ($query) {
+                    $query->withTrashed();
+                },
+                'jadwal.dosen' => function ($query) {
+                    $query->withTrashed();
+                },
+                'matkul' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
+                ->where('status', 1)
+                ->latest()
+                ->get();
+        }
 
         $kelasAll = Jadwal::all();
         return view('pages.pengajuanRekapKontrak.disetujui', compact('kontraks', 'kelasAll'));
@@ -134,9 +180,9 @@ class PengajuanRekapkontrakController extends Controller
      */
     public function edit($jadwal_id, $matkul_id, $kelas_id)
     {
-        
+
         $prodiId = $this->prodiId;
-        $kontraks = Kontrak::with('matkul', 'kelas.semester', 'kelas.prodi','jadwal.dosen')
+        $kontraks = Kontrak::with('matkul', 'kelas.semester', 'kelas.prodi', 'jadwal.dosen')
             ->where('matkuls_id', $matkul_id)
             ->where('kelas_id', $kelas_id)
             ->where('jadwals_id', $jadwal_id)
@@ -146,10 +192,10 @@ class PengajuanRekapkontrakController extends Controller
                 });
             })
             ->get();
-        $kelas = Kelas::with('prodi')->where('id',$kelas_id)->first();
-        $kaprodi = Kaprodi::where('prodis_id',$kelas->id_prodi)->first();
-        $wadir = Wadir::where('no',1)->first();
-        return view('pages.pengajuanRekapKontrak.rekap', compact('kontraks','kaprodi','wadir'));
+        $kelas = Kelas::with('prodi')->where('id', $kelas_id)->first();
+        $kaprodi = Kaprodi::where('prodis_id', $kelas->id_prodi)->first();
+        $wadir = Wadir::where('no', 1)->first();
+        return view('pages.pengajuanRekapKontrak.rekap', compact('kontraks', 'kaprodi', 'wadir'));
     }
 
     /**
