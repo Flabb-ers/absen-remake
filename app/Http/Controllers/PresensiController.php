@@ -62,11 +62,11 @@ class PresensiController extends Controller
             ->get();
 
         $filteredPesans = $pesans->filter(function ($pesan) {
-            return $pesan->sender_type != 'App\Models\Dosen'; 
+            return $pesan->sender_type != 'App\Models\Dosen';
         });
 
         $groupedPesans = $filteredPesans->groupBy(function ($pesan) {
-            return $pesan->sender_type . '-' . $pesan->sender_id; 
+            return $pesan->sender_type . '-' . $pesan->sender_id;
         });
 
         $pesans = $groupedPesans->map(function (Collection $group) {
@@ -353,7 +353,7 @@ class PresensiController extends Controller
         return view('pages.dosen.data-presensi.rekap.berita8-14', compact('beritas', 'sem', 'tahunAkademik'));
     }
 
-    public function kategoriInPresensi()
+    public function kategori()
     {
         if ($this->role == 'kaprodi') {
             $kaprodi = Kaprodi::where('id', $this->userid)->first();
@@ -386,7 +386,7 @@ class PresensiController extends Controller
         return view('pages.data-presensi.index', compact('getDosen', 'dosenMatkulCount'));
     }
 
-    public function detailMatkulPresensi($id)
+    public function detailMatkul($id)
     {
         if ($this->role == 'kaprodi') {
             $kaprodi = Kaprodi::where('id', $this->userid)->first();
@@ -418,7 +418,20 @@ class PresensiController extends Controller
             $pertemuan = Absen::where('jadwals_id', $jadwal->id)->max('pertemuan');
             $pertemuanCounts[$jadwal->id] = $pertemuan ?? 0;
         }
-        return view('pages.data-presensi.matkul', compact('jadwals', 'pertemuanCounts'));
+
+        $beritaCounts = [];
+        foreach ($jadwals as $jadwal) {
+            $berita = Resume::where('jadwals_id', $jadwal->id)->max('pertemuan');
+            $beritaCounts[$jadwal->id] = $berita ?? 0;
+        }
+        $kontrakCounts = [];
+        foreach ($jadwals as $jadwal) {
+            $kontrak = Kontrak::where('jadwals_id', $jadwal->id)->max('pertemuan');
+            $kontrakCounts[$jadwal->id] = $kontrak ?? 0;
+        }
+
+
+        return view('pages.data-presensi.matkul', compact('jadwals', 'pertemuanCounts','beritaCounts','kontrakCounts'));
     }
     public function cekPresensi1to7($matkul_id, $kelas_id, $jadwal_id)
     {

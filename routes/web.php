@@ -31,6 +31,7 @@ use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\RekapNilaiController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\KrsPembayaranController;
+use App\Http\Controllers\LembarMonitoringController;
 use App\Http\Controllers\PemberitahuanController;
 use App\Http\Controllers\TahunAkademikController;
 use App\Http\Controllers\NilaiMahasiswaController;
@@ -87,6 +88,7 @@ Route::prefix('/presensi')->group(function () {
     Route::resource('/data-mahasiswa', MahasiswaController::class)->except(['show'])->middleware('auth:admin');
     Route::get('/data-mahasiswa/{id}', [MahasiswaController::class, 'kelas'])->middleware('auth:admin');
     Route::post('/data-mahasiswa/move', [MahasiswaController::class, 'pindahKelas'])->middleware('auth:admin');
+    Route::post('/data-mahasiswa/delete', [MahasiswaController::class, 'deleteCheck'])->middleware('auth:admin');
     Route::get('/presensi/data-mahasiswa/search', [MahasiswaController::class, 'search'])->name('data-mahasiswa.search')->middleware('auth:admin');
     Route::post('/data-mahasiswa/import', [MahasiswaController::class, 'import'])->name('data-mahasiswa-import')->middleware('auth:admin');
 
@@ -217,9 +219,14 @@ Route::prefix('/presensi')->group(function () {
     });
 
     Route::prefix('/data')->middleware('auth:admin,kaprodi,wakil_direktur,direktur')->group(function () {
+
+
+        // DATA PERKULIAHAN
+        Route::get('/perkuliahan', [PresensiController::class, 'kategori']);
+        Route::get('/perkuliahan/{id}', [PresensiController::class, 'detailMatkul']);
+
+
         // DATA PRESENSI
-        Route::get('/presence', [PresensiController::class, 'kategoriInPresensi']);
-        Route::get('/presence/{id}', [PresensiController::class, 'detailMatkulPresensi']);
         Route::get('/presence/{matkul_id}/{kelas_id}/{jadwal_id}/1-7', [PresensiController::class, 'cekPresensi1to7']);
         Route::get('/presence/{matkul_id}/{kelas_id}/{jadwal_id}/8-14', [PresensiController::class, 'cekPresensi8to14']);
 
@@ -263,7 +270,7 @@ Route::prefix('/presensi')->group(function () {
     });
 
     // PEMBERITAHUAN / CHAT
-    Route::prefix('/pemberitahuan')->middleware('auth:wakil_direktur,direktur,dosen')->group(function () {
+    Route::prefix('/pemberitahuan')->middleware('auth:wakil_direktur,direktur,dosen,kaprodi')->group(function () {
         Route::post('/send', [PemberitahuanController::class, 'sendMessage'])
             ->name('send.message');
         Route::get('/show', [PemberitahuanController::class, 'getMessages'])
@@ -280,4 +287,7 @@ Route::prefix('/presensi')->group(function () {
     // NOTIFIKASI
     Route::get('/get-notif', [NotificationController::class, 'getNotifications'])->middleware('auth:dosen,wakil_direktur,direktur,mahasiswa,admin,kaprodi');
     Route::post('/mark-notif-read', [NotificationController::class, 'markNotificationsAsRead'])->middleware('auth:dosen,wakil_direktur,direktur,mahasiswa,admin,kaprodi');
+
+
+    Route::get('/lembar-monitoring/{jadwal_id}',[LembarMonitoringController::class,'index']);
 });

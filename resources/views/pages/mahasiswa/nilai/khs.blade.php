@@ -111,7 +111,7 @@
 
         <div class="info-item">
             <div style="margin-right: 61px;" class="monotype-corsiva">Study Program</div>
-            <div>:</div>
+            <div>: {{ $ipss->first()->mahasiswa->kelas->prodi->alias_nama }}</div>
         </div>
 
         <div class="info-item">
@@ -121,7 +121,7 @@
 
         <div class="info-item">
             <div style="margin-right: 107px;" class="monotype-corsiva">Degree</div>
-            <div>:</div>
+            <div>:  {{ $ipss->first()->mahasiswa->kelas->prodi->alias_jenjang }} </div>
         </div>
     </div>
 </div>

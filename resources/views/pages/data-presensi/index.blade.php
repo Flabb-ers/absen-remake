@@ -7,7 +7,7 @@
                 <a href="/presensi/dashboard" class="breadcrumb-item">
                     <span class="mdi mdi-home"></span> Dashboard
                 </a>
-                <span class="breadcrumb-item" id="dataMasterBreadcrumb">Data Presensi</span>
+                <span class="breadcrumb-item" id="dataMasterBreadcrumb">Data Perkuliahan</span>
             </div>
             <div class="row">
                 @forelse ($getDosen as $dosen)
@@ -26,7 +26,7 @@
                                         {{ $dosenMatkulCount->get($dosen->id, 0) }}
                                     </li>
                                 </ul>
-                                <a href="/presensi/data/presence/{{ $dosen->id }}" class="btn btn-info btn-sm">Lihat</a>
+                                <a href="/presensi/data/perkuliahan/{{ $dosen->id }}" class="btn btn-info btn-sm">Lihat</a>
                             </div>
                         </div>
                     </div>

@@ -46,8 +46,10 @@ class MessageSentNotification extends Notification
             $dari = 'Direktur';
         } elseif ($this->message->sender_type == 'App\Models\Wadir') {
             $dari = 'Wakil Direktur';
+        } elseif ($this->message->sender_type == 'App\Models\Kaprodi') {
+            $dari = 'Kaprodi';
         }
-        if (Session::get('user.role') == 'direktur' || Session::get('user.role') == 'wakil_direktur') {
+        if (Session::get('user.role') == 'direktur' || Session::get('user.role') == 'wakil_direktur' || Session::get('user.role') == 'kaprodi') {
             return [
                 'sender_name' => $this->getSenderName(),
                 'notification_type' => 'pemberitahuan',

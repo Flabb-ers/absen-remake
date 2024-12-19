@@ -45,8 +45,29 @@ class DashboardController extends Controller
             ->groupBy('semester_id')
             ->get();
 
+
+        // DOSEN
+        if (Auth::guard('dosen')->check()) {
+            $dosen = Auth::guard('dosen')->user();
+            $now = Carbon::now()->isoFormat('dddd');
+
+            $jadwalsDosenHariIni = Jadwal::where('dosens_id', $dosen->id)
+                ->where('hari', $now)
+                ->get();
+
+            $totalKelas = $jadwalsDosenHariIni->groupBy('kelas_id')->count();
+            $totalMatakuliah = $jadwalsDosenHariIni->groupBy('matkuls_id')->count();
+            $totalPresensiHariIni = Absen::whereDate('created_at', Carbon::today())
+                ->where('dosens_id', $dosen->id)
+                ->distinct('kelas_id') 
+                ->count('kelas_id');   
+
+
+            return view('pages.dashboard.index', compact('jadwalsDosenHariIni', 'totalKelas', 'totalMatakuliah', 'totalPresensiHariIni', 'kelasAll'));
+        }
+
         // KAPRODI
-        if (Auth::guard('kaprodi')->check()) {
+        elseif (Auth::guard('kaprodi')->check()) {
             $prodi = Prodi::findOrFail($this->prodiId);
 
             $mahasiswa = Mahasiswa::with('kelas.prodi', 'kelas')->whereHas('kelas', function ($query) use ($prodiId) {
@@ -139,7 +160,7 @@ class DashboardController extends Controller
 
             $totalKehadiran  = Absen::where('mahasiswas_id', $this->userId)
                 ->where('kelas_id', $kelas->id)
-                ->whereIn('status',['H','T'])
+                ->whereIn('status', ['H', 'T'])
                 ->count();
 
             $totalMatakuliah = Matkul::with('prodi', 'semester')
@@ -154,8 +175,8 @@ class DashboardController extends Controller
                 ->get();
 
             $absensHariIni = Absen::whereIn('jadwals_id', $jadwalsMahasiswa->pluck('id'))
-                ->whereDate('created_at', $tanggal->toDateString()) 
-                ->where('mahasiswas_id', auth()->user()->id) 
+                ->whereDate('created_at', $tanggal->toDateString())
+                ->where('mahasiswas_id', auth()->user()->id)
                 ->get();
 
             $semesters = NilaiHuruf::where('mahasiswa_id', $this->userId)
@@ -166,7 +187,7 @@ class DashboardController extends Controller
 
 
 
-            return view('pages.dashboard.index', compact('totalKehadiran', 'totalMatakuliah', 'jadwalsMahasiswa', 'semesters','absensHariIni'));
+            return view('pages.dashboard.index', compact('totalKehadiran', 'totalMatakuliah', 'jadwalsMahasiswa', 'semesters', 'absensHariIni'));
 
 
             // DOSEN

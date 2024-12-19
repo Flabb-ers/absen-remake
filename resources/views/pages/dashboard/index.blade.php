@@ -191,8 +191,87 @@ input[type="checkbox"]:disabled:checked {
                                         </div>
                                     </div>
                                 @elseif(Auth::guard('dosen')->check())
-                                    <h4>Dashboard Dosen</h4>
-                                    <p>Konten khusus untuk Dosen</p>
+                                <h4>Dashboard Dosen</h4>
+                                <p>Selamat datang, {{ Auth::guard('dosen')->user()->nama }}!</p>
+                        
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="card bg-primary text-white mb-4">
+                                            <div class="card-body">
+                                                <h5>Total Kelas</h5>
+                                                <h3>{{ $totalKelas }}</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card bg-success text-white mb-4">
+                                            <div class="card-body">
+                                                <h5>Total Mata Kuliah</h5>
+                                                <h3>{{ $totalMatakuliah }}</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card bg-warning text-white mb-4">
+                                            <div class="card-body">
+                                                <h5>Presensi Hari Ini</h5>
+                                                <h3>{{ $totalPresensiHariIni }}</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        
+                                <h5>Jadwal Mengajar Hari Ini</h5>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <table class="table table-bordered table-striped table-responsive">
+                                            <thead>
+                                                <tr>
+                                                    <th>Kelas</th>
+                                                    <th>Mata Kuliah</th>
+                                                    <th>Ruangan</th>
+                                                    <th>Jam</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @forelse ($jadwalsDosenHariIni as $jadwal)
+                                                    @php
+                                                        $now = Carbon::now();
+                                                        $mulai = Carbon::createFromFormat('H:i:s', $jadwal->waktu_mulai);
+                                                        $selesai = Carbon::createFromFormat('H:i:s', $jadwal->waktu_selesai);
+                                                    @endphp
+                                                    <tr>
+                                                        <td>{{ $jadwal->kelas->nama_kelas }}</td>
+                                                        <td>{{ $jadwal->matkul->nama_matkul }}</td>
+                                                        <td>{{ $jadwal->ruangan->nama }}</td>
+                                                        <td>{{ $mulai->format('H:i') }} - {{ $selesai->format('H:i') }}</td>
+                                                        <td>
+                                                            @if ($now->lessThan($mulai))
+                                                                <span class="badge badge-warning">Belum Mulai</span>
+                                                            @elseif ($now->between($mulai, $selesai))
+                                                                <span class="badge badge-success">Berlangsung</span>
+                                                            @else
+                                                                <span class="badge badge-danger">Selesai</span>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @empty
+                                                    <tr class="text-center">
+                                                        <td colspan="5">Tidak Ada Jadwal Mengajar Hari Ini</td>
+                                                    </tr>
+                                                @endforelse
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                        
+                                <!-- Informasi Tambahan -->
+                                <div class="mt-4">
+                                    <h5>Informasi Tambahan</h5>
+                                    <p>Pastikan untuk memeriksa jadwal mengajar Anda secara rutin.</p>
+                                </div>
+                                    
                                 @elseif(Auth::guard('mahasiswa')->check())
                                     <div class="container-fluid">
                                         <div class="row">

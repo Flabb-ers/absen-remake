@@ -19,7 +19,7 @@ class Message extends Model
 
     public function receiver()
     {
-        return $this->belongsTo(Dosen::class, 'receiver_id');
+        return $this->morphTo();
     }
 
     public function matkul()
@@ -29,7 +29,7 @@ class Message extends Model
 
     public function jadwal()
     {
-        return $this->belongsTo(Jadwal::class,'jadwal_id');
+        return $this->belongsTo(Jadwal::class, 'jadwal_id');
     }
 
     public function kelas()
@@ -52,5 +52,15 @@ class Message extends Model
             'read' => true,
             'read_at' => now()
         ]);
+    }
+
+    public function parentMessage()
+    {
+        return $this->belongsTo(Message::class, 'parent_id');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(Message::class, 'parent_id');
     }
 }

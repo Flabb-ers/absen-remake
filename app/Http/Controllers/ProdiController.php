@@ -34,20 +34,27 @@ class ProdiController extends Controller
             ],
             'nama_prodi' => 'required',
             'singkatan' => 'required',
-            'jenjang' => 'required'
+            'jenjang' => 'required',
+            'alias_nama'=>'required',
+            'alias_jenjang'=>'required'
         ], [
             'kode_prodi.required' => 'Kode prodi harus diisi',
             'kode_prodi.unique' => 'Kode prodi sudah digunakan',
             'nama_prodi.required' => 'Nama prodi harus diisi',
             'singkatan.required' => 'Singkatan harus diisi',
-            'jenjang.required' => 'Jenjang harus diisi'
+            'jenjang.required' => 'Jenjang harus diisi',
+            'alias_nama.required' => 'Nama dalam bahasa inggris harus diisi',
+            'alias_jenjang.required' => 'Jenjang dalam bahasa inggris harus diisi',
+
         ]);
 
         $prodi = Prodi::create([
             'kode_prodi' => $validateData['kode_prodi'],
             'nama_prodi' => $validateData['nama_prodi'],
             'singkatan' => $validateData['singkatan'],
-            'jenjang' => $validateData['jenjang']
+            'jenjang' => $validateData['jenjang'],
+            'alias_nama' => $validateData['alias_nama'],
+            'alias_jenjang' => $validateData['alias_jenjang'],
         ]);
 
         return response()->json(['success' => 'Program studi berhasil ditambahkan', 'prodi' => $prodi]);
@@ -71,12 +78,16 @@ class ProdiController extends Controller
             'nama_prodi' => 'required',
             'singkatan' => 'required',
             'jenjang' => 'required',
+            'alias_nama'=>'required',
+            'alias_jenjang'=>'required'
         ], [
             'kode_prodi.required' => 'Kode prodi harus diisi',
             'kode_prodi.unique' => 'Kode prodi sudah terdaftar',
             'nama_prodi.required' => 'Nama prodi harus diisi',
             'singkatan.required' => 'Singkatan harus diisi',
             'jenjang.required' => 'Jenjang harus diisi',
+            'alias_nama.required' => 'Nama dalam bahasa inggris harus diisi',
+            'alias_jenjang.required' => 'Jenjang dalam bahasa inggris harus diisi',
         ]);
 
         $edit->update($validateData);

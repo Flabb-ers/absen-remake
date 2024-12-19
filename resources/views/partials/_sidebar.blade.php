@@ -57,13 +57,13 @@
                     <span class="menu-title">Jadwal Mengajar</span>
                 </a>
             </li>
-            <li class="nav-item {{ Request::is('presensi/data/presence*') ? 'active' : '' }}">
-                <a class="nav-link" href="/presensi/data/presence">
+            <li class="nav-item {{ Request::is('presensi/data/perkuliahan*') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/data/perkuliahan">
                     <i class="mdi  mdi-clipboard-check-outline menu-icon"></i>
-                    <span class="menu-title">Data Presensi</span>
+                    <span class="menu-title">Data Perkuliahan</span>
                 </a>
             </li>
-            <li class="nav-item {{ Request::is('presensi/data/resume*') ? 'active' : '' }}">
+            {{-- <li class="nav-item {{ Request::is('presensi/data/resume*') ? 'active' : '' }}">
                 <a class="nav-link" href="/presensi/data/resume">
                     <i class="mdi mdi-file-document menu-icon"></i>
                     <span class="menu-title">Data Berita Acara</span>
@@ -74,7 +74,7 @@
                     <i class="mdi mdi-paperclip menu-icon"></i>
                     <span class="menu-title">Data Kontrak</span>
                 </a>
-            </li>
+            </li> --}}
             <li class="nav-item {{ Request::is('presensi/data/value*') ? 'active' : '' }}">
                 <a class="nav-link" href="/presensi/data/value">
                     <i class="mdi  mdi-star-outline menu-icon"></i>
@@ -138,21 +138,21 @@
                 </a>
             </li>
             <li
-                class="nav-item {{ Request::is('presensi/data-nilai/*') && !Request::is('presensi/data-kontrak*') ? 'active' : '' }}">
-                <a class="nav-link" data-bs-toggle="collapse" href="#data-nilai" aria-expanded="false"
+                class="nav-item {{ Request::is('presensi/data-nilai/*') ? 'active' : '' }}">
+                <a class="nav-link" data-bs-toggle="collapse" href="#nilai" aria-expanded="false"
                     aria-controls="data-nilai">
                     <i class="mdi mdi-folder menu-icon"></i>
                     <span class="menu-title">Nilai</span>
                     <i class="menu-arrow"></i>
                 </a>
-                <div class="collapse {{ request()->is('presensi/data-nilai/*') && !request()->is('presensi/data-nilai/pengajuan/*') && !request()->is('presensi/data-kontrak*') ? 'show' : '' }}"
-                    id="data-nilai">
+                <div class="collapse {{ Request::is('presensi/data-nilai/*') ? 'show' : '' }}"
+                    id="nilai">
                     <ul class="nav flex-column sub-menu">
                         @if ($kelasAll->isNotEmpty())
                             @foreach ($kelasAll->unique('kelas_id') as $kelas)
                                 @if (isset($kelas->kelas))
                                     <li class="nav-item">
-                                        <a class="nav-link" id="sidebar-kelas-{{ $kelas->kelas->id }}"
+                                        <a class="nav-link {{ request()->is('presensi/data-nilai/' . $kelas->kelas->id.'/*') ? 'active' : '' }}" id="sidebar-kelas-{{ $kelas->kelas->id }}"
                                             href="/presensi/data-nilai/{{ $kelas->kelas->id }}">
                                             {{ $kelas->kelas->nama_kelas }}
                                         </a>
@@ -197,13 +197,13 @@
                     </a>
                 </li>
             @endif
-            <li class="nav-item {{ Request::is('presensi/data/presence*') ? 'active' : '' }}">
-                <a class="nav-link" href="/presensi/data/presence">
+            <li class="nav-item {{ Request::is('presensi/data/perkuliahan*') ? 'active' : '' }}">
+                <a class="nav-link" href="/presensi/data/perkuliahan">
                     <i class="mdi  mdi-clipboard-check-outline menu-icon"></i>
-                    <span class="menu-title">Data Presensi</span>
+                    <span class="menu-title">Data Perkuliahan</span>
                 </a>
             </li>
-            <li class="nav-item {{ Request::is('presensi/data/resume*') ? 'active' : '' }}">
+            {{-- <li class="nav-item {{ Request::is('presensi/data/resume*') ? 'active' : '' }}">
                 <a class="nav-link" href="/presensi/data/resume">
                     <i class="mdi mdi-file-document menu-icon"></i>
                     <span class="menu-title">Data Berita Acara</span>
@@ -214,7 +214,7 @@
                     <i class="mdi mdi-paperclip menu-icon"></i>
                     <span class="menu-title">Data Kontrak</span>
                 </a>
-            </li>
+            </li> --}}
             <li class="nav-item {{ Request::is('presensi/data/value*') ? 'active' : '' }}">
                 <a class="nav-link" href="/presensi/data/value">
                     <i class="mdi  mdi-star-outline menu-icon"></i>

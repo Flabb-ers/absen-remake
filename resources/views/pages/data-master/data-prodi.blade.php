@@ -47,9 +47,13 @@
                                                         data-id="{{ $prodi->id }}" data-kode="{{ $prodi->kode_prodi }}"
                                                         data-nama="{{ $prodi->nama_prodi }}"
                                                         data-singkatan="{{ $prodi->singkatan }}"
-                                                        data-jenjang="{{ $prodi->jenjang }}" data-toggle="modal"
-                                                        data-target="#editModal"><span class="mdi mdi-pencil"></span>
-                                                        Edit</button>
+                                                        data-jenjang="{{ $prodi->jenjang }}"
+                                                        data-jenjang-alias="{{ $prodi->alias_jenjang }}"
+                                                        data-nama-alias="{{ $prodi->alias_nama }}" data-bs-toggle="modal"
+                                                        data-bs-target="#editModal">
+                                                        <span class="mdi mdi-pencil"></span> Edit
+                                                    </button>
+
                                                     <form id="delete-form-{{ $prodi->id }}"
                                                         action="{{ route('data-prodi.destroy', $prodi->id) }}"
                                                         method="POST" style="display:inline;">
@@ -102,6 +106,13 @@
                             <div id="namaError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
+                            <label for="namaProdiAlias" class="form-label">Nama Prodi (English) <span
+                                    style="color: red;">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="namaProdiAlias"
+                                name="nama_prodiAlias" placeholder="Nama (Dalam Bahasa Inggris)">
+                            <div id="namaErrorAlias" class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
                             <label for="singkatan" class="form-label">Singkatan <span style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="singkatan" name="singkatan"
                                 placeholder="Singkatan">
@@ -113,6 +124,13 @@
                             <input type="text" class="form-control form-control-sm" id="jenjang" name="jenjang"
                                 placeholder="Jenjang">
                             <div id="jenjangError" class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="jenjang" class="form-label">Jenjang (English)<span
+                                    style="color: red;">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="jenjangAlias"
+                                name="jenjangAlias" placeholder="Jenjang (Dalam Bahasa Inggris)">
+                            <div id="jenjangAliasError" class="invalid-feedback"></div>
                         </div>
                         <button type="submit" class="btn btn-primary btn-sm">
                             <span class="mdi mdi-content-save"></span> Simpan</button>
@@ -150,6 +168,13 @@
                             <div id="edit-namaError" class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
+                            <label for="namaProdi" class="form-label">Nama Prodi (English) <span
+                                    style="color: red;">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="edit-namaAlias"
+                                name="nama_prodiAlias" placeholder="Nama prodi (Dalam Bahasa Inggris)">
+                            <div id="edit-namaErrorAlias" class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
                             <label for="singkatan" class="form-label">Singkatan <span
                                     style="color: red;">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="edit-singkatan"
@@ -162,6 +187,13 @@
                             <input type="text" class="form-control form-control-sm" id="edit-jenjang" name="jenjang"
                                 placeholder="Jenjang">
                             <div id="edit-jenjangError" class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-jenjangAlias" class="form-label">Jenjang (English)<span
+                                    style="color: red;">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="edit-jenjangAlias"
+                                name="jenjang" placeholder="Jenjang (Dalam Bahasa Inggris)">
+                            <div id="edit-jenjangErrorAlias" class="invalid-feedback"></div>
                         </div>
                         <button type="submit" class="btn btn-primary btn-sm">
                             <span class="mdi mdi-content-save"></span> Simpan</button>
@@ -188,11 +220,16 @@
                 let nama = $('#namaProdi').val();
                 let singkatan = $('#singkatan').val();
                 let jenjang = $('#jenjang').val();
+                let alias_nama = $('#namaProdiAlias').val();
+                let alias_jenjang = $('#jenjangAlias').val();
+
 
                 $('#kodeError').text('').removeClass('is-invalid');
                 $('#namaError').text('').removeClass('is-invalid');
                 $('#singkatanError').text('').removeClass('is-invalid');
                 $('#jenjangError').text('').removeClass('is-invalid');
+                $('#jenjangAliasError').text('').removeClass('is-invalid');
+                $('#namaErrorAlias').text('').removeClass('is-invalid');
 
                 $.ajax({
                     url: '{{ route('data-prodi.store') }}',
@@ -200,8 +237,10 @@
                     data: {
                         kode_prodi: kode,
                         nama_prodi: nama,
+                        alias_nama: alias_nama,
                         singkatan: singkatan,
-                        jenjang: jenjang
+                        jenjang: jenjang,
+                        alias_jenjang: alias_jenjang,
                     },
                     success: function(response) {
                         $('#tambahModal').modal('hide');
@@ -231,6 +270,14 @@
                                 $("#singkatan").addClass('is-invalid');
                                 $('#singkatanError').text(errors.singkatan[0]);
                             }
+                            if (errors.alias_nama) {
+                                $("#namaProdiAlias").addClass('is-invalid');
+                                $('#namaErrorAlias').text(errors.alias_nama[0]);
+                            }
+                            if (errors.alias_jenjang) {
+                                $("#jenjangAlias").addClass('is-invalid');
+                                $('#jenjangAliasError').text(errors.alias_jenjang[0]);
+                            }
                             if (errors.jenjang) {
                                 $("#jenjang").addClass('is-invalid');
                                 $('#jenjangError').text(errors.jenjang[0]);
@@ -252,14 +299,23 @@
                 let id = $(this).data('id');
                 let kode = $(this).data('kode');
                 let nama = $(this).data('nama');
+                let aliasNama = $(this).data('nama-alias'); 
                 let singkatan = $(this).data('singkatan');
                 let jenjang = $(this).data('jenjang');
+                let aliasJenjang = $(this).data('jenjang-alias');
+                
+
+
+
 
                 $('#edit-id').val(id);
                 $('#edit-kode').val(kode);
                 $('#edit-nama').val(nama);
                 $('#edit-singkatan').val(singkatan);
                 $('#edit-jenjang').val(jenjang);
+                $('#edit-namaAlias').val(aliasNama);
+                $('#edit-jenjangAlias').val(aliasJenjang);
+
 
                 $('#editNamaError').text('');
                 $('#editKodeError').text('');
@@ -297,6 +353,8 @@
                 let nama = $('#edit-nama').val();
                 let singkatan = $('#edit-singkatan').val();
                 let jenjang = $('#edit-jenjang').val();
+                let alias_nama = $('#edit-namaAlias').val()
+                let alias_jenjang = $('#edit-jenjangAlias').val()
 
 
                 $.ajax({
@@ -306,7 +364,9 @@
                         kode_prodi: kode,
                         nama_prodi: nama,
                         singkatan: singkatan,
-                        jenjang: jenjang
+                        jenjang: jenjang,
+                        alias_nama: alias_nama,
+                        alias_jenjang: alias_jenjang,
                     },
                     success: function(response) {
                         $('#editModal').modal('hide');
@@ -333,6 +393,14 @@
                                 $("#edit-nama").addClass('is-invalid');
                                 $('#edit-namaError').text(errors.nama_prodi[0]);
                             }
+                            if (errors.alias_nama) {
+                                $("#edit-namaAlias").addClass('is-invalid');
+                                $('#edit-namaErrorAlias').text(errors.alias_nama[0]);
+                            }
+                            if (errors.alias_jenjang) {
+                                $("#edit-jenjangAlias").addClass('is-invalid');
+                                $('#edit-jenjangErrorAlias').text(errors.alias_jenjang[0]);
+                            }
                             if (errors.singkatan) {
                                 $("#edit-singkatan").addClass('is-invalid');
                                 $('#edit-singkatanError').text(errors.singkatan[0]);
@@ -353,6 +421,7 @@
             });
 
         });
+
         function confirmDelete(id) {
             Swal.fire({
                 title: 'Apakah Anda yakin?',

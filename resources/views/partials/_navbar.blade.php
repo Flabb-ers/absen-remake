@@ -209,7 +209,7 @@
         Request::is('presensi/data/contract/*') ||
         Request::is('presensi/data-presensi') ||
         Request::is('presensi/data-kontrak'))
-    @if (Auth::guard('direktur')->check() || Auth::guard('wakil_direktur')->check())
+    @if (Auth::guard('direktur')->check() || Auth::guard('wakil_direktur')->check() || Auth::guard("kaprodi")->check())
         <div class="chat-icon" onclick="toggleChat()"> 
             <i class="ti-comments"></i> 
             <span id="unreadMessageBadge" class="badge bg-danger" style="display:none; position: absolute; top: -8px; right: -8px;">0</span>
@@ -221,7 +221,7 @@
         </div>
     @endif
 
-    @if (Auth::guard('direktur')->check() || Auth::guard('wakil_direktur')->check())
+    @if (Auth::guard('direktur')->check() || Auth::guard('wakil_direktur')->check() || Auth::guard('kaprodi')->check())
         <div id="chatContainer" class="chat-container" style="display:none;">
             <div class="chat-header"> <img src="{{ asset('images/user.png') }}" alt="Chat"
                     class="rounded-circle me-2" style="width:30px; height:30px">
@@ -374,6 +374,8 @@
                             <p>Direktur</p> 
                             @elseif($pesan->sender_type == 'App\Models\Wadir') 
                             <p>Wakil Direktur</p> 
+                            @elseif($pesan->sender_type == 'App\Models\Kaprodi') 
+                            <p>Kaprodi</p> 
                             @endif 
                         </div>
                         <span class="badge bg-danger ms-auto" style="display: none; position: absolute; right: 10px;">
@@ -415,30 +417,36 @@
         </div>
 
         <script>
-            $(document).ready(function() {
+           $(document).ready(function() {
                 $('#chatContainer, #chatStart, #chatContact').hide();
                 
-                const userType = '{{ class_basename(auth()->user()::class) }}';
-                
-                switch(userType) {
-                    case 'Dosen':
+                const userType = '{{ class_basename(auth()->user()::class) }}';  
+                if (userType === 'Dosen' || userType === 'Direktur' || userType === 'Wadir' || userType === 'Kaprodi') {
+                    switch(userType) {
+                        case 'Dosen':
+                            setupAlternativeJadwalSelect('#jadwalSelectDosen');
+                            break;
+                        case 'Direktur':
+                        case 'Wadir':
+                        case 'Kaprodi':
+                            setupJadwalSelect('#jadwalSelect');
+                            break;
+                        default:
+                            console.log('Tipe user tidak dikenali');
+                            return; 
+                    }
+
+                    if ($('#jadwalSelectDosen').length) {
                         setupAlternativeJadwalSelect('#jadwalSelectDosen');
-                        break;
-                    case 'Direktur':
-                    case 'Wadir':
-                        setupJadwalSelect('#jadwalSelect');
-                        break;
-                    default:
-                        console.log('Tipe user tidak dikenali');
+                    }
+
+                    updateUnreadMessageCount();
+                    setInterval(updateUnreadMessageCount, 30000)
+                } else {
+                    console.log('Tipe user tidak dikenali, pengambilan pesan tidak dijalankan.');
                 }
-                
-                if ($('#jadwalSelectDosen').length) {
-                    setupAlternativeJadwalSelect('#jadwalSelectDosen');
-                }
-                
-                updateUnreadMessageCount();
-                setInterval(updateUnreadMessageCount, 30000);
             });
+
 
             function updateAllContactsUnreadCount() {
                 $('.contact-item').each(function() {
@@ -546,6 +554,7 @@
                 switch(userType) {
                     case 'Direktur':
                     case 'Wadir':
+                    case 'kaprodi':
                         setupJadwalSelect(selectId);
                         break;
                     case 'Dosen':
@@ -791,7 +800,7 @@
 
                 if (guard === 'dosen') {
                     dosenId = null;
-                } else if (guard === 'wakil_direktur' || guard === 'direktur') {
+                } else if (guard === 'wakil_direktur' || guard === 'direktur' || guard === 'kaprodi') {
                     dosenId = {{ request()->segment(4) ?? 'null' }};
                 }
 

@@ -198,7 +198,7 @@ class MahasiswaController extends Controller
         $mahasiswas = Mahasiswa::with('kelas.semester', 'kelas')
             ->where('kelas_id', $namaKelas->id)
             ->orderBy('nim', 'asc')
-            ->paginate(5);
+            ->get();
 
         $kelass = Kelas::with('prodi', 'semester')->get();
         $dosens = Dosen::where('pembimbing_akademik', 1)
@@ -234,6 +234,15 @@ class MahasiswaController extends Controller
         return redirect('/presensi/data-mahasiswa')->with('success', 'Kelas mahasiswa berhasil diperbarui!');
     }
 
+    public function deleteCheck(Request $request)
+    {
+        $mahasiswaIds = explode(',', $request->mahasiswa_ids); 
+        Mahasiswa::whereIn('id', $mahasiswaIds)->delete(); 
+
+        return response()->json(['status' => 'success']);
+    }
+
+
 
     public function search(Request $request)
     {
@@ -246,7 +255,7 @@ class MahasiswaController extends Controller
                 $query->where('nama_lengkap', 'LIKE', "%$search%")
                     ->orWhere('nim', 'LIKE', "%$search%");
             })
-            ->paginate(5);
+            ->get();
 
         return response()->json(
             $mahasiswas

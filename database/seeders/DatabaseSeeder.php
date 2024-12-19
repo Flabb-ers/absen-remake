@@ -37,18 +37,24 @@ class DatabaseSeeder extends Seeder
             'singkatan' => 'TI',
             'kode_prodi' => 'WKWKWKW',
             'Jenjang' => 'D3',
+            'alias_nama'=>'Information Thecnical',
+            'alias_jenjang'=>'Dhiploma tree'
         ]);
         Prodi::create([
             'nama_prodi' => 'Akuntansi',
             'singkatan' => 'AK',
             'kode_prodi' => 'WKWKWKW',
             'Jenjang' => 'D3',
+            'alias_nama'=>'Acounting',
+            'alias_jenjang'=>'Dhiploma tree'
         ]);
         Prodi::create([
             'nama_prodi' => 'Administrasi Bisnis',
             'singkatan' => 'AB',
             'kode_prodi' => 'WKWKWKW',
             'Jenjang' => 'D3',
+            'alias_nama'=>'Buisness Administration',
+            'alias_jenjang'=>'Dhiploma tree'
         ]);
 
         Semester::create([

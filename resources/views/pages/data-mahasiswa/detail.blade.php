@@ -41,6 +41,10 @@
                                         @endforeach
                                     </div>
                                 </div>
+                                <button type="button" class="btn btn-danger btn-sm ms-2" id="hapusButton"
+                                    style="display: none;">
+                                    <span class="mdi mdi-delete"></span> Hapus
+                                </button>
 
                                 <div class="ms-auto">
                                     <div class="input-group input-group-sm" style="width: 200px;">
@@ -75,7 +79,7 @@
                                             <tr>
                                                 <td><input type="checkbox" class="select-checkbox"
                                                         data-id="{{ $mahasiswa->id }}" /></td>
-                                                <td>{{ $loop->iteration + ($mahasiswas->currentPage() - 1) * $mahasiswas->perPage() }}
+                                                <td>{{ $loop->iteration }}
                                                 </td>
                                                 <td>{{ $mahasiswa->nim }}</td>
                                                 <td>{{ $mahasiswa->nama_lengkap }}</td>
@@ -121,7 +125,6 @@
                                     </tbody>
                                 </table>
                             </div>
-                            {{ $mahasiswas->links() }}
                         </div>
                     </div>
                 </div>
@@ -885,14 +888,23 @@
                 $('#semesterDropdown').toggle(anyChecked);
             }
 
+            function toggleHapusButton() {
+                if ($('.select-checkbox:checked').length > 0) {
+                    $('#hapusButton').show();
+                } else {
+                    $('#hapusButton').hide();
+                }
+            }
             $('#select-all').change(function() {
                 const isChecked = this.checked;
                 $('.select-checkbox').prop('checked', isChecked);
                 toggleDropdown();
+                toggleHapusButton();
             });
 
             $('.select-checkbox').change(function() {
                 toggleDropdown();
+                toggleHapusButton();
                 if (!this.checked) {
                     $('#select-all').prop('checked', false);
                 }
@@ -927,122 +939,125 @@
                 });
             });
 
+            $('#hapusButton').click(function() {
+                const mahasiswaIds = [];
+
+                // Ambil ID mahasiswa yang dipilih
+                $('.select-checkbox:checked').each(function() {
+                    mahasiswaIds.push($(this).data('id')); // Ambil ID mahasiswa yang dipilih
+                });
+
+                // Konfirmasi penghapusan menggunakan SweetAlert
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: 'Mahasiswa yang dipilih akan dihapus!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/presensi/data-mahasiswa/delete', 
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                mahasiswa_ids: mahasiswaIds.join(
+                                    ',') 
+                            },
+                            success: function(response) {
+                                Swal.fire(
+                                    'Dihapus!',
+                                    'Mahasiswa yang dipilih telah dihapus.',
+                                    'success'
+                                );
+                                location.reload();
+                            },
+                            error: function(xhr, status, error) {
+                                Swal.fire(
+                                    'Gagal!',
+                                    'Terjadi kesalahan saat menghapus mahasiswa.',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
+            });
+
             $('#search').on('keyup', function() {
                 let searchQuery = $(this).val();
                 let kelasId = $('#kelas_id').val();
 
-                searchMahasiswa(searchQuery, kelasId, 1); // Mulai dari halaman 1
+                searchMahasiswa(searchQuery, kelasId);
             });
 
-            // Tambahkan event listener untuk paginasi
-            $(document).on('click', '.pagination .page-link', function(e) {
-                e.preventDefault();
-                let page = $(this).data('page');
-                let searchQuery = $('#search').val();
-                let kelasId = $('#kelas_id').val();
-
-                searchMahasiswa(searchQuery, kelasId, page);
-            });
-
-            function searchMahasiswa(searchQuery, kelasId, page) {
+            function searchMahasiswa(searchQuery, kelasId) {
                 $.ajax({
                     url: '{{ route('data-mahasiswa.search') }}',
                     method: 'GET',
                     data: {
                         search: searchQuery,
                         kelas_id: kelasId,
-                        page: page 
                     },
                     success: function(response) {
                         $('tbody').empty();
+
                         if (response.data.length > 0) {
                             response.data.forEach(function(mahasiswa, index) {
                                 $('tbody').append(`
-                    <tr>
-                        <td><input type="checkbox" class="select-checkbox" data-id="${mahasiswa.id}" /></td>
-                        <td>${(page - 1) * response.per_page + index + 1}</td>
-                        <td>${mahasiswa.nim}</td>
-                        <td>${mahasiswa.nama_lengkap}</td>
-                        <td>${mahasiswa.jenis_kelamin}</td>
-                        <td>${mahasiswa.kelas ? mahasiswa.kelas.nama_kelas : 'N/A'}</td>
-                        <td>${mahasiswa.kelas && mahasiswa.kelas.semester ? 'Semester ' + mahasiswa.kelas.semester.semester : 'N/A'}</td>
-                        <td>${mahasiswa.email}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm edit-btn" 
-                                data-id="${mahasiswa.id}" 
-                                data-nama="${mahasiswa.nama_lengkap}" 
-                                data-nim="${mahasiswa.nim}" 
-                                data-nisn="${mahasiswa.nisn}" 
-                                data-pembimbing="${mahasiswa.dosen_pembimbing_id}" 
-                                data-nik="${mahasiswa.nik}" 
-                                data-kelas="${mahasiswa.kelas_id}" 
-                                data-semester="${mahasiswa.kelas.semester ? mahasiswa.kelas.semester.semester : 'N/A'}" 
-                                data-prodi="${mahasiswa.kelas.prodi.nama_prodi}" 
-                                data-jenis="${mahasiswa.kelas.jenis_kelas}" 
-                                data-tanggallahir="${mahasiswa.tanggal_lahir}" 
-                                data-tempatlahir="${mahasiswa.tempat_lahir}" 
-                                data-namaibu="${mahasiswa.nama_ibu}" 
-                                data-telephone="${mahasiswa.no_telephone}" 
-                                data-jeniskelamin="${mahasiswa.jenis_kelamin}" 
-                                data-email="${mahasiswa.email}" 
-                                data-alamat="${mahasiswa.alamat}" 
-                                data-toggle="modal" 
-                                data-target="#editModal">
-                                <span class="mdi mdi-eye"></span> Lihat
-                            </button>
-                            <button class="btn btn-danger btn-sm delete-btn" 
-                                data-id="${mahasiswa.id}">
-                                <span class="mdi mdi-delete"></span> Hapus
-                            </button>
-                        </td>
-                    </tr>
-                `);
+                        <tr>
+                            <td><input type="checkbox" class="select-checkbox" data-id="${mahasiswa.id}" /></td>
+                            <td>${index + 1}</td>
+                            <td>${mahasiswa.nim}</td>
+                            <td>${mahasiswa.nama_lengkap}</td>
+                            <td>${mahasiswa.jenis_kelamin}</td>
+                            <td>${mahasiswa.kelas ? mahasiswa.kelas.nama_kelas : 'N/A'}</td>
+                            <td>${mahasiswa.kelas && mahasiswa.kelas.semester ? 'Semester ' + mahasiswa.kelas.semester.semester : 'N/A'}</td>
+                            <td>${mahasiswa.email}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm edit-btn" 
+                                    data-id="${mahasiswa.id}" 
+                                    data-nama="${mahasiswa.nama_lengkap}" 
+                                    data-nim="${mahasiswa.nim}" 
+                                    data-nisn="${mahasiswa.nisn}" 
+                                    data-pembimbing="${mahasiswa.dosen_pembimbing_id}" 
+                                    data-nik="${mahasiswa.nik}" 
+                                    data-kelas="${mahasiswa.kelas_id}" 
+                                    data-semester="${mahasiswa.kelas.semester ? mahasiswa.kelas.semester.semester : 'N/A'}" 
+                                    data-prodi="${mahasiswa.kelas.prodi.nama_prodi}" 
+                                    data-jenis="${mahasiswa.kelas.jenis_kelas}" 
+                                    data-tanggallahir="${mahasiswa.tanggal_lahir}" 
+                                    data-tempatlahir="${mahasiswa.tempat_lahir}" 
+                                    data-namaibu="${mahasiswa.nama_ibu}" 
+                                    data-telephone="${mahasiswa.no_telephone}" 
+                                    data-jeniskelamin="${mahasiswa.jenis_kelamin}" 
+                                    data-email="${mahasiswa.email}" 
+                                    data-alamat="${mahasiswa.alamat}" 
+                                    data-toggle="modal" 
+                                    data-target="#editModal">
+                                    <span class="mdi mdi-eye"></span> Lihat
+                                </button>
+                                <button class="btn btn-danger btn-sm delete-btn" 
+                                    data-id="${mahasiswa.id}">
+                                    <span class="mdi mdi-delete"></span> Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    `);
                             });
-
-                            // Perbarui navigasi paginasi
-                            updatePagination(response);
                         } else {
                             $('tbody').append(
                                 '<tr><td class="text-center" colspan="9">Tidak ada hasil ditemukan</td></tr>'
                             );
-                            $('.pagination').empty(); // Bersihkan paginasi jika tidak ada hasil
                         }
                     },
                     error: function(xhr) {
                         console.error('Error:', xhr);
                     }
                 });
-            }
-
-            function updatePagination(response) {
-                $('.pagination').empty();
-
-                // Tombol Previous
-                $('.pagination').append(`
-        <li class="page-item ${response.current_page === 1 ? 'disabled' : ''}">
-            <a class="page-link" href="#" data-page="${response.current_page - 1}" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-    `);
-
-                // Nomor Halaman
-                for (let i = 1; i <= response.last_page; i++) {
-                    $('.pagination').append(`
-            <li class="page-item ${i === response.current_page ? 'active' : ''}">
-                <a class="page-link" href="#" data-page="${i}">${i}</a>
-            </li>
-        `);
-                }
-
-                // Tombol Next
-                $('.pagination').append(`
-        <li class="page-item ${response.current_page === response.last_page ? 'disabled' : ''}">
-            <a class="page-link" href="#" data-page="${response.current_page + 1}" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-    `);
             }
         });
     </script>
