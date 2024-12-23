@@ -40,7 +40,7 @@
 - [x] in nilai sikap uts uas initinya itu belum ada filter where status_krs == 1
 - [x] untuk hasil presensi sudah bisa dicek untuk semua role kaprodi keatas, besok tambah untuk resume, nilai baru rombak kontrak dan baru di ubah bisa lihat kaprodi keatas
 - [x] tinggal rombak kontrak kuliah. agar bisa di lihat oleh semua role dan untuk inputnya ada 14 kolom form 
-- [ ] Sidebar belum fix untuk halaman dosen jika buka kontrak untuk nialai ikut terbuka 
+- [x] Sidebar belum fix untuk halaman dosen jika buka kontrak untuk nialai ikut terbuka 
 - [x] Kontrak bisa di lihat role kaprodi uppp
 - [x] plan membuat matkul bisa di lihat oleh kaprodi
 - [x] membuat notif 

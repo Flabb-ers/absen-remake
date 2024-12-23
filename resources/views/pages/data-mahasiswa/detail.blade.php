@@ -21,6 +21,10 @@
                                     data-bs-target="#tambahModal">
                                     <span class="mdi mdi-plus"></span> Tambah
                                 </button>
+                                <button type="button" class="btn btn-info btn-sm ms-2" data-bs-toggle="modal"
+                                    data-bs-target="#importModal">
+                                    <span class="mdi mdi-upload"></span> Import Data
+                                </button>
 
                                 <div class="dropdown ms-2" id="semesterDropdown" style="display: none;">
                                     <button class="btn btn-primary dropdown-toggle btn-sm" type="button"
@@ -131,6 +135,35 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importModalLabel">Import Data Mahasiswa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="importForm" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="kelas_id" value="{{ $kelasId->first()->id }}">
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Pilih File (XLS/XLSX/CSV)</label>
+                            <input type="file" class="form-control" id="file" name="file" required>
+                        </div>
+                        <div class="mb-3">
+                            <div id="error-message" style="color: red; font-size: 14px;"></div>
+                            <small class="text-muted">Format file harus CSV/XLSX/XLS.</small>
+                        </div>
+
+
+                        <button type="submit" class="btn btn-primary">Import</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
     <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
@@ -469,13 +502,60 @@
         </div>
     </div>
 
-
     <script>
         $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
+            });
+
+            $('#importForm').on('submit', function(event) {
+                event.preventDefault();
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: "{{ route('data-mahasiswa-import') }}",
+                    method: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Sukses',
+                                text: response.success
+                            }).then(() => {
+                                $('#importModal').modal(
+                                    'hide');
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        var errors = xhr.responseJSON.errors;
+                        if (errors && errors.file) {
+                            $('#error-message').text(errors.file[0]);
+                        }
+
+                        if (xhr.status === 500) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Terjadi Kesalahan',
+                                text: 'Terjadi kesalahan server, silakan coba lagi'
+                            });
+                        }
+
+                        if (xhr.status === 422) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Format Tidak Sesuai',
+                                text: 'Format file yang Anda unggah tidak valid. Harap unggah file dengan format yang benar.'
+                            });
+                        }
+                    }
+                });
             });
 
             $('#tambahForm').submit(function(e) {
@@ -839,6 +919,10 @@
             $('.addClose, .editClose').on('click', function() {
                 clearValidation('#tambahForm');
                 clearValidation('#editForm');
+
+            });
+            $('#importModal').on('hidden.bs.modal', function() {
+                $('#error-message').text('');
             });
 
             $('#tambahModal').on('hidden.bs.modal', function() {
@@ -849,7 +933,7 @@
                 clearValidation('#editForm');
             });
 
-            // Function to clear validation
+
             function clearValidation(formId) {
                 $(formId).find('input, select', 'textarea').removeClass('is-invalid');
                 $(formId).find('.invalid-feedback').text('');
@@ -942,12 +1026,10 @@
             $('#hapusButton').click(function() {
                 const mahasiswaIds = [];
 
-                // Ambil ID mahasiswa yang dipilih
                 $('.select-checkbox:checked').each(function() {
-                    mahasiswaIds.push($(this).data('id')); // Ambil ID mahasiswa yang dipilih
+                    mahasiswaIds.push($(this).data('id'));
                 });
 
-                // Konfirmasi penghapusan menggunakan SweetAlert
                 Swal.fire({
                     title: 'Apakah Anda yakin?',
                     text: 'Mahasiswa yang dipilih akan dihapus!',
@@ -960,12 +1042,12 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '/presensi/data-mahasiswa/delete', 
+                            url: '/presensi/data-mahasiswa/delete',
                             method: 'POST',
                             data: {
                                 _token: '{{ csrf_token() }}',
                                 mahasiswa_ids: mahasiswaIds.join(
-                                    ',') 
+                                    ',')
                             },
                             success: function(response) {
                                 Swal.fire(

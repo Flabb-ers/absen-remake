@@ -12,13 +12,6 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
-                        <div class="d-flex justify-content-between mb-3">
-                            <h4>Data Mahasiswa</h4>
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal">
-                                <i class="mdi mdi-file-import"></i> Import Mahasiswa
-                            </button>
-                        </div>
                         @if ($kelass->isEmpty())
                             <div class="card text-center w-100" style="padding: 2rem;">
                                 <div class="card-body">
@@ -56,32 +49,6 @@
                             </div>
                         @endif
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Import Data Mahasiswa</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="importForm" action="{{ route('data-mahasiswa-import') }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="fileInput" class="form-label">Pilih File Excel</label>
-                            <input type="file" class="form-control" id="fileInput" name="file" accept=".xls,.xlsx"
-                                required>
-                            <div class="form-text">Format yang diperbolehkan: .xls, .xlsx</div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="importButton">Import</button>
                 </div>
             </div>
         </div>

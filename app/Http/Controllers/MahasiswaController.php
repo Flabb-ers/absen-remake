@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Dosen;
 use App\Models\Kelas;
 use App\Models\Jadwal;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
+use App\Imports\MahasiswaImport;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MahasiswaController extends Controller
 {
@@ -236,8 +238,8 @@ class MahasiswaController extends Controller
 
     public function deleteCheck(Request $request)
     {
-        $mahasiswaIds = explode(',', $request->mahasiswa_ids); 
-        Mahasiswa::whereIn('id', $mahasiswaIds)->delete(); 
+        $mahasiswaIds = explode(',', $request->mahasiswa_ids);
+        Mahasiswa::whereIn('id', $mahasiswaIds)->delete();
 
         return response()->json(['status' => 'success']);
     }
@@ -262,82 +264,36 @@ class MahasiswaController extends Controller
         );
     }
 
-
-
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls'
-        ]);
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+            'kelas_id' => 'required|exists:kelas,id',
+        ],['file.mimes'=>'Format file tidak sesuai']);
 
-        $file = $request->file('file')->path();
-        $spreadsheet = IOFactory::load($file);
-        $sheet = $spreadsheet->getActiveSheet();
+        try {
+            DB::beginTransaction();
 
-        $dataMahasiswa = [];
-        $errors = [];
+            Excel::import(new MahasiswaImport($request->kelas_id), $request->file('file'));
 
-        foreach ($sheet->getRowIterator(2) as $row) {
-            $namaLengkap = $sheet->getCell("B{$row->getRowIndex()}")->getValue();
-            $nim = $sheet->getCell("C{$row->getRowIndex()}")->getValue();
-            $nisn = $sheet->getCell("D{$row->getRowIndex()}")->getValue();
-            $nik = $sheet->getCell("E{$row->getRowIndex()}")->getValue();
-            $email = $sheet->getCell("F{$row->getRowIndex()}")->getValue();
-            $alamat = $sheet->getCell("G{$row->getRowIndex()}")->getValue();
-            $password = $sheet->getCell("H{$row->getRowIndex()}")->getValue();
-            $noTelephone = $sheet->getCell("I{$row->getRowIndex()}")->getValue();
-            $tanggalLahir = $sheet->getCell("J{$row->getRowIndex()}")->getValue();
-            $tempatLahir = $sheet->getCell("K{$row->getRowIndex()}")->getValue();
-            $namaIbu = $sheet->getCell("L{$row->getRowIndex()}")->getValue();
-            $jenisKelamin = $sheet->getCell("M{$row->getRowIndex()}")->getValue();
-            $kelasId = $sheet->getCell("N{$row->getRowIndex()}")->getValue();
-            $pembimbingAkademik = $sheet->getCell("O{$row->getRowIndex()}")->getValue();
+            DB::commit();
 
-            $tanggalLahir = Date::excelToDateTimeObject($tanggalLahir);
+            return response()->json([
+                'success' => 'Data mahasiswa berhasil diimpor'
+            ]);
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            DB::rollBack();
 
-            if (empty($namaLengkap)) {
-                $errors[] = "Nama lengkap tidak boleh kosong pada baris {$row->getRowIndex()}";
-            }
-            if (empty($nim) || Mahasiswa::where('nim', $nim)->exists()) {
-                $errors[] = "NIM kosong atau sudah terdaftar pada baris {$row->getRowIndex()}";
-            }
-            if (!empty($email) && Mahasiswa::where('email', $email)->exists()) {
-                $errors[] = "Email sudah terdaftar pada baris {$row->getRowIndex()}";
-            }
-            if (empty($kelasId) || !Kelas::where('id', $kelasId)->exists()) {
-                $errors[] = "Kelas ID tidak valid pada baris {$row->getRowIndex()}";
-            }
+            return response()->json([
+                'error' => 'Format data Excel tidak sesuai',
+                'errors' => $e->failures()
+            ], 422);
+        } catch (Exception $e) {
+            DB::rollBack();
 
-            if (!empty($errors)) {
-                continue;
-            }
-
-            $dataMahasiswa[] = [
-                'nama_lengkap' => $namaLengkap,
-                'nim' => $nim,
-                'nisn' => $nisn,
-                'nik' => $nik,
-                'email' => $email,
-                'alamat' => $alamat,
-                'password' => Hash::make($password),
-                'no_telephone' => $noTelephone,
-                'tanggal_lahir' => $tanggalLahir,
-                'tempat_lahir' => $tempatLahir,
-                'nama_ibu' => $namaIbu,
-                'jenis_kelamin' => $jenisKelamin,
-                'kelas_id' => $kelasId,
-                'dosen_pembimbing_id' => $pembimbingAkademik,
-            ];
+            return response()->json([
+                'error' => 'Terjadi kesalahan saat mengimpor data'
+            ], 500);
         }
-
-        if (count($dataMahasiswa) > 0) {
-            Mahasiswa::insert($dataMahasiswa);
-        }
-
-        if (count($errors) > 0) {
-            return redirect()->route('data-mahasiswa.index')->withErrors($errors);
-        }
-
-        return redirect()->route('data-mahasiswa.index')->with('success', 'Data mahasiswa berhasil diimpor');
     }
 }
