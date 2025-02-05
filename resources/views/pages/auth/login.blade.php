@@ -118,11 +118,9 @@
                 <div class="row w-100 mx-0">
                     <div class="col-lg-4 mx-auto">
                         <div class="auth-form-light text-left py-5 px-4 px-sm-5 shadow-lg rounded-4">
-                            <div class="brand-logo">
-                                <img src="{{ asset('/images/logo.png') }}" alt="logo">
+                            <div class="brand-logo d-flex justify-content-center">
+                                <img src="{{ asset('images/logo1.png') }}" alt="logo">
                             </div>
-                            <h4>Hello! let's get started</h4>
-                            <h6 class="font-weight-light">Login to continue.</h6>
 
                             @if ($errors->any())
                                 <div class="error-container">
@@ -154,7 +152,7 @@
                                 @csrf
                                 <div class="form-group">
                                     <input type="text" name="username" class="form-control form-control-md rounded-4"
-                                        placeholder="Username" value="{{ old('username') }}" required>
+                                        placeholder="Username or Email" value="{{ old('username') }}" required>
                                 </div>
                                 <div class="form-group position-relative">
                                     <input type="password" name="password"

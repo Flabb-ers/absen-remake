@@ -116,11 +116,11 @@
     .chat-body .jadwal-select-container {
         width: 100%;
         max-width: 100%;
-        position: sticky; 
-        top: 0; 
+        position: sticky;
+        top: 0;
         left: 0;
         right: 0;
-        z-index: 10; 
+        z-index: 10;
         background-color: white;
         transition: all 0.3s ease;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -149,7 +149,7 @@
 <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
         <a class="navbar-brand brand-logo me-5" href="index.html">
-            <img src="{{ asset('/images/logo.png') }}" class="me-2" alt="logo" />
+            <img src="{{ asset('/images/logo1.png') }}" class="me-2" alt="logo" />
         </a>
         <a class="navbar-brand brand-logo-mini" href="index.html">
             <img src="{{ asset('/images/logomini.png') }}" alt="logo" style="padding-right: 2px;padding-left:2px" />
@@ -163,13 +163,13 @@
             <li class="nav-item dropdown">
                 <a class="nav-link count-indicator dropdown-toggle position-relative" id="notificationDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="icon-bell mx-0"></i>
-                    <span class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle" 
-                          style="font-size: 0.5rem; padding: 0.1rem 0.3rem; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;" 
+                    <span class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle"
+                          style="font-size: 0.5rem; padding: 0.1rem 0.3rem; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;"
                           id="notificationCount">0</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list shadow-sm" aria-labelledby="notificationDropdown">
                     <h6 class="dropdown-header d-flex justify-content-between align-items-center">
-                        Notifications 
+                        Notifications
                         <span class="badge bg-secondary" style="font-size: 0.6rem; padding: 0.1rem 0.1rem;" id="totalNotificationCount">0</span>
                     </h6>
                     <div id="notificationList" style="max-height: 250px; overflow-y: auto;">
@@ -210,13 +210,13 @@
         Request::is('presensi/data-presensi') ||
         Request::is('presensi/data-kontrak'))
     @if (Auth::guard('direktur')->check() || Auth::guard('wakil_direktur')->check() || Auth::guard("kaprodi")->check())
-        <div class="chat-icon" onclick="toggleChat()"> 
-            <i class="ti-comments"></i> 
+        <div class="chat-icon" onclick="toggleChat()">
+            <i class="ti-comments"></i>
             <span id="unreadMessageBadge" class="badge bg-danger" style="display:none; position: absolute; top: -8px; right: -8px;">0</span>
         </div>
     @elseif(Auth::guard('dosen')->check())
-        <div class="chat-icon" onclick="toggleContact()"> 
-            <i class="ti-comments"></i> 
+        <div class="chat-icon" onclick="toggleContact()">
+            <i class="ti-comments"></i>
             <span id="unreadMessageBadge" class="badge bg-danger" style="display:none; position: absolute; top: -8px; right: -8px;">0</span>
         </div>
     @endif
@@ -237,7 +237,7 @@
                                 data-matkul="{{ $jadwal->matkul->nama_matkul }}"> {{ $jadwal->matkul->nama_matkul }} -
                                 {{ $jadwal->kelas->nama_kelas }} </option>
                         @endforeach
-                    </select> 
+                    </select>
                 </div>
             </div>
             <div class="chat-footer">
@@ -255,7 +255,7 @@
             border-radius: 8px;
             background-color: #f8f9fa;
         }
-        
+
         .contact-item {
             display: flex;
             align-items: center;
@@ -265,20 +265,20 @@
             position: relative;
             cursor: pointer;
         }
-        
+
         .contact-item:hover {
             background-color: #f1f3f5;
             transform: translateX(5px);
         }
-        
+
         .contact-item:last-child {
             border-bottom: none;
         }
-        
+
         .contact-avatar {
             margin-right: 15px;
         }
-        
+
         .contact-avatar img {
             width: 50px;
             height: 50px;
@@ -286,24 +286,24 @@
             object-fit: cover;
             border: 2px solid #e0e0e0;
         }
-        
+
         .contact-info {
             flex-grow: 1;
         }
-        
+
         .contact-info strong {
             font-size: 16px;
             color: #333;
             display: block;
             margin-bottom: 5px;
         }
-        
+
         .contact-info p {
             font-size: 12px;
             color: #6c757d;
             margin: 0;
         }
-        
+
         .contact-item .badge {
             position: absolute;
             top: 10px;
@@ -316,111 +316,111 @@
             font-size: 10px;
             padding: 0 5px;
         }
-        
+
         .contact-item[data-contact-type*="Direktur"] .contact-avatar img {
             border-color: #007bff;
         }
-        
+
         .contact-item[data-contact-type*="Wadir"] .contact-avatar img {
             border-color: #28a745;
         }
-        
+
         .contact-item.active {
             background-color: #e9ecef;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        
+
         @media (max-width: 768px) {
             .contact-item {
                 padding: 10px;
             }
-            
+
             .contact-avatar img {
                 width: 40px;
                 height: 40px;
             }
-            
+
             .contact-info strong {
                 font-size: 14px;
             }
-            
+
             .contact-info p {
                 font-size: 11px;
             }
         }
         </style>
-        <div id="chatContact" class="chat-container" style="display:none;"> 
-            <div class="chat-header"> 
-                <img src="{{ asset('images/user.png') }}" alt="Chat" class="rounded-circle me-2" style="width:30px; height:30px"> 
-                <div> 
-                    <strong> Pemberitahuan </strong> 
-                </div> 
-                <button class="btn btn-link text-white ms-auto" onclick="toggleContact()"> 
-                    <i class="ti-close"></i> 
-                </button> 
-            </div> 
-            <div class="chat-body" id="chatMessages"> 
+        <div id="chatContact" class="chat-container" style="display:none;">
+            <div class="chat-header">
+                <img src="{{ asset('images/user.png') }}" alt="Chat" class="rounded-circle me-2" style="width:30px; height:30px">
+                <div>
+                    <strong> Pemberitahuan </strong>
+                </div>
+                <button class="btn btn-link text-white ms-auto" onclick="toggleContact()">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="chat-body" id="chatMessages">
                 @foreach($pesans as $pesan)
-                    <div class="contact-item" 
-                        data-contact-id="{{ $pesan->sender_id }}" 
+                    <div class="contact-item"
+                        data-contact-id="{{ $pesan->sender_id }}"
                         data-contact-type="{{ $pesan->sender_type }}"
                         onclick="startChat({{ $pesan->sender_id }}, '{{ $pesan->sender_type }}', '{{ $pesan->sender->nama }}')">
-                        <div class="contact-avatar"> 
-                            <img src="{{ asset('images/user.png') }}" alt="Profile" class="rounded-circle" style="width: 50px; height: 50px;"> 
-                        </div> 
-                        <div class="contact-info"> 
-                            <strong>{{ $pesan->sender->nama }}</strong> 
-                            @if($pesan->sender_type == 'App\Models\Direktur') 
-                            <p>Direktur</p> 
-                            @elseif($pesan->sender_type == 'App\Models\Wadir') 
-                            <p>Wakil Direktur</p> 
-                            @elseif($pesan->sender_type == 'App\Models\Kaprodi') 
-                            <p>Kaprodi</p> 
-                            @endif 
+                        <div class="contact-avatar">
+                            <img src="{{ asset('images/user.png') }}" alt="Profile" class="rounded-circle" style="width: 50px; height: 50px;">
+                        </div>
+                        <div class="contact-info">
+                            <strong>{{ $pesan->sender->nama }}</strong>
+                            @if($pesan->sender_type == 'App\Models\Direktur')
+                            <p>Direktur</p>
+                            @elseif($pesan->sender_type == 'App\Models\Wadir')
+                            <p>Wakil Direktur</p>
+                            @elseif($pesan->sender_type == 'App\Models\Kaprodi')
+                            <p>Kaprodi</p>
+                            @endif
                         </div>
                         <span class="badge bg-danger ms-auto" style="display: none; position: absolute; right: 10px;">
                             0
                         </span>
                     </div>
                 @endforeach
-            </div> 
-        </div> 
-    @endif 
-        <div id="chatStart" class="chat-container" style="display:none;"> 
-            <div class="chat-header"> 
-                <img src="{{ asset('images/user.png') }}" alt="Chat" class="rounded-circle me-2" style="width:30px; height:30px"> 
-                <div> 
-                    <strong> Pilih Jadwal </strong> 
-                </div> 
-                <button class="btn btn-link text-white ms-auto" onclick="closeChat()"> 
-                    <i class="ti-close"></i> 
-                </button> 
-            </div> 
-            <div class="chat-body" id="chatMessages"> 
-                <div class="mb-3 jadwal-select-container"> 
-                    <label for="jadwal" class="form-label">Pilih Jadwal Dosen</label> 
-                    <select id="jadwalSelectDosen" class="form-select"> 
-                        <option value="">Pilih Jadwal</option> 
-                        @foreach ($jadwals as $jadwal) 
-                        <option value="{{ $jadwal->id }}" data-dosen="{{ $jadwal->dosen->nama }}" data-matkul="{{ $jadwal->matkul->nama_matkul }}"> 
-                            {{ $jadwal->matkul->nama_matkul }} - {{ $jadwal->kelas->nama_kelas }} 
-                        </option> 
-                        @endforeach 
-                    </select> 
-                </div> 
-            </div> 
-            <div class="chat-footer"> 
-                <input type="text" id="chatInput" placeholder="Tulis Pemberitahuan ..." onkeypress="handleChatInput(event)"> 
-                <button class="btn btn-success" onclick="sendMessage('#chatStart')"> <i class="ti-location-arrow"></i> 
-                </button> 
-            </div> 
+            </div>
+        </div>
+    @endif
+        <div id="chatStart" class="chat-container" style="display:none;">
+            <div class="chat-header">
+                <img src="{{ asset('images/user.png') }}" alt="Chat" class="rounded-circle me-2" style="width:30px; height:30px">
+                <div>
+                    <strong> Pilih Jadwal </strong>
+                </div>
+                <button class="btn btn-link text-white ms-auto" onclick="closeChat()">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="chat-body" id="chatMessages">
+                <div class="mb-3 jadwal-select-container">
+                    <label for="jadwal" class="form-label">Pilih Jadwal Dosen</label>
+                    <select id="jadwalSelectDosen" class="form-select">
+                        <option value="">Pilih Jadwal</option>
+                        @foreach ($jadwals as $jadwal)
+                        <option value="{{ $jadwal->id }}" data-dosen="{{ $jadwal->dosen->nama }}" data-matkul="{{ $jadwal->matkul->nama_matkul }}">
+                            {{ $jadwal->matkul->nama_matkul }} - {{ $jadwal->kelas->nama_kelas }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="chat-footer">
+                <input type="text" id="chatInput" placeholder="Tulis Pemberitahuan ..." onkeypress="handleChatInput(event)">
+                <button class="btn btn-success" onclick="sendMessage('#chatStart')"> <i class="ti-location-arrow"></i>
+                </button>
+            </div>
         </div>
 
         <script>
            $(document).ready(function() {
                 $('#chatContainer, #chatStart, #chatContact').hide();
-                
-                const userType = '{{ class_basename(auth()->user()::class) }}';  
+
+                const userType = '{{ class_basename(auth()->user()::class) }}';
                 if (userType === 'Dosen' || userType === 'Direktur' || userType === 'Wadir' || userType === 'Kaprodi') {
                     switch(userType) {
                         case 'Dosen':
@@ -433,7 +433,7 @@
                             break;
                         default:
                             console.log('Tipe user tidak dikenali');
-                            return; 
+                            return;
                     }
 
                     if ($('#jadwalSelectDosen').length) {
@@ -464,11 +464,11 @@
             });
 
 
-            setInterval(updateUnreadMessageCount, 30000); 
+            setInterval(updateUnreadMessageCount, 30000);
                 $(document).ready(function() {
                 updateUnreadMessageCount();
             });
-        
+
             function toggleChat() {
                 const chatContainer = document.getElementById('chatContainer');
                 if (chatContainer.style.display === 'flex') {
@@ -494,17 +494,17 @@
             function closeChat() {
                 const chatStart = document.getElementById('chatStart');
                 const chatContact = document.getElementById('chatContact');
-                
+
                 $('#jadwalSelectDosen').val('');
-                
+
                 $('#chatStart #chatMessages').html(`
                     <div class="mb-3 jadwal-select-container">
                         <label for="jadwal" class="form-label">Pilih Jadwal Dosen</label>
                         <select id="jadwalSelectDosen" class="form-select">
                             <option value="">Pilih Jadwal</option>
                             @foreach ($jadwals as $jadwal)
-                                <option value="{{ $jadwal->id }}" 
-                                    data-dosen="{{ $jadwal->dosen->nama }}" 
+                                <option value="{{ $jadwal->id }}"
+                                    data-dosen="{{ $jadwal->dosen->nama }}"
                                     data-matkul="{{ $jadwal->matkul->nama_matkul }}">
                                     {{ $jadwal->matkul->nama_matkul }} - {{ $jadwal->kelas->nama_kelas }}
                                 </option>
@@ -512,31 +512,31 @@
                         </select>
                     </div>
                 `);
-                
+
                 $('#jadwalSelectDosen')
                     .removeAttr('data-receiver-id')
                     .removeAttr('data-receiver-type')
                     .removeAttr('data-sender-name');
-                
+
                 $('#chatStart .chat-header strong').text('Pilih Jadwal');
-                
+
                 chatStart.style.display = 'none';
                 chatContact.style.display = 'flex';
-                
+
                 setupAlternativeJadwalSelect('#jadwalSelectDosen');
             }
 
             function resetJadwalDropdown(selectId) {
                 $(selectId).val('');
-                
+
                 $(selectId).closest('.chat-container').find('#chatMessages').html(`
                     <div class="mb-3 jadwal-select-container">
                         <label for="jadwal" class="form-label">Pilih Jadwal</label>
                         <select id="${selectId.replace('#', '')}" class="form-select">
                             <option value="">Pilih Jadwal</option>
                             @foreach ($jadwals as $jadwal)
-                                <option value="{{ $jadwal->id }}" 
-                                    data-dosen="{{ $jadwal->dosen->nama }}" 
+                                <option value="{{ $jadwal->id }}"
+                                    data-dosen="{{ $jadwal->dosen->nama }}"
                                     data-matkul="{{ $jadwal->matkul->nama_matkul }}">
                                     {{ $jadwal->matkul->nama_matkul }} - {{ $jadwal->kelas->nama_kelas }}
                                 </option>
@@ -581,18 +581,18 @@
                     chatContact.style.display = 'none';
                 }
             }
-        
+
             function setupJadwalSelect(selectId) {
                 $(selectId).off('change').on('change', function() {
                     const jadwalId = $(this).val();
                     const chatMessages = $(this).closest('.chat-container').find('#chatMessages');
                     const currentUserType = '{{ class_basename(auth()->user()::class) }}';
-                    
+
                     if (jadwalId) {
                         const selectedOption = $(this).find('option:selected');
                         const dosenNama = selectedOption.data('dosen');
                         const matkulNama = selectedOption.data('matkul');
-                        
+
                         $(this).closest('.chat-container')
                             .find('.chat-header strong')
                             .text(`${dosenNama} - ${matkulNama}`);
@@ -607,16 +607,16 @@
                                 chatMessages.find('.message-container').remove();
 
                                 const messageContainer = $('<div class="message-container"></div>');
-                                
+
                                 messages.forEach(message => {
-                                    const position = message.sender_type !== 'App\\Models\\Dosen' 
-                                        ? 'text-end' 
+                                    const position = message.sender_type !== 'App\\Models\\Dosen'
+                                        ? 'text-end'
                                         : 'text-start';
-                                    
+
                                     const bgColor = message.sender_type !== 'App\\Models\\Dosen'
-                                        ? 'bg-primary text-white' 
+                                        ? 'bg-primary text-white'
                                         : 'bg-secondary text-dark';
-                                    
+
                                     const messageElement = `
                                         <div class="mb-2 ${position}">
                                             <div class="${bgColor} p-2 rounded d-inline-block">
@@ -627,12 +627,12 @@
                                             </small>
                                         </div>
                                     `;
-                                    
+
                                     messageContainer.append(messageElement);
                                 });
 
                                 chatMessages.append(messageContainer);
-                                
+
                                 chatMessages.scrollTop(chatMessages[0].scrollHeight);
                             },
                             error: function(xhr) {
@@ -648,7 +648,7 @@
                         $(this).closest('.chat-container')
                             .find('.chat-header strong')
                             .text('Pilih Jadwal');
-                        
+
                         chatMessages.find('.message-container').remove();
                     }
                 });
@@ -662,12 +662,12 @@
                     const senderName = $(this).attr('data-sender-name');
                     const chatMessages = $(this).closest('.chat-container').find('#chatMessages');
                     const currentUserType = '{{ class_basename(auth()->user()::class) }}';
-                    
+
                     if (jadwalId) {
                         const selectedOption = $(this).find('option:selected');
                         const dosenNama = selectedOption.data('dosen');
                         const matkulNama = selectedOption.data('matkul');
-                        
+
                         $(this).closest('.chat-container')
                             .find('.chat-header strong')
                             .text(`${senderName}`);
@@ -683,16 +683,16 @@
                             success: function(messages) {
                                 chatMessages.find('.message-container').remove();
                                 const messageContainer = $('<div class="message-container"></div>');
-                                
+
                                 messages.forEach(message => {
-                                    const position = message.sender_type === 'App\\Models\\Dosen' 
-                                        ? 'text-end' 
+                                    const position = message.sender_type === 'App\\Models\\Dosen'
+                                        ? 'text-end'
                                         : 'text-start';
-                                    
+
                                     const bgColor = message.sender_type === 'App\\Models\\Dosen'
-                                        ? 'bg-primary text-white' 
+                                        ? 'bg-primary text-white'
                                         : 'bg-secondary text-dark';
-                                    
+
                                     const messageElement = `
                                         <div class="mb-2 ${position}">
                                             <div class="${bgColor} p-2 rounded d-inline-block">
@@ -703,7 +703,7 @@
                                             </small>
                                         </div>
                                     `;
-                                    
+
                                     messageContainer.append(messageElement);
                                 });
 
@@ -723,7 +723,7 @@
                         $(this).closest('.chat-container')
                             .find('.chat-header strong')
                             .text('Pilih Jadwal');
-                        
+
                         chatMessages.find('.message-container').remove();
                     }
                 });
@@ -828,7 +828,7 @@
                 });
             }
 
-            
+
             function updateContactUnreadCount(contactId, contactType) {
                 const url = `{{ route('get.unread.count.by.contact', ['contactId' => '__contactId__', 'contactType' => '__contactType__']) }}`;
                 const finalUrl = url.replace('__contactId__', contactId).replace('__contactType__', contactType);
@@ -870,10 +870,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const totalNotificationCount = document.getElementById('totalNotificationCount');
                 totalNotificationCount.textContent = data.unread_count;
-                
+
                 const notificationList = document.getElementById('notificationList');
                 notificationList.innerHTML = '';
-                
+
                 if (data.notifications.length === 0) {
                     notificationList.innerHTML = `
                         <div class="text-center text-muted py-3">
@@ -886,9 +886,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     const notificationItem = document.createElement('a');
                     notificationItem.className = 'dropdown-item preview-item';
                     notificationItem.setAttribute('data-notification-id', notification.id);
-                    
+
                     const notificationIcon = getNotificationIcon(notification.data.notification_type);
-                    
+
                     if(notification.data.notification_type == 'pemberitahuan'){
                         notificationItem.innerHTML = `
                             <div class="preview-thumbnail">
@@ -992,7 +992,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     ${!notification.read_at ? '<span class="badge bg-primary ms-2">New</span>' : ''}
                                 </p>
                             </div>
-                        `; 
+                        `;
                     }else if(notification.data.notification_type == 'presensi'){
                         notificationItem.innerHTML = `
                             <div class="preview-thumbnail">
@@ -1139,7 +1139,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     notificationItem.addEventListener('click', function() {
                         markNotificationAsRead(notification.id);
                     });
-                    
+
                     notificationList.appendChild(notificationItem);
                 });
             }).catch(error => {
@@ -1151,22 +1151,22 @@ document.addEventListener('DOMContentLoaded', function() {
         switch(type) {
             case 'pemberitahuan':
                 return {
-                    bgClass: 'bg-info', 
+                    bgClass: 'bg-info',
                     iconClass: 'ti-info'
                 };
             case 'peringatan':
                 return {
-                    bgClass: 'bg-warning', 
+                    bgClass: 'bg-warning',
                     iconClass: 'ti-warning'
                 };
             case 'presensi':
                 return {
-                    bgClass: 'bg-success', 
+                    bgClass: 'bg-success',
                     iconClass: 'ti-check'
                 };
             default:
                 return {
-                    bgClass: 'bg-secondary', 
+                    bgClass: 'bg-secondary',
                     iconClass: 'ti-bell'
                 };
         }
@@ -1174,7 +1174,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
         function markNotificationAsRead(notificationId = null) {
-            const payload = notificationId 
+            const payload = notificationId
                 ? { notification_id: notificationId }
                 : {};
 
@@ -1198,14 +1198,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.querySelector('.dropdown-footer a').addEventListener('click', function(e) {
             e.preventDefault();
-            markNotificationAsRead(); 
+            markNotificationAsRead();
         });
 
             function formatTimeAgo(dateString) {
                 const date = new Date(dateString);
                 const now = new Date();
                 const diffInSeconds = Math.floor((now - date) / 1000);
-                
+
                 if (diffInSeconds < 60) return 'Baru saja';
                 if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} menit yang lalu`;
                 if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} jam yang lalu`;
